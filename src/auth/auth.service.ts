@@ -4,7 +4,7 @@ import User from './entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import UserDetails from './entities/user.details.entity';
 import CreateUserDto from './dto/create-user.dto';
-import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
+import ErrorService from '../common/util/error.service';
 
 @Injectable()
 export default class AuthService {
@@ -13,6 +13,7 @@ export default class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(UserDetails)
     private readonly userDetailsRepository: Repository<UserDetails>,
+    private readonly errorHandlerService: ErrorService,
   ) {}
 
   public createUser = async ({
@@ -40,7 +41,7 @@ export default class AuthService {
       documentNumber,
       gender,
       birthdate,
-      phone: null,
+      phone,
     });
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -52,7 +53,7 @@ export default class AuthService {
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new InternalServerErrorException(error);
+      this.errorHandlerService.handleException(error);
     }
     await queryRunner.release();
   };
