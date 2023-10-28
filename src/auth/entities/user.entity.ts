@@ -1,7 +1,14 @@
-import { Column, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import {
+  Column,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+  Entity,
+} from 'typeorm';
 import { UserRoles } from '../enums/user.roles.enum';
 import UserDetails from './user.details.entity';
 
+@Entity('users')
 export default class User {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
@@ -18,7 +25,6 @@ export default class User {
   @Column('enum', {
     enum: UserRoles,
     array: true,
-    default: [Object.values(UserRoles)],
   })
   roles: UserRoles[];
 
