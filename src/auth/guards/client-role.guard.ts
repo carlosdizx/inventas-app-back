@@ -7,8 +7,9 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import Oauth2Client from '../entities/oauth2.client.entity';
 import { META_ROLES } from '../decorators/role-protected.decorator';
+import { UserRoles } from '../enums/user.roles.enum';
+import User from '../entities/user.entity';
 
 @Injectable()
 export default class ClientRoleGuard implements CanActivate {
@@ -17,7 +18,7 @@ export default class ClientRoleGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const validRoles: string[] = this.reflector.get(
+    const validRoles: UserRoles[] = this.reflector.get(
       META_ROLES,
       context.getHandler(),
     );
@@ -26,18 +27,18 @@ export default class ClientRoleGuard implements CanActivate {
     if (validRoles.length === 0) return true;
 
     const req = context.switchToHttp().getRequest();
-    const client = req.user as Oauth2Client;
+    const user = req.user as User;
 
-    if (!client) throw new BadRequestException('Cliente no encontrado');
+    if (!user) throw new BadRequestException('Cliente no encontrado');
 
-    for (const role of client.roles) {
+    for (const role of user.roles) {
       if (validRoles.includes(role)) {
         return true;
       }
     }
 
     throw new ForbiddenException(
-      `Cliente '${client.businessName}' requiere un permiso para poder hacer esta acción: [${validRoles}]`,
+      `Cliente '${user.email}' requiere un permiso para poder hacer esta acción: [${validRoles}]`,
     );
   }
 }

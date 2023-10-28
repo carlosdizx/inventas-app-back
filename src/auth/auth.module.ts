@@ -3,19 +3,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthController } from './auth.controller';
 import JwtStrategy from './strategies/jwt.strategy';
-import Oauth2Client from './entities/oauth2.client.entity';
 import getJwtConfig from '../common/jwt.config';
-import OauthAuthorizerService from './oauth.authorizer.service';
-import OauthCrudController from './oauth.crud.controller';
-import OauthAuthorizerController from './oauth.authorizer.controller';
-import OauthCrudService from './oauth.crud.service';
+import User from './entities/user.entity';
 
 @Global()
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([Oauth2Client]),
+    TypeOrmModule.forFeature([User]),
     PassportModule.register({
       defaultStrategy: 'jwt',
     }),
@@ -25,15 +22,8 @@ import OauthCrudService from './oauth.crud.service';
       useFactory: getJwtConfig,
     }),
   ],
-  controllers: [OauthCrudController, OauthAuthorizerController],
-  providers: [OauthCrudService, OauthAuthorizerService, JwtStrategy],
-  exports: [
-    TypeOrmModule,
-    OauthCrudService,
-    OauthAuthorizerService,
-    JwtStrategy,
-    PassportModule,
-    JwtModule,
-  ],
+  controllers: [AuthController],
+  providers: [JwtStrategy],
+  exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule],
 })
 export default class AuthModule {}

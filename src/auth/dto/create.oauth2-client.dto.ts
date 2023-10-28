@@ -7,7 +7,7 @@ import {
   IsNotEmpty,
   IsOptional,
 } from 'class-validator';
-import { Roles } from '../enums/role.enum';
+import { UserRoles } from '../enums/user.roles.enum';
 
 export default class CreateOauth2ClientDto {
   @IsNotEmpty({ message: 'El nombre de la compañía no debería estar vacío' })
@@ -27,10 +27,10 @@ export default class CreateOauth2ClientDto {
   validUntil?: Date;
 
   @IsOptional()
-  @IsEnum(Roles, {
+  @IsEnum(UserRoles, {
     each: true,
-    message: `Rol inválido, roles permitidos ${Object.values(Roles)}`,
+    message: `Rol inválido, roles permitidos ${Object.values(UserRoles)}`,
   })
   @IsArray({ message: 'Roles debe ser una matriz' })
-  roles?: Roles[];
+  roles?: UserRoles[];
 }

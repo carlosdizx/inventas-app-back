@@ -5,13 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import Oauth2Client from '../entities/oauth2.client.entity';
-
+import User from '../entities/user.entity';
 @Injectable()
 export default class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @InjectRepository(Oauth2Client)
-    private readonly repository: Repository<Oauth2Client>,
+    @InjectRepository(User)
+    private readonly repository: Repository<User>,
     private readonly configService: ConfigService,
   ) {
     super({
@@ -19,19 +18,19 @@ export default class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
   }
-  public validate = async (payload: JwtPayload): Promise<Oauth2Client> => {
-    let client: Oauth2Client = null;
+  public validate = async (payload: JwtPayload): Promise<User> => {
+    let user: User = null;
     try {
-      client = await this.repository
-        .createQueryBuilder('client')
+      user = await this.repository
+        .createQueryBuilder('user')
         .where('client.id = :id', { id: payload.id })
         .getOne();
     } catch (error) {
       throw new UnauthorizedException('Failed validation token');
     }
-    if (!client) throw new UnauthorizedException('Token not valid');
-    if (!client.enabled)
+    if (!user) throw new UnauthorizedException('Token not valid');
+    if (!user.isActive)
       throw new UnauthorizedException('Client is inactive, talk with an admin');
-    return client;
+    return user;
   };
 }
