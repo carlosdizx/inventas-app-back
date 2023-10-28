@@ -1,13 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import UserDetails from './entities/user.details.entity';
 import CreateUserDto from './dto/create-user.dto';
+import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 
 @Injectable()
 export default class AuthService {
   constructor(
+    private dataSource: DataSource,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(UserDetails)
     private readonly userDetailsRepository: Repository<UserDetails>,
@@ -38,14 +40,20 @@ export default class AuthService {
       documentNumber,
       gender,
       birthdate,
-      phone,
+      phone: null,
     });
 
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+
     try {
-      details.user = await this.userRepository.save(user);
-      await this.userDetailsRepository.save(details);
+      details.user = await queryRunner.manager.save<User>(user);
+      await queryRunner.manager.save<UserDetails>(details);
+      await queryRunner.commitTransaction();
     } catch (error) {
-      console.log(error);
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(error);
     }
+    await queryRunner.release();
   };
 }
