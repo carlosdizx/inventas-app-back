@@ -1,10 +1,10 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import UserDetails from './entities/user.details.entity';
 import CreateUserDto from './dto/create-user.dto';
-import ErrorService from '../common/util/error.service';
+import ErrorDatabaseService from '../common/util/error.database.service';
 
 @Injectable()
 export default class AuthService {
@@ -13,7 +13,7 @@ export default class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(UserDetails)
     private readonly userDetailsRepository: Repository<UserDetails>,
-    private readonly errorHandlerService: ErrorService,
+    private readonly errorDatabaseService: ErrorDatabaseService,
   ) {}
 
   public createUser = async ({
@@ -53,7 +53,7 @@ export default class AuthService {
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      this.errorHandlerService.handleException(error);
+      this.errorDatabaseService.handleException(error);
     }
     await queryRunner.release();
   };

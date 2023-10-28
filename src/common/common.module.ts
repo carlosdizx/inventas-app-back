@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common';
-import ErrorService from './util/error.service';
+import ErrorDatabaseService from './util/error.database.service';
 
 @Global()
 @Module({
-  providers: [ErrorService],
-  exports: [ErrorService],
+  providers: [ErrorDatabaseService],
+  exports: [ErrorDatabaseService],
 })
 export default class CommonModule {}

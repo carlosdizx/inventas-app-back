@@ -5,7 +5,6 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
-  IsOptional,
 } from 'class-validator';
 import { UserRoles } from '../enums/user.roles.enum';
 import { UserTypeDocument } from '../enums/user.type.document.enum';
@@ -17,10 +16,9 @@ export default class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @IsOptional()
   @IsArray()
   @IsEnum(UserRoles, { each: true })
-  roles?: UserRoles[] = Object.values(UserRoles) as any;
+  roles: UserRoles[];
 
   @IsNotEmpty()
   first_name: string;

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export default class ErrorService {
+export default class ErrorDatabaseService {
   private readonly logger = new Logger();
   public handleException = (error: any, context = 'AppServiceFailed') => {
     switch (error.code) {
