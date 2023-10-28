@@ -13,6 +13,7 @@ describe('OauthAuthorizerService', () => {
   let service: OauthAuthorizerService;
   let repository: Repository<Oauth2Client>;
   let jwtService: JwtService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let configService: ConfigService;
 
   const oauth2ClientToken: string | any = getRepositoryToken(Oauth2Client);
