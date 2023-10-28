@@ -1,5 +1,6 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 import { UserRoles } from '../enums/user.roles.enum';
+import UserDetails from './user.details.entity';
 
 export default class User {
   @PrimaryGeneratedColumn('uuid')
@@ -20,4 +21,8 @@ export default class User {
     default: [Object.values(UserRoles)],
   })
   roles: UserRoles[];
+
+  @OneToOne(() => UserDetails, (userDetails) => userDetails.user)
+  @JoinColumn()
+  userDetails: UserDetails;
 }
