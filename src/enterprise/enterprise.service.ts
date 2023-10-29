@@ -8,6 +8,7 @@ import ErrorDatabaseService from '../common/service/error.database.service';
 import User from '../auth/entities/user.entity';
 import UserDetails from '../auth/entities/user.details.entity';
 import { hashPassword } from '../common/util/encrypt.util';
+import { StatusEntity } from '../common/enums/status.entity.enum}';
 
 @Injectable()
 export default class EnterpriseService {
@@ -28,6 +29,7 @@ export default class EnterpriseService {
   }: CreateEnterpriseDTO) => {
     const enterprise = this.enterpriseRepository.create({
       ...resDataEnterprise,
+      status: StatusEntity.ACTIVE,
     });
 
     const newUser = this.userRepository.create({

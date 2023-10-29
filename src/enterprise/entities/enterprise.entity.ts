@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { documentTypes } from '../../common/enums/document.type.enum';
 import User from '../../auth/entities/user.entity';
+import { StatusEntity } from '../../common/enums/status.entity.enum}';
 
 @Entity('enterprises')
 @Unique(['documentNumber', 'documentType'])
@@ -26,8 +27,8 @@ export default class Enterprise {
   @Column({ unique: true })
   email: string;
 
-  @Column({ name: 'is_active', default: true })
-  isActive: boolean;
+  @Column({ enum: StatusEntity, default: StatusEntity.PENDING_APPROVAL })
+  status: StatusEntity;
 
   @OneToMany(() => User, (user) => user.enterprise)
   users: User[];
