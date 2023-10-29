@@ -1,5 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { documentTypes } from '../../common/enums/document.type.enum';
+import User from '../../auth/entities/user.entity';
 
 @Entity('enterprises')
 @Unique(['documentNumber', 'documentType'])
@@ -21,4 +28,7 @@ export default class Enterprise {
 
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
+
+  @OneToMany(() => User, (user) => user.enterprise)
+  users: User[];
 }

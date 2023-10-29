@@ -4,9 +4,11 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   Entity,
+  ManyToOne,
 } from 'typeorm';
 import { UserRoles } from '../enums/user.roles.enum';
 import UserDetails from './user.details.entity';
+import Enterprise from '../../enterprise/entities/enterprise.entity';
 
 @Entity('users')
 export default class User {
@@ -31,4 +33,8 @@ export default class User {
   @OneToOne(() => UserDetails, (userDetails) => userDetails.user)
   @JoinColumn()
   userDetails: UserDetails;
+
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.users)
+  @JoinColumn({ name: 'enterprise_id' })
+  enterprise: Enterprise;
 }
