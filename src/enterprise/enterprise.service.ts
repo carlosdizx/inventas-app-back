@@ -36,6 +36,7 @@ export default class EnterpriseService {
       email: user.email,
       password: await hashPassword(user.password),
       roles: user.roles,
+      status: StatusEntity.ACTIVE,
     });
 
     const details = this.userDetailsRepository.create({

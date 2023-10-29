@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import User from '../entities/user.entity';
+import { StatusEntity } from '../../common/enums/status.entity.enum}';
 @Injectable()
 export default class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -29,7 +30,7 @@ export default class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Failed validation token');
     }
     if (!user) throw new UnauthorizedException('Token not valid');
-    if (!user.isActive)
+    if (user.status !== StatusEntity.ACTIVE)
       throw new UnauthorizedException('Client is inactive, talk with an admin');
     return user;
   };

@@ -9,6 +9,7 @@ import {
 import { UserRoles } from '../enums/user.roles.enum';
 import UserDetails from './user.details.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
+import { StatusEntity } from '../../common/enums/status.entity.enum}';
 
 @Entity('users')
 export default class User {
@@ -21,8 +22,8 @@ export default class User {
   @Column()
   password: string;
 
-  @Column({ name: 'is_active', default: true })
-  isActive: boolean;
+  @Column({ enum: StatusEntity, default: StatusEntity.PENDING_CONFIRMATION })
+  status: StatusEntity;
 
   @Column('enum', {
     enum: UserRoles,
