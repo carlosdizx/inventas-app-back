@@ -5,6 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import UserDetails from './entities/user.details.entity';
 import CreateUserDto from './dto/create-user.dto';
 import ErrorDatabaseService from '../common/service/error.database.service';
+import { hashPassword } from '../common/util/encrypt.util';
 
 @Injectable()
 export default class AuthService {
@@ -30,7 +31,7 @@ export default class AuthService {
   }: CreateUserDto) => {
     const user = this.userRepository.create({
       email,
-      password,
+      password: await hashPassword(password),
       roles,
     });
 
