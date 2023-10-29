@@ -7,7 +7,7 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 import { UserRoles } from '../enums/user.roles.enum';
-import { UserTypeDocument } from '../enums/user.type.document.enum';
+import { documentTypes } from '../../common/enums/document.type.enum';
 
 export default class CreateUserDto {
   @IsEmail()
@@ -29,8 +29,8 @@ export default class CreateUserDto {
   @IsNotEmpty()
   documentNumber: string;
 
-  @IsEnum(UserTypeDocument)
-  documentType: UserTypeDocument;
+  @IsEnum(documentTypes)
+  documentType: documentTypes;
 
   @IsNotEmpty()
   phone: string;

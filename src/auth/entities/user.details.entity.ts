@@ -1,8 +1,15 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { UserTypeDocument } from '../enums/user.type.document.enum';
+import {
+  Column,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
+import { documentTypes } from '../../common/enums/document.type.enum';
 import User from './user.entity';
 
 @Entity('user_details')
+@Unique(['documentNumber', 'documentType'])
 export default class UserDetails {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
@@ -16,8 +23,8 @@ export default class UserDetails {
   @Column()
   documentNumber: string;
 
-  @Column({ enum: UserTypeDocument })
-  documentType: UserTypeDocument;
+  @Column({ enum: documentTypes })
+  documentType: documentTypes;
 
   @Column()
   phone: string;

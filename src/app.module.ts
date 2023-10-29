@@ -7,6 +7,7 @@ import AuthModule from './auth/auth.module';
 import CommonModule from './common/common.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import EnterpriseModule from './enterprise/enterprise.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -23,6 +24,7 @@ import { join } from 'path';
     }),
     CommonModule,
     AuthModule,
+    EnterpriseModule,
   ],
 })
 export default class AppModule {}
