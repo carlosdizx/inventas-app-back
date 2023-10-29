@@ -4,7 +4,7 @@ import User from './entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import UserDetails from './entities/user.details.entity';
 import CreateUserDto from './dto/create-user.dto';
-import ErrorDatabaseService from '../common/util/error.database.service';
+import ErrorDatabaseService from '../common/service/error.database.service';
 
 @Injectable()
 export default class AuthService {

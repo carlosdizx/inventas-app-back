@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import ErrorDatabaseService from './util/error.database.service';
+import ErrorDatabaseService from './service/error.database.service';
 
 @Global()
 @Module({
