@@ -52,10 +52,11 @@ export default class AuthService {
       details.user = await queryRunner.manager.save<User>(user);
       await queryRunner.manager.save<UserDetails>(details);
       await queryRunner.commitTransaction();
+      await queryRunner.release();
+      return details.user;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       this.errorDatabaseService.handleException(error);
     }
-    await queryRunner.release();
   };
 }

@@ -26,6 +26,6 @@ import UserDetails from './entities/user.details.entity';
   ],
   controllers: [AuthController],
   providers: [JwtStrategy, AuthService],
-  exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule],
+  exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule, AuthService],
 })
 export default class AuthModule {}
