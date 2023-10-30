@@ -16,6 +16,9 @@ const JoiValidation = Joi.object({
   // JWT
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRES_IN: Joi.string().default('1d'),
+
+  // Encrypt
+  ENCRYPT_SECRET_KEY: Joi.string().required(),
 });
 
 export default JoiValidation;
