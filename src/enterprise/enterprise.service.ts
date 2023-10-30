@@ -9,6 +9,7 @@ import User from '../auth/entities/user.entity';
 import UserDetails from '../auth/entities/user.details.entity';
 import { hashPassword } from '../common/util/encrypt.util';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
+import EncryptService from '../common/service/encrypt.service';
 
 @Injectable()
 export default class EnterpriseService {
@@ -21,6 +22,7 @@ export default class EnterpriseService {
     private readonly userDetailsRepository: Repository<UserDetails>,
     private readonly authService: AuthService,
     private readonly errorDatabaseService: ErrorDatabaseService,
+    private readonly encryptService: EncryptService,
   ) {}
 
   public createEnterpriseAndUser = async ({
@@ -46,7 +48,7 @@ export default class EnterpriseService {
 
     const newUser = this.userRepository.create({
       email: email,
-      password: await hashPassword(password),
+      password: await hashPassword(this.encryptService.encrypt(password)),
       roles: roles,
       status: StatusEntity.ACTIVE,
     });
