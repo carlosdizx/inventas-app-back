@@ -31,22 +31,34 @@ export default class EnterpriseService {
       ...resDataEnterprise,
       status: StatusEntity.ACTIVE,
     });
+    const {
+      email,
+      password,
+      roles,
+      first_name,
+      last_name,
+      documentType,
+      documentNumber,
+      gender,
+      birthdate,
+      phone,
+    } = user;
 
     const newUser = this.userRepository.create({
-      email: user.email,
-      password: await hashPassword(user.password),
-      roles: user.roles,
+      email: email,
+      password: await hashPassword(password),
+      roles: roles,
       status: StatusEntity.ACTIVE,
     });
 
     const details = this.userDetailsRepository.create({
-      first_name: user.first_name,
-      last_name: user.last_name,
-      documentType: user.documentType,
-      documentNumber: user.documentNumber,
-      gender: user.gender,
-      birthdate: user.birthdate,
-      phone: user.phone,
+      first_name: first_name,
+      last_name: last_name,
+      documentType: documentType,
+      documentNumber: documentNumber,
+      gender: gender,
+      birthdate: birthdate,
+      phone: phone,
     });
 
     const queryRunner = this.dataSource.createQueryRunner();
