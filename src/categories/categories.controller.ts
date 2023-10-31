@@ -6,40 +6,24 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import CategoriesService from './categories.service';
-import CreateCategoryDto from './dto/create-category.dto';
-import UpdateCategoryDto from './dto/update-category.dto';
+import PaginationDto from '../common/dto/pagination.dto';
+import getDataReq from '../auth/decorators/get-data-req.decorator';
+import Enterprise from '../enterprise/entities/enterprise.entity';
+import Auth from '../auth/decorators/auth.decorator';
 
 @Controller('categories')
 export default class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
-  }
-
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateCategoryDto: UpdateCategoryDto,
+  @Auth()
+  public listCategories(
+    @Query() dto: PaginationDto,
+    @getDataReq() enterprise: Enterprise,
   ) {
-    return this.categoriesService.update(+id, updateCategoryDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
+    return this.categoriesService.listCategories(dto, enterprise);
   }
 }
