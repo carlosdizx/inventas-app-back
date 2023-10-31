@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -6,6 +11,8 @@ import ErrorDatabaseService from '../common/service/error.database.service';
 import JwtPayload from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import LoginUserDto from './dto/login.dto';
+import EncryptService from '../common/service/encrypt.service';
+import { comparePasswords } from '../common/util/encrypt.util';
 
 @Injectable()
 export default class AuthService {
@@ -13,6 +20,7 @@ export default class AuthService {
     private dataSource: DataSource,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly errorDatabaseService: ErrorDatabaseService,
+    private readonly encryptService: EncryptService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -23,10 +31,17 @@ export default class AuthService {
   public login = async ({ email, password }: LoginUserDto) => {
     const userFound = await this.userRepository.findOne({
       where: { email },
-      select: ['email', 'password'],
+      select: ['id', 'email', 'password'],
     });
-    if (!userFound) throw new NotFoundException('Credenciales no encontradas');
-    console.log(userFound);
-    return userFound;
+    if (!userFound) throw new NotFoundException('Email no encontrado');
+    const decryptPassword = this.encryptService.decrypt(userFound.password);
+    if (decryptPassword === '')
+      throw new ConflictException('Llave de encriptación es errada');
+    const isValid = await comparePasswords(password, decryptPassword);
+    if (isValid)
+      return {
+        token: this.generateJWT({ id: userFound.id }),
+      };
+    else throw new BadRequestException('Credenciales erradas');
   };
 }
