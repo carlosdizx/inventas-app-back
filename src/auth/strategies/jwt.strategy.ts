@@ -22,16 +22,13 @@ export default class JwtStrategy extends PassportStrategy(Strategy) {
   public validate = async (payload: JwtPayload): Promise<User> => {
     let user: User = null;
     try {
-      user = await this.repository
-        .createQueryBuilder('user')
-        .where('client.id = :id', { id: payload.id })
-        .getOne();
+      user = await this.repository.findOneBy({ id: payload.id });
     } catch (error) {
-      throw new UnauthorizedException('Failed validation token');
+      throw new UnauthorizedException('Cliente no encontrado');
     }
-    if (!user) throw new UnauthorizedException('Token not valid');
+    if (!user) throw new UnauthorizedException('Token invalido');
     if (user.status !== StatusEntity.ACTIVE)
-      throw new UnauthorizedException('Client is inactive, talk with an admin');
+      throw new UnauthorizedException('Cliente inactivo');
     return user;
   };
 }
