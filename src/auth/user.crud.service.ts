@@ -10,6 +10,7 @@ import { StatusEntity } from '../common/enums/status.entity.enum}';
 import UserDetails from './entities/user.details.entity';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import UpdateUserDto from './dto/update-user.dto';
+import PaginationDto from '../common/dto/pagination.dto';
 
 @Injectable()
 export default class UserCrudService {
@@ -81,10 +82,12 @@ export default class UserCrudService {
     return { message: `User was removed` };
   };
 
-  public updateUserById = async (id: string, dto: UpdateUserDto) => {
+  public updateStatusAndRolesById = async (id: string, dto: UpdateUserDto) => {
     const userPreload = await this.userRepository.preload({ id, ...dto });
     if (!userPreload) throw new NotFoundException('Usuario no encontrado');
 
     await this.userRepository.save(userPreload);
   };
+
+  public listUser = (PaginationDto) => {};
 }

@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import LoginUserDto from './dto/login.dto';
 import EncryptService from '../common/service/encrypt.service';
 import { comparePasswords } from '../common/util/encrypt.util';
+import { StatusEntity } from '../common/enums/status.entity.enum}';
 
 @Injectable()
 export default class AuthService {
@@ -30,10 +31,11 @@ export default class AuthService {
 
   public login = async ({ email, password }: LoginUserDto) => {
     const userFound = await this.userRepository.findOne({
-      where: { email },
+      where: { email, status: StatusEntity.ACTIVE },
       select: ['id', 'email', 'password'],
     });
-    if (!userFound) throw new NotFoundException('Email no encontrado');
+    if (!userFound)
+      throw new NotFoundException('Email no encontrado o inactivo');
     const decryptPassword = this.encryptService.decrypt(userFound.password);
     if (decryptPassword === '')
       throw new ConflictException('Llave de encriptación es errada');

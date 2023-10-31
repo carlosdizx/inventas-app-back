@@ -31,10 +31,12 @@ export default class UserCrudController {
 
   @Patch(':id')
   @Auth(UserRoles.OWNER)
-  public async changeStatus(
+  public async changeStatusAndRoles(
     @Body() dto: UpdateUserDto,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    return await this.userCrudService.updateUserById(id, dto);
+    return await this.userCrudService.updateStatusAndRolesById(id, dto);
   }
+
+  public async;
 }
