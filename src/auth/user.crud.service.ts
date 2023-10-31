@@ -89,5 +89,15 @@ export default class UserCrudService {
     await this.userRepository.save(userPreload);
   };
 
-  public listUser = (PaginationDto) => {};
+  public listUser = async (
+    { offset, limit }: PaginationDto,
+    enterprise: Enterprise,
+  ) => {
+    const users = await this.userRepository.find({
+      where: { enterprise: { id: enterprise.id } },
+      skip: offset,
+      take: limit,
+    });
+    return users;
+  };
 }

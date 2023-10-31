@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -15,6 +16,7 @@ import getEnterprise from './decorators/get-enterprise.decorator';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import Auth from './decorators/auth.decorator';
 import { UserRoles } from './enums/user.roles.enum';
+import PaginationDto from '../common/dto/pagination.dto';
 
 @Controller('users')
 @UseFilters(TypeormExceptionFilter)
@@ -38,5 +40,12 @@ export default class UserCrudController {
     return await this.userCrudService.updateStatusAndRolesById(id, dto);
   }
 
-  public async;
+  @Get()
+  @Auth(UserRoles.OWNER)
+  public async listUsers(
+    @Body() dto: PaginationDto,
+    @getEnterprise() enterprise: Enterprise,
+  ) {
+    return await this.userCrudService.listUser(dto, enterprise);
+  }
 }
