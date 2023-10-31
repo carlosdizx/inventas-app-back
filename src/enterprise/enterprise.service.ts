@@ -4,11 +4,10 @@ import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import CreateEnterpriseDTO from './dto/create-enterprise.dto';
 import ErrorDatabaseService from '../common/service/error.database.service';
-import User from '../auth/entities/user.entity';
-import UserDetails from '../auth/entities/user.details.entity';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import EncryptService from '../common/service/encrypt.service';
 import UserCrudService from '../auth/user.crud.service';
+import User from '../auth/entities/user.entity';
 
 @Injectable()
 export default class EnterpriseService {
@@ -16,9 +15,6 @@ export default class EnterpriseService {
     private dataSource: DataSource,
     @InjectRepository(Enterprise)
     private readonly enterpriseRepository: Repository<Enterprise>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(UserDetails)
-    private readonly userDetailsRepository: Repository<UserDetails>,
     private readonly errorDatabaseService: ErrorDatabaseService,
     private readonly encryptService: EncryptService,
     private readonly userCrudService: UserCrudService,
@@ -33,19 +29,22 @@ export default class EnterpriseService {
       status: StatusEntity.ACTIVE,
     });
 
-    const resUser = await this.userCrudService.createUser(user);
+    const userSaved = await this.userCrudService.createUser(user);
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
 
     try {
-      resUser.user.enterprise = await queryRunner.manager.save<Enterprise>(
+      userSaved.user.enterprise = await queryRunner.manager.save<Enterprise>(
         enterprise,
       );
+
+      await queryRunner.manager.save<User>(userSaved.user);
 
       await queryRunner.commitTransaction();
       await queryRunner.release();
     } catch (error) {
+      await this.userCrudService.deleteUserById(userSaved.user.id);
       await queryRunner.rollbackTransaction();
       this.errorDatabaseService.handleException(error);
     }

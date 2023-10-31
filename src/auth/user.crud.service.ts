@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -64,5 +64,11 @@ export default class UserCrudService {
       await queryRunner.rollbackTransaction();
       this.errorDatabaseService.handleException(error);
     }
+  };
+
+  public deleteUserById = async (id: string) => {
+    const result = await this.userRepository.delete(id);
+    if (result.affected === 0) throw new NotFoundException('User not found');
+    return { message: `User was removed` };
   };
 }

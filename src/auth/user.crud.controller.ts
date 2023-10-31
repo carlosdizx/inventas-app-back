@@ -8,7 +8,7 @@ import UserCrudService from './user.crud.service';
 export default class UserCrudController {
   constructor(private readonly userCrudService: UserCrudService) {}
   @Post()
-  public async login(@Body() dto: CreateUserDto) {
+  public async create(@Body() dto: CreateUserDto) {
     return await this.userCrudService.createUser(dto);
   }
 }
