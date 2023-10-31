@@ -22,7 +22,11 @@ export default class JwtStrategy extends PassportStrategy(Strategy) {
   public validate = async (payload: JwtPayload): Promise<User> => {
     let user: User = null;
     try {
-      user = await this.repository.findOneBy({ id: payload.id });
+      user = await this.repository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.enterprise', 'enterprise')
+        .where('user.id = :id', { id: payload.id })
+        .getOne();
     } catch (error) {
       throw new UnauthorizedException('Cliente no encontrado');
     }
