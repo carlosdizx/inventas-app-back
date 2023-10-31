@@ -38,7 +38,7 @@ export default class ClientRoleGuard implements CanActivate {
     }
 
     throw new ForbiddenException(
-      `Cliente '${user.email}' requiere un permiso para poder hacer esta acción: [${validRoles}]`,
+      `Cliente '${user.email}' requiere un permiso para poder hacer esta acción`,
     );
   }
 }
