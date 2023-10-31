@@ -4,13 +4,14 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 
-const getEnterprise = createParamDecorator(
-  (data, context: ExecutionContext) => {
+const getDataReq = createParamDecorator(
+  (reqEnterprise: boolean, context: ExecutionContext) => {
     const { user } = context.switchToHttp().getRequest();
     if (!user)
       throw new InternalServerErrorException('User not found (request)');
-    return user.enterprise;
+    if (!reqEnterprise) return user.enterprise;
+    return user;
   },
 );
 
-export default getEnterprise;
+export default getDataReq;

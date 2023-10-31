@@ -12,11 +12,12 @@ import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import CreateUserDto from './dto/create-user.dto';
 import UserCrudService from './user.crud.service';
 import UpdateUserDto from './dto/update-user.dto';
-import getEnterprise from './decorators/get-enterprise.decorator';
+import getDataReq from './decorators/get-data-req.decorator';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import Auth from './decorators/auth.decorator';
 import { UserRoles } from './enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
+import User from './entities/user.entity';
 
 @Controller('users')
 @UseFilters(TypeormExceptionFilter)
@@ -26,7 +27,7 @@ export default class UserCrudController {
   @Auth(UserRoles.OWNER)
   public async create(
     @Body() dto: CreateUserDto,
-    @getEnterprise() enterprise: Enterprise,
+    @getDataReq() enterprise: Enterprise,
   ) {
     return await this.userCrudService.createUser(dto, enterprise);
   }
@@ -44,8 +45,9 @@ export default class UserCrudController {
   @Auth(UserRoles.OWNER)
   public async listUsers(
     @Body() dto: PaginationDto,
-    @getEnterprise() enterprise: Enterprise,
+    @getDataReq() enterprise: Enterprise,
+    @getDataReq(true) user: User,
   ) {
-    return await this.userCrudService.listUser(dto, enterprise);
+    return await this.userCrudService.listUser(dto, enterprise, user);
   }
 }

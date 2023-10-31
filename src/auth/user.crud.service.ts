@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './entities/user.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Not, Repository } from 'typeorm';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import EncryptService from '../common/service/encrypt.service';
 import CreateUserDto from './dto/create-user.dto';
@@ -92,12 +92,12 @@ export default class UserCrudService {
   public listUser = async (
     { offset, limit }: PaginationDto,
     enterprise: Enterprise,
+    user: User,
   ) => {
-    const users = await this.userRepository.find({
-      where: { enterprise: { id: enterprise.id } },
+    return await this.userRepository.find({
+      where: { enterprise: { id: enterprise.id }, id: Not(user.id) },
       skip: offset,
       take: limit,
     });
-    return users;
   };
 }
