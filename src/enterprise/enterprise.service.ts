@@ -3,13 +3,12 @@ import Enterprise from './entities/enterprise.entity';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import CreateEnterpriseDTO from './dto/create-enterprise.dto';
-import AuthService from '../auth/auth.service';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import User from '../auth/entities/user.entity';
 import UserDetails from '../auth/entities/user.details.entity';
-import { hashPassword } from '../common/util/encrypt.util';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import EncryptService from '../common/service/encrypt.service';
+import UserCrudService from '../auth/user.crud.service';
 
 @Injectable()
 export default class EnterpriseService {
@@ -20,9 +19,9 @@ export default class EnterpriseService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(UserDetails)
     private readonly userDetailsRepository: Repository<UserDetails>,
-    private readonly authService: AuthService,
     private readonly errorDatabaseService: ErrorDatabaseService,
     private readonly encryptService: EncryptService,
+    private readonly userCrudService: UserCrudService,
   ) {}
 
   public createEnterpriseAndUser = async ({
@@ -33,45 +32,16 @@ export default class EnterpriseService {
       ...resDataEnterprise,
       status: StatusEntity.ACTIVE,
     });
-    const {
-      email,
-      password,
-      roles,
-      first_name,
-      last_name,
-      documentType,
-      documentNumber,
-      gender,
-      birthdate,
-      phone,
-    } = user;
 
-    const newUser = this.userRepository.create({
-      email: email,
-      password: this.encryptService.encrypt(await hashPassword(password)),
-      roles: roles,
-      status: StatusEntity.ACTIVE,
-    });
-
-    const details = this.userDetailsRepository.create({
-      first_name: first_name,
-      last_name: last_name,
-      documentType: documentType,
-      documentNumber: documentNumber,
-      gender: gender,
-      birthdate: birthdate,
-      phone: phone,
-    });
+    const resUser = await this.userCrudService.createUser(user);
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
 
     try {
-      newUser.enterprise = await queryRunner.manager.save<Enterprise>(
+      resUser.user.enterprise = await queryRunner.manager.save<Enterprise>(
         enterprise,
       );
-      details.user = await queryRunner.manager.save<User>(newUser);
-      await queryRunner.manager.save<UserDetails>(details);
 
       await queryRunner.commitTransaction();
       await queryRunner.release();

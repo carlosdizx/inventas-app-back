@@ -28,6 +28,13 @@ import UserCrudController from './user.crud.controller';
   ],
   controllers: [AuthController, UserCrudController],
   providers: [JwtStrategy, AuthService, UserCrudService],
-  exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule, AuthService],
+  exports: [
+    TypeOrmModule,
+    JwtStrategy,
+    PassportModule,
+    JwtModule,
+    AuthService,
+    UserCrudService,
+  ],
 })
 export default class AuthModule {}
