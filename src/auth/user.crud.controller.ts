@@ -34,9 +34,7 @@ export default class UserCrudController {
   public async changeStatus(
     @Body() dto: UpdateUserDto,
     @Param('id', ParseUUIDPipe) id: string,
-    @getEnterprise() enterprise: Enterprise,
   ) {
-    console.log(enterprise);
-    return { id, ...dto };
+    return await this.userCrudService.updateUserById(id, dto);
   }
 }
