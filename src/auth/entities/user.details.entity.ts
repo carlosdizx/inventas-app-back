@@ -20,10 +20,10 @@ export default class UserDetails {
   @Column()
   last_name: string;
 
-  @Column()
+  @Column({ name: 'document_number' })
   documentNumber: string;
 
-  @Column({ enum: documentTypes })
+  @Column({ name: 'document_type', enum: documentTypes })
   documentType: documentTypes;
 
   @Column()

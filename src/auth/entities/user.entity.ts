@@ -19,7 +19,7 @@ export default class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @Column({ enum: StatusEntity, default: StatusEntity.PENDING_CONFIRMATION })
@@ -32,10 +32,12 @@ export default class User {
   roles: UserRoles[];
 
   @OneToOne(() => UserDetails, (userDetails) => userDetails.user)
-  @JoinColumn()
+  @JoinColumn({ name: 'user_detail_id' })
   userDetails: UserDetails;
 
-  @ManyToOne(() => Enterprise, (enterprise) => enterprise.users)
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.users, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
 }

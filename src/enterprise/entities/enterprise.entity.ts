@@ -18,10 +18,10 @@ export default class Enterprise {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ name: 'document_number' })
   documentNumber: string;
 
-  @Column({ enum: documentTypes })
+  @Column({ name: 'document_type', enum: documentTypes })
   documentType: documentTypes;
 
   @Column({ unique: true })
