@@ -21,8 +21,12 @@ import { UserRoles } from './enums/user.roles.enum';
 export default class UserCrudController {
   constructor(private readonly userCrudService: UserCrudService) {}
   @Post()
-  public async create(@Body() dto: CreateUserDto) {
-    return await this.userCrudService.createUser(dto);
+  @Auth(UserRoles.OWNER)
+  public async create(
+    @Body() dto: CreateUserDto,
+    @getEnterprise() enterprise: Enterprise,
+  ) {
+    return await this.userCrudService.createUser(dto, enterprise);
   }
 
   @Patch(':id')
