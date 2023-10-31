@@ -66,6 +66,9 @@ export default class UserCrudService {
     }
   };
 
+  public findUserById = async (id: string) =>
+    await this.userRepository.findOneBy({ id });
+
   public deleteUserById = async (id: string) => {
     const result = await this.userRepository.delete(id);
     if (result.affected === 0) throw new NotFoundException('User not found');
