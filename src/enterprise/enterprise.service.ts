@@ -48,7 +48,7 @@ export default class EnterpriseService {
 
     const newUser = this.userRepository.create({
       email: email,
-      password: await hashPassword(this.encryptService.encrypt(password)),
+      password: this.encryptService.encrypt(await hashPassword(password)),
       roles: roles,
       status: StatusEntity.ACTIVE,
     });
