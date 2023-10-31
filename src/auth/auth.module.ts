@@ -9,6 +9,8 @@ import JwtStrategy from './strategies/jwt.strategy';
 import getJwtConfig from '../common/jwt.config';
 import User from './entities/user.entity';
 import UserDetails from './entities/user.details.entity';
+import UserCrudService from './user.crud.service';
+import UserCrudController from './user.crud.controller';
 
 @Global()
 @Module({
@@ -24,8 +26,8 @@ import UserDetails from './entities/user.details.entity';
       useFactory: getJwtConfig,
     }),
   ],
-  controllers: [AuthController],
-  providers: [JwtStrategy, AuthService],
+  controllers: [AuthController, UserCrudController],
+  providers: [JwtStrategy, AuthService, UserCrudService],
   exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule, AuthService],
 })
 export default class AuthModule {}
