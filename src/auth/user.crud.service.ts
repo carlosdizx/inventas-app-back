@@ -8,6 +8,7 @@ import CreateUserDto from './dto/create-user.dto';
 import { hashPassword } from '../common/util/encrypt.util';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import UserDetails from './entities/user.details.entity';
+import Enterprise from '../enterprise/entities/enterprise.entity';
 
 @Injectable()
 export default class UserCrudService {
@@ -20,18 +21,21 @@ export default class UserCrudService {
     private readonly encryptService: EncryptService,
   ) {}
 
-  public createUser = async ({
-    email,
-    password,
-    roles,
-    first_name,
-    last_name,
-    documentType,
-    documentNumber,
-    gender,
-    birthdate,
-    phone,
-  }: CreateUserDto) => {
+  public createUser = async (
+    {
+      email,
+      password,
+      roles,
+      first_name,
+      last_name,
+      documentType,
+      documentNumber,
+      gender,
+      birthdate,
+      phone,
+    }: CreateUserDto,
+    enterprise: Enterprise = null,
+  ) => {
     const newUser = this.userRepository.create({
       email: email,
       password: this.encryptService.encrypt(await hashPassword(password)),
@@ -53,6 +57,7 @@ export default class UserCrudService {
     await queryRunner.startTransaction();
 
     try {
+      if (enterprise) newUser.enterprise = enterprise;
       details.user = await queryRunner.manager.save<User>(newUser);
       await queryRunner.manager.save<UserDetails>(details);
 
@@ -73,5 +78,10 @@ export default class UserCrudService {
     const result = await this.userRepository.delete(id);
     if (result.affected === 0) throw new NotFoundException('User not found');
     return { message: `User was removed` };
+  };
+
+  public updateUserById = async (id: string, dto: any) => {
+    const product = await this.userRepository.preload({ id, ...dto });
+    if (!product) throw new NotFoundException('Product not found');
   };
 }
