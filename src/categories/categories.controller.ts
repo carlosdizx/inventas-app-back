@@ -24,10 +24,10 @@ export default class CategoriesController {
 
   @Post()
   @Auth(UserRoles.OWNER)
-  public createCategory(
+  public async createCategory(
     @Body() dto: CreateCategoryDto,
     @getDataReq() enterprise: Enterprise,
   ) {
-    return this.categoriesService.createCategory(dto, enterprise);
+    return await this.categoriesService.createCategory(dto, enterprise);
   }
 }

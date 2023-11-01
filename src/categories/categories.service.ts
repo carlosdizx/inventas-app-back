@@ -3,15 +3,21 @@ import CreateCategoryDto from './dto/create-category.dto';
 import UpdateCategoryDto from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import Category from './entities/category.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import PaginationDto from '../common/dto/pagination.dto';
 import Enterprise from '../enterprise/entities/enterprise.entity';
+import Subcategory from './entities/subcategory.entity';
+import ErrorDatabaseService from '../common/service/error.database.service';
 
 @Injectable()
 export default class CategoriesService {
   constructor(
+    private dataSource: DataSource,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Subcategory)
+    private readonly subcategoryRepository: Repository<Subcategory>,
+    private readonly errorDatabaseService: ErrorDatabaseService,
   ) {}
 
   public listCategories = async (
@@ -20,17 +26,46 @@ export default class CategoriesService {
   ) => {
     return await this.categoryRepository.find({
       where: { enterprise: { id: enterprise.id } },
-      select: ['id', 'name', 'description', 'subcategories'],
+      select: ['id', 'name', 'description'],
+      relations: ['subcategories'],
       skip: offset,
       take: limit,
     });
   };
 
   public createCategory = async (
-    dto: CreateCategoryDto,
+    { subcategories, ...resData }: CreateCategoryDto,
     enterprise: Enterprise,
   ) => {
-    const category = this.categoryRepository.create({ ...dto, enterprise });
-    await this.categoryRepository.save(category);
+    const category = this.categoryRepository.create({ ...resData, enterprise });
+    const subs: Subcategory[] = [];
+    for (const subcategory of subcategories) {
+      subs.push(await this.subcategoryRepository.create({ name: subcategory }));
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+    try {
+      const catSaved = await queryRunner.manager.save<Category>(category);
+      const subCatsForSave = subs.map((sub) => ({
+        ...sub,
+        category: catSaved,
+      }));
+
+      const subSaved = await queryRunner.manager.save(
+        Subcategory,
+        subCatsForSave,
+      );
+
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+      delete catSaved.enterprise;
+      return { ...catSaved, subcategories: subSaved.map((cat) => cat.name) };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.errorDatabaseService.handleException(error);
+    }
   };
+
+  public;
 }

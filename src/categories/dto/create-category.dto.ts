@@ -1,4 +1,10 @@
-import { IsNotEmpty, MinLength } from 'class-validator';
+import {
+  ArrayUnique,
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export default class CreateCategoryDto {
   @IsNotEmpty()
@@ -7,4 +13,9 @@ export default class CreateCategoryDto {
 
   @IsNotEmpty()
   description: string;
+
+  @IsArray()
+  @ArrayUnique()
+  @IsString({ each: true })
+  subcategories: string[];
 }
