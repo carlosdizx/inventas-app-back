@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import CreateCategoryDto from './dto/create-category.dto';
 import UpdateCategoryDto from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -67,5 +67,37 @@ export default class CategoriesService {
     }
   };
 
-  public;
+  public updateCategory = async (
+    id: string,
+    { subcategories, ...resData }: UpdateCategoryDto,
+  ) => {
+    const category = await this.categoryRepository.preload({ id, ...resData });
+    if (!category) throw new NotFoundException('Categoría no encontrada');
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+    try {
+      const catSaved = await queryRunner.manager.save<Category>(category);
+      if (subcategories) {
+        await queryRunner.manager.delete(Subcategory, {
+          category: { id },
+        });
+
+        const subs = subcategories.map((subcategory) =>
+          this.subcategoryRepository.create({
+            name: subcategory,
+            category: catSaved,
+          }),
+        );
+
+        await queryRunner.manager.save(Subcategory, subs);
+
+        await queryRunner.commitTransaction();
+        await queryRunner.release();
+      }
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.errorDatabaseService.handleException(error);
+    }
+  };
 }
