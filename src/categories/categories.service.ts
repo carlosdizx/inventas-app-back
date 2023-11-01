@@ -100,4 +100,10 @@ export default class CategoriesService {
       this.errorDatabaseService.handleException(error);
     }
   };
+
+  public findCategoryById = (id: string) =>
+    this.categoryRepository.findOne({
+      where: { id },
+      relations: ['subcategories'],
+    });
 }

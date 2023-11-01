@@ -50,4 +50,9 @@ export default class CategoriesController {
   ) {
     return await this.categoriesService.updateCategory(id, dto);
   }
+
+  @Get(':id')
+  public async findCategoryById(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.categoriesService.findCategoryById(id);
+  }
 }
