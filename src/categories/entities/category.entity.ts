@@ -5,11 +5,13 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import Subcategory from './subcategory.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 
 @Entity('categories')
+@Unique(['name', 'enterprise'])
 export default class Category {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;

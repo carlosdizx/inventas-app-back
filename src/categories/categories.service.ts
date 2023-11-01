@@ -25,4 +25,12 @@ export default class CategoriesService {
       take: limit,
     });
   };
+
+  public createCategory = async (
+    dto: CreateCategoryDto,
+    enterprise: Enterprise,
+  ) => {
+    const category = this.categoryRepository.create({ ...dto, enterprise });
+    await this.categoryRepository.save(category);
+  };
 }
