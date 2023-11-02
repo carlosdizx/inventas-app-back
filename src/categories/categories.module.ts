@@ -9,5 +9,6 @@ import Subcategory from './entities/subcategory.entity';
   imports: [TypeOrmModule.forFeature([Category, Subcategory])],
   controllers: [CategoriesController],
   providers: [CategoriesService],
+  exports: [CategoriesService],
 })
 export default class CategoriesModule {}
