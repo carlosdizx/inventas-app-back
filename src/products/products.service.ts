@@ -9,6 +9,11 @@ import ErrorDatabaseService from '../common/service/error.database.service';
 import Category from '../categories/entities/category.entity';
 import Subcategory from '../categories/entities/subcategory.entity';
 import PaginationDto from '../common/dto/pagination.dto';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export default class ProductsService {
@@ -50,13 +55,9 @@ export default class ProductsService {
   };
 
   public listProducts = async (
-    { offset, limit }: PaginationDto,
+    { page, limit }: IPaginationOptions,
     enterprise: Enterprise,
   ) => {
-    return await this.productRepository.findAndCount({
-      where: { enterprise: { id: enterprise.id } },
-      skip: offset,
-      take: limit,
-    });
+    return await paginate<Product>(this.productRepository, { page, limit });
   };
 }

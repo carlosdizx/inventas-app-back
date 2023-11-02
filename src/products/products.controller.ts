@@ -25,9 +25,9 @@ export default class ProductsController {
   @Get()
   @Auth()
   public listProducts(
-    @Query() dto: PaginationDto,
+    @Query() { limit, page }: PaginationDto,
     @getDataReq() enterprise: Enterprise,
   ) {
-    return this.productsService.listProducts(dto, enterprise);
+    return this.productsService.listProducts({ limit, page }, enterprise);
   }
 }
