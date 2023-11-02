@@ -6,9 +6,7 @@ import CreateProductDto from './dto/create-product.dto';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import CategoriesService from '../categories/categories.service';
 import ErrorDatabaseService from '../common/service/error.database.service';
-import Category from '../categories/entities/category.entity';
-import Subcategory from '../categories/entities/subcategory.entity';
-import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import UpdateProductDto from './dto/update-product.dto';
 
 @Injectable()
@@ -24,28 +22,27 @@ export default class ProductsService {
     { category, subcategory, ...resData }: CreateProductDto,
     enterprise: Enterprise,
   ) => {
-    let categoryFound: Category = null;
-    let subcategoryFound: Subcategory = null;
+    const product = this.productRepository.create({
+      ...resData,
+      enterprise,
+    });
+
     if (category) {
-      categoryFound = await this.categoriesService.findCategoryById(category);
-      if (!categoryFound)
+      product.category = await this.categoriesService.findCategoryById(
+        category,
+      );
+      if (!product.category)
         throw new NotFoundException('Categoría del producto es inexistente');
       if (subcategory) {
-        subcategoryFound = categoryFound.subcategories.find(
+        product.subcategory = product.category.subcategories.find(
           (sb) => sb.id === subcategory,
         );
-        if (!subcategoryFound)
+        if (!product.subcategory)
           throw new NotFoundException(
             'Subcategoría del producto es inexistente',
           );
       }
     }
-    const product = this.productRepository.create({
-      ...resData,
-      category: categoryFound,
-      subcategory: subcategoryFound,
-      enterprise,
-    });
 
     return await this.productRepository.save(product);
   };
