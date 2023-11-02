@@ -25,8 +25,8 @@ export default class Product {
   @Column('decimal', { name: 'selling_price' })
   sellingPrice: number;
 
-  @Column('decimal', { name: 'purchase_price' })
-  purchasePrice: number;
+  @Column('decimal', { name: 'cost_price' })
+  costPrice: number;
 
   @Column('int', { name: 'discount_percentage' })
   discountPercentage: number;
