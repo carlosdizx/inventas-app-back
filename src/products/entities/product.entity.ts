@@ -1,10 +1,12 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 import Category from '../../categories/entities/category.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
@@ -42,4 +44,10 @@ export default class Product {
   @ManyToOne(() => Subcategory, (subcategory) => subcategory.products)
   @JoinColumn({ name: 'subcategory_id' })
   subcategory: Subcategory;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
