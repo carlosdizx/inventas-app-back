@@ -9,6 +9,7 @@ import { documentTypes } from '../../common/enums/document.type.enum';
 import User from '../../auth/entities/user.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
 import Category from '../../categories/entities/category.entity';
+import Product from '../../products/entities/product.entity';
 
 @Entity('enterprises')
 @Unique(['documentNumber', 'documentType'])
@@ -36,4 +37,7 @@ export default class Enterprise {
 
   @OneToMany(() => Category, (category) => category.enterprise)
   categories: Category[];
+
+  @OneToMany(() => Product, (product) => product.enterprise)
+  products: Product[];
 }

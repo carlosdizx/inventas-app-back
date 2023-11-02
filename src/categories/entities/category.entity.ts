@@ -10,6 +10,7 @@ import {
 import Subcategory from './subcategory.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
+import Product from '../../products/entities/product.entity';
 
 @Entity('categories')
 @Unique(['name', 'enterprise'])
@@ -31,9 +32,10 @@ export default class Category {
   })
   subcategories: Subcategory[];
 
-  @ManyToOne(() => Enterprise, (enterprise) => enterprise.categories, {
-    nullable: true,
-  })
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.categories)
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
+
+  @OneToMany(() => Product, (product) => product.category)
+  products: Product[];
 }
