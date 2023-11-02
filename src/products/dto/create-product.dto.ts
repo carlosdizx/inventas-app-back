@@ -27,6 +27,11 @@ export default class CreateProductDto {
   @IsInt()
   discountPercentage = 0;
 
+  @IsOptional()
   @IsUUID()
-  category: string;
+  category?: string;
+
+  @IsOptional()
+  @IsUUID()
+  subcategory?: string;
 }
