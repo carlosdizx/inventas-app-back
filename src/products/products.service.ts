@@ -6,6 +6,8 @@ import CreateProductDto from './dto/create-product.dto';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import CategoriesService from '../categories/categories.service';
 import ErrorDatabaseService from '../common/service/error.database.service';
+import Category from '../categories/entities/category.entity';
+import Subcategory from '../categories/entities/subcategory.entity';
 
 @Injectable()
 export default class ProductsService {
@@ -17,17 +19,29 @@ export default class ProductsService {
   ) {}
 
   public createProduct = async (
-    { category, ...resData }: CreateProductDto,
+    { category, subcategory, ...resData }: CreateProductDto,
     enterprise: Enterprise,
   ) => {
-    const categoryFound = await this.categoriesService.findCategoryById(
-      category,
-    );
-    if (!categoryFound)
-      throw new NotFoundException('Categoría del producto inexistente');
+    let categoryFound: Category = null;
+    let subcategoryFound: Subcategory = null;
+    if (category) {
+      categoryFound = await this.categoriesService.findCategoryById(category);
+      if (!categoryFound)
+        throw new NotFoundException('Categoría del producto es inexistente');
+      if (subcategory) {
+        subcategoryFound = categoryFound.subcategories.find(
+          (sb) => sb.id === subcategory,
+        );
+        if (!subcategoryFound)
+          throw new NotFoundException(
+            'Subcategoría del producto es inexistente',
+          );
+      }
+    }
     const product = this.productRepository.create({
       ...resData,
       category: categoryFound,
+      subcategory: subcategoryFound,
       enterprise,
     });
 
