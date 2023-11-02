@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Product from './entities/product.entity';
 import { In, Repository } from 'typeorm';
@@ -113,14 +117,25 @@ export default class ProductsService {
     throw new NotFoundException('Producto no encontrado');
   };
 
-  public findProductsByIdsAndEnterprise = async (
-    ids: string[],
+  public findProductsMappedByIdsAndEnterprise = async (
+    productQuantities: ProductQuantityDto[],
     enterprise: Enterprise,
-  ) =>
-    await this.productRepository.find({
+  ) => {
+    const products = await this.productRepository.find({
       where: {
-        id: In(ids),
+        id: In(productQuantities.map(({ id }) => id)),
         enterprise: { id: enterprise.id },
       },
     });
+
+    if (products.length !== productQuantities.length)
+      throw new ConflictException('Un producto no existe o esta repetido');
+
+    return products.map(({ id, salePrice }) => {
+      const { quantity } = productQuantities.find(
+        (product) => product.id === id,
+      );
+      return { id, salePrice, quantity };
+    });
+  };
 }
