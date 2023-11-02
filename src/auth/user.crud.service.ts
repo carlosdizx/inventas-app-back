@@ -90,13 +90,13 @@ export default class UserCrudService {
   };
 
   public listUser = async (
-    { offset, limit }: PaginationDto,
+    { page, limit }: PaginationDto,
     enterprise: Enterprise,
     user: User,
   ) => {
     return await this.userRepository.find({
       where: { enterprise: { id: enterprise.id }, id: Not(user.id) },
-      skip: offset,
+      skip: page,
       take: limit,
     });
   };

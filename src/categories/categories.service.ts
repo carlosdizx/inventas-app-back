@@ -21,14 +21,14 @@ export default class CategoriesService {
   ) {}
 
   public listCategories = async (
-    { offset, limit }: PaginationDto,
+    { page, limit }: PaginationDto,
     enterprise: Enterprise,
   ) => {
     return await this.categoryRepository.find({
       where: { enterprise: { id: enterprise.id } },
       select: ['id', 'name', 'description'],
       relations: ['subcategories'],
-      skip: offset,
+      skip: page,
       take: limit,
     });
   };
