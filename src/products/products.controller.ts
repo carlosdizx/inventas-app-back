@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, Query, UseFilters } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
+  UseFilters,
+} from '@nestjs/common';
 import ProductsService from './products.service';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import Auth from '../auth/decorators/auth.decorator';
@@ -7,6 +17,7 @@ import getDataReq from '../auth/decorators/get-data-req.decorator';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import { UserRoles } from '../auth/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
+import UpdateProductDto from './dto/update-product.dto';
 
 @Controller('products')
 @UseFilters(TypeormExceptionFilter)
@@ -29,5 +40,14 @@ export default class ProductsController {
     @getDataReq() enterprise: Enterprise,
   ) {
     return this.productsService.listProducts({ limit, page }, enterprise);
+  }
+
+  @Patch(':id')
+  @Auth()
+  public updateProduct(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateProductDto,
+  ) {
+    return this.productsService.updateProductById(id, dto);
   }
 }

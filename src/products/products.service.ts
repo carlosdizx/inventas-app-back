@@ -9,6 +9,7 @@ import ErrorDatabaseService from '../common/service/error.database.service';
 import Category from '../categories/entities/category.entity';
 import Subcategory from '../categories/entities/subcategory.entity';
 import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import UpdateProductDto from './dto/update-product.dto';
 
 @Injectable()
 export default class ProductsService {
@@ -61,5 +62,35 @@ export default class ProductsService {
       limit,
       route: 'products',
     });
+  };
+
+  public updateProductById = async (
+    id: string,
+    { category, subcategory, ...resData }: UpdateProductDto,
+  ) => {
+    const productFound = await this.productRepository.preload({
+      id,
+      ...resData,
+    });
+    if (!productFound) throw new NotFoundException('Producto no encontrado');
+
+    if (category) {
+      productFound.category = await this.categoriesService.findCategoryById(
+        category,
+      );
+      if (!productFound.category)
+        throw new NotFoundException('Categoría del producto es inexistente');
+      if (subcategory) {
+        productFound.subcategory = productFound.category.subcategories.find(
+          (sb) => sb.id === subcategory,
+        );
+        if (!productFound.subcategory)
+          throw new NotFoundException(
+            'Subcategoría del producto es inexistente',
+          );
+      }
+    }
+
+    return this.productRepository.save(productFound);
   };
 }
