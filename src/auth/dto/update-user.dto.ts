@@ -1,6 +1,5 @@
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
 import { IsArray, IsEnum, IsOptional } from 'class-validator';
-import { documentTypes } from '../../common/enums/document.type.enum';
 import { UserRoles } from '../enums/user.roles.enum';
 
 export default class UpdateUserDto {
@@ -10,6 +9,6 @@ export default class UpdateUserDto {
   roles?: UserRoles[];
 
   @IsOptional()
-  @IsEnum(documentTypes)
+  @IsEnum(StatusEntity)
   status?: StatusEntity;
 }

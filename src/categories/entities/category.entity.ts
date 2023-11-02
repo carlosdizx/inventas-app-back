@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import Subcategory from './subcategory.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
+import { StatusEntity } from '../../common/enums/status.entity.enum}';
 
 @Entity('categories')
 @Unique(['name', 'enterprise'])
@@ -21,6 +22,9 @@ export default class Category {
 
   @Column('text')
   description: string;
+
+  @Column({ enum: StatusEntity, default: StatusEntity.ACTIVE })
+  status: StatusEntity;
 
   @OneToMany(() => Subcategory, (subcategory) => subcategory.category, {
     cascade: true,
