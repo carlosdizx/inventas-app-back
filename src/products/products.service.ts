@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Product from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import CreateProductDto from './dto/create-product.dto';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import CategoriesService from '../categories/categories.service';
@@ -9,6 +9,7 @@ import ErrorDatabaseService from '../common/service/error.database.service';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import UpdateProductDto from './dto/update-product.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
+import ProductQuantityDto from '../sales/dto/product-quantity.dto';
 
 @Injectable()
 export default class ProductsService {
@@ -111,4 +112,15 @@ export default class ProductsService {
     if (product) return product;
     throw new NotFoundException('Producto no encontrado');
   };
+
+  public findProductsByIdsAndEnterprise = async (
+    ids: string[],
+    enterprise: Enterprise,
+  ) =>
+    await this.productRepository.find({
+      where: {
+        id: In(ids),
+        enterprise: { id: enterprise.id },
+      },
+    });
 }
