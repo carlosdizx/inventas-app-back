@@ -50,4 +50,13 @@ export default class ProductsController {
   ) {
     return this.productsService.updateProductById(id, dto);
   }
+
+  @Get(':id')
+  @Auth()
+  public findProductById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @getDataReq() enterprise: Enterprise,
+  ) {
+    return this.productsService.findProductById(id, enterprise);
+  }
 }

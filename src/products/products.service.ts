@@ -8,6 +8,7 @@ import CategoriesService from '../categories/categories.service';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import UpdateProductDto from './dto/update-product.dto';
+import { StatusEntity } from '../common/enums/status.entity.enum}';
 
 @Injectable()
 export default class ProductsService {
@@ -31,8 +32,13 @@ export default class ProductsService {
       product.category = await this.categoriesService.findCategoryById(
         category,
       );
-      if (!product.category)
-        throw new NotFoundException('Categoría del producto es inexistente');
+      if (
+        product.category === null ||
+        product.category.status === StatusEntity.INACTIVE
+      )
+        throw new NotFoundException(
+          'Categoría del producto es inexistente o inactiva',
+        );
       if (subcategory) {
         product.subcategory = product.category.subcategories.find(
           (sb) => sb.id === subcategory,
@@ -75,8 +81,13 @@ export default class ProductsService {
       productFound.category = await this.categoriesService.findCategoryById(
         category,
       );
-      if (!productFound.category)
-        throw new NotFoundException('Categoría del producto es inexistente');
+      if (
+        productFound.category === null ||
+        productFound.category.status === StatusEntity.INACTIVE
+      )
+        throw new NotFoundException(
+          'Categoría del producto es inexistente o inactiva',
+        );
       if (subcategory) {
         productFound.subcategory = productFound.category.subcategories.find(
           (sb) => sb.id === subcategory,
@@ -89,5 +100,15 @@ export default class ProductsService {
     }
 
     return this.productRepository.save(productFound);
+  };
+
+  public findProductById = async (id: string, enterprise: Enterprise) => {
+    const product = await this.productRepository.findOne({
+      where: { enterprise: { id: enterprise.id }, id },
+      relations: ['category', 'subcategory'],
+    });
+
+    if (product) return product;
+    throw new NotFoundException('Producto no encontrado');
   };
 }
