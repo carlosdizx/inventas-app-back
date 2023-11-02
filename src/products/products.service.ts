@@ -8,12 +8,7 @@ import CategoriesService from '../categories/categories.service';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import Category from '../categories/entities/category.entity';
 import Subcategory from '../categories/entities/subcategory.entity';
-import PaginationDto from '../common/dto/pagination.dto';
-import {
-  paginate,
-  Pagination,
-  IPaginationOptions,
-} from 'nestjs-typeorm-paginate';
+import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export default class ProductsService {
@@ -56,8 +51,11 @@ export default class ProductsService {
 
   public listProducts = async (
     { page, limit }: IPaginationOptions,
-    enterprise: Enterprise,
+    { id }: Enterprise,
   ) => {
-    return await paginate<Product>(this.productRepository, { page, limit });
+    const queryBuilder = this.productRepository
+      .createQueryBuilder('product')
+      .where('product.enterprise = :id', { id });
+    return await paginate<Product>(queryBuilder, { page, limit });
   };
 }
