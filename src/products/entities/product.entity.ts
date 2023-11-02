@@ -24,8 +24,8 @@ export default class Product {
   @Column({ unique: true })
   barcode: string;
 
-  @Column('decimal', { name: 'selling_price' })
-  sellingPrice: number;
+  @Column('decimal', { name: 'sale_price' })
+  salePrice: number;
 
   @Column('decimal', { name: 'cost_price' })
   costPrice: number;
