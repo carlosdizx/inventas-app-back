@@ -8,6 +8,7 @@ import CategoriesService from '../categories/categories.service';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import Category from '../categories/entities/category.entity';
 import Subcategory from '../categories/entities/subcategory.entity';
+import PaginationDto from '../common/dto/pagination.dto';
 
 @Injectable()
 export default class ProductsService {
@@ -46,5 +47,16 @@ export default class ProductsService {
     });
 
     return await this.productRepository.save(product);
+  };
+
+  public listProducts = async (
+    { offset, limit }: PaginationDto,
+    enterprise: Enterprise,
+  ) => {
+    return await this.productRepository.findAndCount({
+      where: { enterprise: { id: enterprise.id } },
+      skip: offset,
+      take: limit,
+    });
   };
 }
