@@ -11,6 +11,7 @@ import UserDetails from './entities/user.details.entity';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import UpdateUserDto from './dto/update-user.dto';
 import PaginationDto from '../common/dto/pagination.dto';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export default class UserCrudService {
@@ -90,14 +91,17 @@ export default class UserCrudService {
   };
 
   public listUser = async (
-    { page, limit }: PaginationDto,
+    { page, limit }: IPaginationOptions,
     enterprise: Enterprise,
     user: User,
   ) => {
-    return await this.userRepository.find({
-      where: { enterprise: { id: enterprise.id }, id: Not(user.id) },
-      skip: page,
-      take: limit,
-    });
+    console.log(page, limit);
+    const queryBuilder = this.userRepository
+      .createQueryBuilder('user')
+      .where('user.enterprise.id = :enterpriseId', {
+        enterpriseId: enterprise.id,
+      })
+      .andWhere('user.id != :userId', { userId: user.id });
+    return await paginate<User>(queryBuilder, { page, limit });
   };
 }

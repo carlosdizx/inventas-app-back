@@ -44,10 +44,14 @@ export default class UserCrudController {
   @Get()
   @Auth(UserRoles.OWNER)
   public async listUsers(
-    @Body() dto: PaginationDto,
+    @Body() { page, limit }: PaginationDto,
     @getDataReq() enterprise: Enterprise,
     @getDataReq(true) user: User,
   ) {
-    return await this.userCrudService.listUser(dto, enterprise, user);
+    return await this.userCrudService.listUser(
+      { page, limit },
+      enterprise,
+      user,
+    );
   }
 }
