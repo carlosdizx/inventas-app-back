@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './entities/user.entity';
-import { DataSource, Not, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import EncryptService from '../common/service/encrypt.service';
 import CreateUserDto from './dto/create-user.dto';
@@ -10,7 +10,6 @@ import { StatusEntity } from '../common/enums/status.entity.enum}';
 import UserDetails from './entities/user.details.entity';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import UpdateUserDto from './dto/update-user.dto';
-import PaginationDto from '../common/dto/pagination.dto';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
@@ -95,13 +94,12 @@ export default class UserCrudService {
     enterprise: Enterprise,
     user: User,
   ) => {
-    console.log(page, limit);
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
       .where('user.enterprise.id = :enterpriseId', {
         enterpriseId: enterprise.id,
       })
       .andWhere('user.id != :userId', { userId: user.id });
-    return await paginate<User>(queryBuilder, { page, limit });
+    return await paginate<User>(queryBuilder, { page, limit, route: 'users' });
   };
 }

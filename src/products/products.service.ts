@@ -55,7 +55,11 @@ export default class ProductsService {
   ) => {
     const queryBuilder = this.productRepository
       .createQueryBuilder('product')
-      .where('product.enterprise = :id', { id });
-    return await paginate<Product>(queryBuilder, { page, limit });
+      .where('product.enterprise.id = :id', { id });
+    return await paginate<Product>(queryBuilder, {
+      page,
+      limit,
+      route: 'products',
+    });
   };
 }

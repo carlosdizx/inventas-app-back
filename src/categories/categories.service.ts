@@ -4,10 +4,10 @@ import UpdateCategoryDto from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import Category from './entities/category.entity';
 import { DataSource, Repository } from 'typeorm';
-import PaginationDto from '../common/dto/pagination.dto';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import Subcategory from './entities/subcategory.entity';
 import ErrorDatabaseService from '../common/service/error.database.service';
+import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export default class CategoriesService {
@@ -21,15 +21,16 @@ export default class CategoriesService {
   ) {}
 
   public listCategories = async (
-    { page, limit }: PaginationDto,
-    enterprise: Enterprise,
+    { page, limit }: IPaginationOptions,
+    { id }: Enterprise,
   ) => {
-    return await this.categoryRepository.find({
-      where: { enterprise: { id: enterprise.id } },
-      select: ['id', 'name', 'description'],
-      relations: ['subcategories'],
-      skip: page,
-      take: limit,
+    const queryBuilder = this.categoryRepository
+      .createQueryBuilder('category')
+      .where('category.enterprise.id = :id', { id });
+    return await paginate<Category>(queryBuilder, {
+      page,
+      limit,
+      route: 'categories',
     });
   };
 

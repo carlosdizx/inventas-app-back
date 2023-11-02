@@ -27,10 +27,10 @@ export default class CategoriesController {
   @Get()
   @Auth()
   public listCategories(
-    @Query() dto: PaginationDto,
+    @Query() { page, limit }: PaginationDto,
     @getDataReq() enterprise: Enterprise,
   ) {
-    return this.categoriesService.listCategories(dto, enterprise);
+    return this.categoriesService.listCategories({ page, limit }, enterprise);
   }
 
   @Post()
