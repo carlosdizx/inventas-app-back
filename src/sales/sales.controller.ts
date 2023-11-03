@@ -2,6 +2,9 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
   Post,
   Query,
   ValidationPipe,
@@ -13,6 +16,7 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import Auth from '../auth/decorators/auth.decorator';
 import { UserRoles } from '../auth/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
+import UpdateSaleDto from './dto/update-sale.dto';
 
 @Controller('sales')
 export default class SalesController {
@@ -33,5 +37,14 @@ export default class SalesController {
     @getDataReq() enterprise: Enterprise,
   ) {
     return await this.salesService.listSales({ page, limit }, enterprise);
+  }
+
+  @Patch(':id')
+  @Auth(UserRoles.OWNER)
+  public async updateSale(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateSaleDto,
+  ) {
+    return this.salesService.updateSaleById(id, dto);
   }
 }

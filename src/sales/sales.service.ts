@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import Sale from './entities/sale.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +12,8 @@ import ProductsService from '../products/products.service';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import UpdateSaleDto from './dto/update-sale.dto';
+import { StatusEntity } from '../common/enums/status.entity.enum}';
 
 @Injectable()
 export default class SalesService {
@@ -76,12 +82,21 @@ export default class SalesService {
   ) => {
     const queryBuilder = this.saleRepository
       .createQueryBuilder('sale')
-      .where('sale.enterprise.id = :id', { id });
+      .where('sale.enterprise.id = :id', { id })
+      .andWhere('sale.status = :status', { status: StatusEntity.ACTIVE });
 
     return await paginate<Sale>(queryBuilder, {
       page,
       limit,
       route: 'sales',
     });
+  };
+
+  public updateSaleById = async (id: string, { status }: UpdateSaleDto) => {
+    if (status !== StatusEntity.INACTIVE && status != StatusEntity.ACTIVE)
+      throw new ConflictException('Estado de la venta no permitido');
+    const sale = await this.saleRepository.preload({ id, status });
+    if (!sale) throw new NotFoundException('Venta no encontrada');
+    await this.saleRepository.save(sale);
   };
 }

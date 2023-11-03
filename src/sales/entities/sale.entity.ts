@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import SaleDetails from './sale.details.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
+import { StatusEntity } from '../../common/enums/status.entity.enum}';
 
 @Entity('sales')
 export default class Sale {
@@ -24,6 +25,9 @@ export default class Sale {
 
   @Column({ type: 'decimal', precision: 10, scale: 2, name: 'total_amount' })
   totalAmount: number;
+
+  @Column({ enum: StatusEntity, default: StatusEntity.ACTIVE })
+  status: StatusEntity;
 
   @ManyToOne(() => Enterprise)
   @JoinColumn({ name: 'enterprise_id' })
