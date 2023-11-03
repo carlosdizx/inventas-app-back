@@ -26,4 +26,7 @@ export default class SaleDetails {
 
   @Column({ type: 'decimal', precision: 10, scale: 2, name: 'unit_price' })
   unitPrice: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  subtotal: number;
 }

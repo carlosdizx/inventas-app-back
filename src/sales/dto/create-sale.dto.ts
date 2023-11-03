@@ -15,5 +15,5 @@ export default class CreateSaleDto {
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => ProductQuantityDto)
-  products: ProductQuantityDto[];
+  productsIds: ProductQuantityDto[];
 }

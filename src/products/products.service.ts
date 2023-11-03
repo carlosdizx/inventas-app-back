@@ -135,7 +135,12 @@ export default class ProductsService {
       const { quantity } = productQuantities.find(
         (product) => product.id === id,
       );
-      return { id, salePrice, quantity };
+      return {
+        id,
+        salePrice,
+        quantity,
+        subtotal: salePrice * quantity,
+      };
     });
   };
 }
