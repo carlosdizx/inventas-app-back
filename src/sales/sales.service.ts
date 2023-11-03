@@ -7,6 +7,7 @@ import CreateSaleDto from './dto/create-sale.dto';
 import ProductsService from '../products/products.service';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import ErrorDatabaseService from '../common/service/error.database.service';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export default class SalesService {
@@ -67,5 +68,20 @@ export default class SalesService {
     }
 
     return { products, ...sale };
+  };
+
+  public listSales = async (
+    { page, limit }: IPaginationOptions,
+    { id }: Enterprise,
+  ) => {
+    const queryBuilder = this.saleRepository
+      .createQueryBuilder('sale')
+      .where('sale.enterprise.id = :id', { id });
+
+    return await paginate<Sale>(queryBuilder, {
+      page,
+      limit,
+      route: 'sales',
+    });
   };
 }
