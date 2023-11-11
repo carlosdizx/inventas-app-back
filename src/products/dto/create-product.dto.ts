@@ -18,10 +18,10 @@ export default class CreateProductDto {
   barcode: string;
 
   @IsNumber()
-  sellingPrice: number;
+  salePrice: number;
 
   @IsNumber()
-  purchasePrice: number;
+  costPrice: number;
 
   @IsOptional()
   @IsInt()
