@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
@@ -11,6 +12,7 @@ import {
 import Category from '../../categories/entities/category.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 import Subcategory from '../../categories/entities/subcategory.entity';
+import ProductInventory from '../../inventories/entities/product.inventory.entity';
 
 @Entity('products')
 @Unique(['name', 'enterprise'])
@@ -44,6 +46,12 @@ export default class Product {
   @ManyToOne(() => Subcategory, (subcategory) => subcategory.products)
   @JoinColumn({ name: 'subcategory_id' })
   subcategory: Subcategory;
+
+  @OneToMany(
+    () => ProductInventory,
+    (productInventory) => productInventory.product,
+  )
+  productInventories: ProductInventory[];
 
   @CreateDateColumn()
   createdAt: Date;

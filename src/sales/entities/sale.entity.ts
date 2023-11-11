@@ -11,6 +11,7 @@ import {
 import SaleDetails from './sale.details.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
+import Inventory from '../../inventories/entities/inventory.entity';
 
 @Entity('sales')
 export default class Sale {
@@ -32,6 +33,10 @@ export default class Sale {
   @ManyToOne(() => Enterprise)
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
+
+  @ManyToOne(() => Inventory, { nullable: false })
+  @JoinColumn({ name: 'inventory_id' })
+  inventory: Inventory;
 
   @CreateDateColumn()
   createdAt: Date;
