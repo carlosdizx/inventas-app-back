@@ -34,7 +34,7 @@ export default class CategoriesController {
   }
 
   @Post()
-  @Auth(UserRoles.OWNER)
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
   public async createCategory(
     @Body() dto: CreateCategoryDto,
     @getDataReq() enterprise: Enterprise,
@@ -43,7 +43,7 @@ export default class CategoriesController {
   }
 
   @Patch(':id')
-  @Auth(UserRoles.OWNER)
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
   public async updateCategory(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateCategoryDto,
@@ -52,6 +52,7 @@ export default class CategoriesController {
   }
 
   @Get(':id')
+  @Auth()
   public async findCategoryById(@Param('id', ParseUUIDPipe) id: string) {
     return await this.categoriesService.findCategoryById(id);
   }
