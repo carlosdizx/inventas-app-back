@@ -1,7 +1,8 @@
-import { IsInt, IsUUID } from 'class-validator';
+import { IsInt, IsUUID, Min } from 'class-validator';
 
 export default class ProductQuantityDto {
   @IsInt()
+  @Min(1)
   quantity: number;
 
   @IsUUID()

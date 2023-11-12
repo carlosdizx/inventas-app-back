@@ -107,14 +107,18 @@ export default class InventoriesService {
           inventory: { id: inventory.id },
           product: { id: productQuantity.id, status: StatusEntity.ACTIVE },
         },
+        relations: ['product'],
       });
 
       if (productInventory) {
-        if (productInventory.quantity < productQuantity.quantity)
-          throw new ConflictException(
-            'Cantidad a reducir excede la cantidad disponible en inventario',
-          );
-        else {
+        if (productInventory.quantity < productQuantity.quantity) {
+          let message = 'El inventario cuenta con la cantidad de ';
+          message += `${productInventory.quantity}`;
+          message += ' para el producto/servicio ';
+          message += `'${productInventory.product.name}'`;
+
+          throw new ConflictException(message);
+        } else {
           productInventory.quantity -= productQuantity.quantity;
           productsInventories.push(productInventory);
         }

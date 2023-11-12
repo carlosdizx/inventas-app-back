@@ -14,6 +14,7 @@ import ErrorDatabaseService from '../common/service/error.database.service';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import UpdateSaleDto from './dto/update-sale.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
+import InventoriesService from '../inventories/inventories.service';
 
 @Injectable()
 export default class SalesService {
@@ -24,6 +25,7 @@ export default class SalesService {
     private readonly saleDetailsRepository: Repository<SaleDetails>,
     private readonly productsService: ProductsService,
     private readonly errorDatabaseService: ErrorDatabaseService,
+    private readonly inventoriesService: InventoriesService,
   ) {}
 
   public registerSale = async (
@@ -50,6 +52,11 @@ export default class SalesService {
 
     const queryRunner = this.datasource.createQueryRunner();
     await queryRunner.startTransaction();
+
+    await this.inventoriesService.removeProductsFromInventory(
+      inventoryId,
+      products,
+    );
 
     try {
       const saleSaved = await queryRunner.manager.save<Sale>(sale);
