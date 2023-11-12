@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -10,6 +11,7 @@ import ProductInventory from './entities/product.inventory.entity';
 import CreateInventoryDto from './dto/create-inventory.dto';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import ProductQuantityDto from '../sales/dto/product-quantity.dto';
+import { StatusEntity } from '../common/enums/status.entity.enum}';
 
 @Injectable()
 export default class InventoriesService {
@@ -80,6 +82,54 @@ export default class InventoriesService {
       throw new InternalServerErrorException(
         `Error al tratar de registrar los productos en el inventario: ${error} - ${error.message}`,
       );
+    } finally {
+      await queryRunner.release();
+    }
+  };
+
+  public removeProductsFromInventory = async (
+    id: string,
+    productsQuantity: ProductQuantityDto[],
+  ) => {
+    const inventory = await this.inventoryRepository.findOneBy({ id });
+
+    if (!inventory) {
+      throw new NotFoundException('Inventario no existe');
+    }
+
+    const productsInventories: ProductInventory[] = [];
+
+    const queryRunner = this.datasource.createQueryRunner();
+    await queryRunner.startTransaction();
+    for (const productQuantity of productsQuantity) {
+      const productInventory = await this.productInventoryRepository.findOne({
+        where: {
+          inventory: { id: inventory.id },
+          product: { id: productQuantity.id, status: StatusEntity.ACTIVE },
+        },
+      });
+
+      if (productInventory) {
+        if (productInventory.quantity < productQuantity.quantity)
+          throw new ConflictException(
+            'Cantidad a reducir excede la cantidad disponible en inventario',
+          );
+        else {
+          productInventory.quantity -= productQuantity.quantity;
+          productsInventories.push(productInventory);
+        }
+      } else
+        throw new NotFoundException(
+          'Hay un producto en el inventario que no ha sido encontrado o está inactivo',
+        );
+    }
+
+    try {
+      await queryRunner.manager.save(ProductInventory, productsInventories);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
     } finally {
       await queryRunner.release();
     }

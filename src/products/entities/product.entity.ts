@@ -13,6 +13,7 @@ import Category from '../../categories/entities/category.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 import Subcategory from '../../categories/entities/subcategory.entity';
 import ProductInventory from '../../inventories/entities/product.inventory.entity';
+import { StatusEntity } from '../../common/enums/status.entity.enum}';
 
 @Entity('products')
 @Unique(['name', 'enterprise'])
@@ -38,6 +39,9 @@ export default class Product {
   @ManyToOne(() => Enterprise, (enterprise) => enterprise.products)
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
+
+  @Column({ enum: StatusEntity, default: StatusEntity.ACTIVE })
+  status: StatusEntity;
 
   @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn({ name: 'category_id' })
