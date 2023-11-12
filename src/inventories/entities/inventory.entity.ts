@@ -17,7 +17,7 @@ export default class Inventory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ unique: true })
   location: string;
 
   @OneToMany(

@@ -19,8 +19,15 @@ export default class InventoriesService {
     { location }: CreateInventoryDto,
     enterprise: Enterprise,
   ) => {
-    console.log(enterprise);
-    const inventory = await this.inventoryRepository.save({ location });
+    const inventory = await this.inventoryRepository.save({
+      location,
+      enterprise,
+    });
     return await this.inventoryRepository.save(inventory);
   };
+
+  public findInventoryById = async (id: string, enterprise: Enterprise) =>
+    await this.inventoryRepository.findOne({
+      where: { id, enterprise: { id: enterprise.id } },
+    });
 }
