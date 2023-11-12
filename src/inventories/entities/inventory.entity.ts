@@ -2,12 +2,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import ProductInventory from './product.inventory.entity';
 import Sale from '../../sales/entities/sale.entity';
+import Enterprise from '../../enterprise/entities/enterprise.entity';
 
 @Entity('inventories')
 export default class Inventory {
@@ -25,6 +28,10 @@ export default class Inventory {
 
   @OneToMany(() => Sale, (sale) => sale.inventory)
   sales: Sale[];
+
+  @ManyToOne(() => Enterprise)
+  @JoinColumn({ name: 'enterprise_id' })
+  enterprise: Enterprise;
 
   @CreateDateColumn()
   createdAt: Date;
