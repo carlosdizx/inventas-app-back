@@ -17,6 +17,7 @@ import Auth from '../auth/decorators/auth.decorator';
 import { UserRoles } from '../auth/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import UpdateSaleDto from './dto/update-sale.dto';
+import GetDataReqDecorator from '../auth/decorators/get-data-req.decorator';
 
 @Controller('sales')
 export default class SalesController {
@@ -31,7 +32,7 @@ export default class SalesController {
   }
 
   @Get()
-  @Auth()
+  @Auth(UserRoles.OWNER, UserRoles.ACCOUNTANT, UserRoles.CASHIER)
   public async listCategories(
     @Query(ValidationPipe) { page, limit }: PaginationDto,
     @getDataReq() enterprise: Enterprise,
@@ -44,7 +45,8 @@ export default class SalesController {
   public async updateSale(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateSaleDto,
+    @GetDataReqDecorator() enterprise: Enterprise,
   ) {
-    return this.salesService.updateSaleById(id, dto);
+    return this.salesService.updateSaleById(id, dto, enterprise);
   }
 }

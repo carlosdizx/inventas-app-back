@@ -2,6 +2,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsNotEmpty,
+  IsUUID,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -16,4 +17,7 @@ export default class CreateSaleDto {
   @ValidateNested({ each: true })
   @Type(() => ProductQuantityDto)
   productsIds: ProductQuantityDto[];
+
+  @IsUUID()
+  inventoryId: string;
 }

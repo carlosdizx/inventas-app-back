@@ -27,7 +27,7 @@ export default class SalesService {
   ) {}
 
   public registerSale = async (
-    { productsIds, ...resData }: CreateSaleDto,
+    { productsIds, inventoryId, ...resData }: CreateSaleDto,
     enterprise: Enterprise,
   ) => {
     const products =
@@ -43,6 +43,7 @@ export default class SalesService {
 
     const sale = this.saleRepository.create({
       ...resData,
+      inventory: { id: inventoryId },
       enterprise,
       totalAmount,
     });
@@ -92,11 +93,19 @@ export default class SalesService {
     });
   };
 
-  public updateSaleById = async (id: string, { status }: UpdateSaleDto) => {
-    if (status !== StatusEntity.INACTIVE && status != StatusEntity.ACTIVE)
+  public updateSaleById = async (
+    id: string,
+    { status }: UpdateSaleDto,
+    enterprise: Enterprise,
+  ) => {
+    if (status !== StatusEntity.INACTIVE && status !== StatusEntity.ACTIVE)
       throw new ConflictException('Estado de la venta no permitido');
-    const sale = await this.saleRepository.preload({ id, status });
+    const sale = await this.saleRepository.findOneBy({
+      id,
+      enterprise: { id: enterprise.id },
+    });
     if (!sale) throw new NotFoundException('Venta no encontrada');
+    sale.status = status;
     await this.saleRepository.save(sale);
   };
 }
