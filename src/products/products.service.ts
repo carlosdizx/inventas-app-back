@@ -60,11 +60,11 @@ export default class ProductsService {
 
   public listProducts = async (
     { page, limit }: IPaginationOptions,
-    { id }: Enterprise,
+    enterprise: Enterprise,
   ) => {
     const queryBuilder = this.productRepository
       .createQueryBuilder('product')
-      .where('product.enterprise.id = :id', { id });
+      .where('product.enterprise.id = :id', { id: enterprise.id });
     return await paginate<Product>(queryBuilder, {
       page,
       limit,
