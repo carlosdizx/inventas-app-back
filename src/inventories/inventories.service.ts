@@ -61,8 +61,10 @@ export default class InventoriesService {
             inventory: { id: inventory.id },
             product: { id: productQuantity.id },
           },
+          relations: ['product'],
         });
-
+        if (productInventory.product.status !== StatusEntity.ACTIVE)
+          throw new ConflictException('Hay un producto inactivo');
         if (productInventory) {
           productInventory.quantity += productQuantity.quantity;
           await queryRunner.manager.save(ProductInventory, productInventory);
