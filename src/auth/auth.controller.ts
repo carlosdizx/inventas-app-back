@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseFilters } from '@nestjs/common';
+import { Body, Controller, Param, Post, UseFilters } from '@nestjs/common';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import LoginUserDto from './dto/login.dto';
 import AuthService from './auth.service';
@@ -10,5 +10,10 @@ export default class AuthController {
   @Post('login')
   public login(@Body() dto: LoginUserDto) {
     return this.authService.login(dto);
+  }
+
+  @Post('valid/:token')
+  public validRefreshToken(@Param('token') token: string) {
+    return this.authService.refreshAndValidateToken(token);
   }
 }

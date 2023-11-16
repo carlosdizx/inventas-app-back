@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './entities/user.entity';
@@ -25,6 +26,11 @@ export default class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  private generateRefreshToken = (payload: JwtPayload) =>
+    this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
+
   private generateJWT = (payload: JwtPayload) => {
     return this.jwtService.sign(payload);
   };
@@ -43,7 +49,20 @@ export default class AuthService {
     if (isValid)
       return {
         token: this.generateJWT({ id: userFound.id }),
+        refreshToken: this.generateRefreshToken({ id: userFound.id }),
       };
     else throw new BadRequestException('Credenciales erradas');
+  };
+
+  public refreshAndValidateToken = async (refreshToken: string) => {
+    try {
+      const payload = this.jwtService.verify(refreshToken);
+      return {
+        token: this.generateJWT({ id: payload.id }),
+        refreshToken: this.generateRefreshToken({ id: payload.id }),
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Refresh token inválido');
+    }
   };
 }
