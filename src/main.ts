@@ -16,7 +16,7 @@ const bootstrap = async () => {
   const prefix = process.env.APP_PREFIX;
   app.setGlobalPrefix(prefix);
   await app.listen(port);
-  console.log('Running application in', `http://localhost:${port}/${prefix}/`);
+  console.log('Running application at', `http://localhost:${port}/${prefix}/`);
 };
 
 (async () => {
