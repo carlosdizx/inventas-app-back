@@ -5,6 +5,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   Matches,
   MaxLength,
   MinLength,
@@ -16,6 +17,7 @@ export default class CreateUserDto {
   @IsEmail()
   email: string;
 
+  @IsOptional()
   @IsNotEmpty({ message: 'Password no puede estar vació' })
   @MinLength(6, { message: 'Mínimo de caracteres es 6' })
   @MaxLength(50, { message: 'Máximo de caracteres es 50' })
@@ -23,7 +25,7 @@ export default class CreateUserDto {
     message:
       'El password debería tener una mayúscula, una minúscula y un numero',
   })
-  password: string = Math.random().toString(36).slice(-20);
+  password?: string;
 
   @IsArray()
   @IsEnum(UserRoles, { each: true })
