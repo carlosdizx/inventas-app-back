@@ -19,6 +19,13 @@ const JoiValidation = Joi.object({
 
   // Encrypt
   ENCRYPT_SECRET_KEY: Joi.string().required(),
+
+  // SMTP
+  SMTP_HOST: Joi.string().required(),
+  SMTP_PORT: Joi.number().required(),
+  SMTP_SECURE: Joi.boolean().required(),
+  SMTP_USER: Joi.string().required(),
+  SMTP_PASSWORD: Joi.string().required(),
 });
 
 export default JoiValidation;
