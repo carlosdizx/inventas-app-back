@@ -29,7 +29,7 @@ export default class CreateUserDto {
 
   @IsArray()
   @IsEnum(UserRoles, { each: true })
-  roles: UserRoles[];
+  roles: UserRoles[] = [UserRoles.OWNER];
 
   @IsNotEmpty()
   firstName: string;
