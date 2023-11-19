@@ -29,7 +29,7 @@ const registerEnterpriseMail = (password: string) => `
         .button:hover {
             background-color: #0056b3;
         }
-    </style>
+    </style><title>Registro exitoso</title>
 </head>
 <body>
     <div class="container">
