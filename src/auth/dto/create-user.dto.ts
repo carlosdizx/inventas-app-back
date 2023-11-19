@@ -23,17 +23,17 @@ export default class CreateUserDto {
     message:
       'El password debería tener una mayúscula, una minúscula y un numero',
   })
-  password: string;
+  password: string = Math.random().toString(36).slice(-20);
 
   @IsArray()
   @IsEnum(UserRoles, { each: true })
   roles: UserRoles[];
 
   @IsNotEmpty()
-  first_name: string;
+  firstName: string;
 
   @IsNotEmpty()
-  last_name: string;
+  lastName: string;
 
   @IsNotEmpty()
   documentNumber: string;

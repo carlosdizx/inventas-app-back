@@ -28,8 +28,8 @@ export default class UserCrudService {
       email,
       password,
       roles,
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       documentType,
       documentNumber,
       gender,
@@ -46,13 +46,13 @@ export default class UserCrudService {
     });
 
     const details = this.userDetailsRepository.create({
-      first_name: first_name,
-      last_name: last_name,
-      documentType: documentType,
-      documentNumber: documentNumber,
-      gender: gender,
-      birthdate: birthdate,
-      phone: phone,
+      firstName,
+      lastName,
+      documentType,
+      documentNumber,
+      gender,
+      birthdate,
+      phone,
     });
 
     const queryRunner = this.dataSource.createQueryRunner();

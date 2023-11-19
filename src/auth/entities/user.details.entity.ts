@@ -14,11 +14,11 @@ export default class UserDetails {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @Column()
-  first_name: string;
+  @Column({ name: 'first_name' })
+  firstName: string;
 
-  @Column()
-  last_name: string;
+  @Column({ name: 'last_name' })
+  lastName: string;
 
   @Column({ name: 'document_number' })
   documentNumber: string;
