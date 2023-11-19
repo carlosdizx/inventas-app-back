@@ -1,6 +1,7 @@
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
+import SendEmailDto from '../dto/send.email.dto';
 @Injectable()
 export default class NodemailerService {
   private readonly transporter;
@@ -24,7 +25,12 @@ export default class NodemailerService {
     this.transporter.verify();
   }
 
-  public main = async () => {
-    this.transporter.sendMail({});
+  public main = async ({ from, to, subject, html }: SendEmailDto) => {
+    this.transporter.sendMail({
+      from,
+      to,
+      subject,
+      html,
+    });
   };
 }
