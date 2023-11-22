@@ -22,9 +22,6 @@ export default class CreateEnterpriseDTO {
   @IsNotEmpty()
   documentType: documentTypes;
 
-  @IsEmail()
-  email: string;
-
   @IsObject()
   @ValidateNested()
   @Type(() => CreateUserDto)

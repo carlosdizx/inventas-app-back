@@ -26,9 +26,6 @@ export default class Enterprise {
   @Column({ name: 'document_type', enum: documentTypes })
   documentType: documentTypes;
 
-  @Column({ unique: true })
-  email: string;
-
   @Column({ enum: StatusEntity, default: StatusEntity.PENDING_APPROVAL })
   status: StatusEntity;
 
