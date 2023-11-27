@@ -24,7 +24,7 @@ export default class AuthService {
     private readonly errorDatabaseService: ErrorDatabaseService,
     private readonly encryptService: EncryptService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   private generateRefreshToken = (payload: JwtPayload) =>
     this.jwtService.sign(payload, {
