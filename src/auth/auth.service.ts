@@ -24,7 +24,7 @@ export default class AuthService {
     private readonly errorDatabaseService: ErrorDatabaseService,
     private readonly encryptService: EncryptService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   private generateRefreshToken = (payload: JwtPayload) =>
     this.jwtService.sign(payload, {
@@ -38,7 +38,7 @@ export default class AuthService {
   public login = async ({ email, password }: LoginUserDto) => {
     const userFound = await this.userRepository.findOne({
       where: { email, status: StatusEntity.ACTIVE },
-      select: ['id', 'email', 'password'],
+      select: ['id', 'email', 'password', 'roles'],
     });
     if (!userFound)
       throw new NotFoundException('Email no encontrado o inactivo');
@@ -48,7 +48,7 @@ export default class AuthService {
     const isValid = await comparePasswords(password, decryptPassword);
     if (isValid)
       return {
-        token: this.generateJWT({ id: userFound.id }),
+        token: this.generateJWT({ id: userFound.id, roles: userFound.roles }),
         refreshToken: this.generateRefreshToken({ id: userFound.id }),
       };
     else throw new BadRequestException('Credenciales erradas');
@@ -58,7 +58,7 @@ export default class AuthService {
     try {
       const payload = this.jwtService.verify(refreshToken);
       return {
-        token: this.generateJWT({ id: payload.id }),
+        token: this.generateJWT({ id: payload.id, roles: payload.roles }),
         refreshToken: this.generateRefreshToken({ id: payload.id }),
       };
     } catch (error) {
