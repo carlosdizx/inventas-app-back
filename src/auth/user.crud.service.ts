@@ -11,6 +11,7 @@ import UserDetails from './entities/user.details.entity';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import UpdateUserDto from './dto/update-user.dto';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import generatePasswordUtil from '../common/util/generate.password.util';
 
 @Injectable()
 export default class UserCrudService {
@@ -38,6 +39,7 @@ export default class UserCrudService {
     }: CreateUserDto,
     enterprise: Enterprise = null,
   ) => {
+    if (!password) password = generatePasswordUtil(20);
     const newUser = this.userRepository.create({
       email: email,
       password: this.encryptService.encrypt(await hashPassword(password)),
@@ -82,6 +84,7 @@ export default class UserCrudService {
     if (!userFound) throw new NotFoundException('Usuario no encontrado');
     const {
       email,
+      roles,
       userDetails: {
         firstName,
         lastName,
@@ -101,6 +104,7 @@ export default class UserCrudService {
       gender,
       birthdate,
       phone,
+      roles,
     };
   };
 
