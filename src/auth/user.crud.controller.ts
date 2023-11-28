@@ -32,6 +32,12 @@ export default class UserCrudController {
     return await this.userCrudService.createUser(dto, enterprise);
   }
 
+  @Get(':id')
+  @Auth(UserRoles.OWNER)
+  public async getUserById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.userCrudService.findUserById(id);
+  }
+
   @Patch(':id')
   @Auth(UserRoles.OWNER)
   public async changeStatusAndRoles(

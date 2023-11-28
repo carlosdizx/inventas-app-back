@@ -73,8 +73,15 @@ export default class UserCrudService {
     }
   };
 
-  public findUserById = async (id: string) =>
-    await this.userRepository.findOneBy({ id });
+  public findUserById = async (id: string) => {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.userDetails', 'details')
+      .where('user.id = :id', { id })
+      .getOne();
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+    return user;
+  };
 
   public deleteUserById = async (id: string) => {
     const result = await this.userRepository.delete(id);
