@@ -74,13 +74,34 @@ export default class UserCrudService {
   };
 
   public findUserById = async (id: string) => {
-    const user = await this.userRepository
+    const userFound = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.userDetails', 'details')
       .where('user.id = :id', { id })
       .getOne();
-    if (!user) throw new NotFoundException('Usuario no encontrado');
-    return user;
+    if (!userFound) throw new NotFoundException('Usuario no encontrado');
+    const {
+      email,
+      userDetails: {
+        firstName,
+        lastName,
+        documentNumber,
+        documentType,
+        gender,
+        birthdate,
+        phone,
+      },
+    } = userFound;
+    return {
+      firstName,
+      lastName,
+      documentType,
+      documentNumber,
+      email,
+      gender,
+      birthdate,
+      phone,
+    };
   };
 
   public deleteUserById = async (id: string) => {
