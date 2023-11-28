@@ -96,6 +96,7 @@ export default class UserCrudService {
   ) => {
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.userDetails', 'details')
       .where('user.enterprise.id = :enterpriseId', {
         enterpriseId: enterprise.id,
       })
