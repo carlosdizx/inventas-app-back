@@ -12,6 +12,8 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import UpdateUserDto from './dto/update-user.dto';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import generatePasswordUtil from '../common/util/generate.password.util';
+import registerEnterpriseMail from '../common/templates/mails/register.enterprise.mail';
+import NodemailerService from '../common/service/nodemailer.service';
 
 @Injectable()
 export default class UserCrudService {
@@ -22,12 +24,12 @@ export default class UserCrudService {
     private readonly userDetailsRepository: Repository<UserDetails>,
     private readonly errorDatabaseService: ErrorDatabaseService,
     private readonly encryptService: EncryptService,
+    private readonly nodemailerService: NodemailerService,
   ) {}
 
   public createUser = async (
     {
       email,
-      password,
       roles,
       firstName,
       lastName,
@@ -39,13 +41,15 @@ export default class UserCrudService {
     }: CreateUserDto,
     enterprise: Enterprise = null,
   ) => {
-    if (!password) password = generatePasswordUtil(20);
+    const password = generatePasswordUtil(20);
+    console.log({ password });
     const newUser = this.userRepository.create({
-      email: email,
+      email,
       password: this.encryptService.encrypt(await hashPassword(password)),
-      roles: roles,
+      roles,
       status: StatusEntity.ACTIVE,
     });
+    console.log({ password: newUser.password });
 
     const details = this.userDetailsRepository.create({
       firstName,
@@ -68,6 +72,13 @@ export default class UserCrudService {
       await queryRunner.commitTransaction();
       await queryRunner.release();
       delete details.user.password;
+
+      await this.nodemailerService.main({
+        from: 'Registro exitoso <noreply_inventa@gmail.com>',
+        to: email,
+        subject: 'Registro en Inventas-App',
+        html: registerEnterpriseMail(password),
+      });
       return details;
     } catch (error) {
       await queryRunner.rollbackTransaction();
