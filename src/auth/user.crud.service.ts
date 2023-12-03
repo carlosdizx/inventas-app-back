@@ -85,6 +85,7 @@ export default class UserCrudService {
     const {
       email,
       roles,
+      status,
       userDetails: {
         firstName,
         lastName,
@@ -96,6 +97,7 @@ export default class UserCrudService {
       },
     } = userFound;
     return {
+      status,
       firstName,
       lastName,
       documentType,
