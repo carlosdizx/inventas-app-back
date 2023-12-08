@@ -48,7 +48,10 @@ export default class AuthService {
     if (isValid)
       return {
         token: this.generateJWT({ id: userFound.id, roles: userFound.roles }),
-        refreshToken: this.generateRefreshToken({ id: userFound.id }),
+        refreshToken: this.generateRefreshToken({
+          id: userFound.id,
+          roles: userFound.roles,
+        }),
       };
     else throw new BadRequestException('Credenciales erradas');
   };
@@ -58,7 +61,10 @@ export default class AuthService {
       const payload = this.jwtService.verify(refreshToken);
       return {
         token: this.generateJWT({ id: payload.id, roles: payload.roles }),
-        refreshToken: this.generateRefreshToken({ id: payload.id }),
+        refreshToken: this.generateRefreshToken({
+          id: payload.id,
+          roles: payload.roles,
+        }),
       };
     } catch (error) {
       throw new UnauthorizedException('Refresh token inválido');
