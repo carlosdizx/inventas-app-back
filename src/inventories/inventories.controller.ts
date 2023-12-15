@@ -6,6 +6,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
   UseFilters,
 } from '@nestjs/common';
 import InventoriesService from './inventories.service';
@@ -17,6 +18,7 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import { UserRoles } from '../auth/enums/user.roles.enum';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import ProductQuantityDto from '../sales/dto/product-quantity.dto';
+import PaginationDto from '../common/dto/pagination.dto';
 
 @Controller('inventories')
 @UseFilters(TypeormExceptionFilter)
@@ -53,5 +55,14 @@ export default class InventoriesController {
       enterprise,
       dto,
     );
+  }
+
+  @Get()
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  public async listInventories(
+    @Query() { page, limit }: PaginationDto,
+    @getDataReq() enterprise: Enterprise,
+  ) {
+    return this.inventoriesService.listInventories({ page, limit }, enterprise);
   }
 }

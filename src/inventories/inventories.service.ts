@@ -12,6 +12,7 @@ import CreateInventoryDto from './dto/create-inventory.dto';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import ProductQuantityDto from '../sales/dto/product-quantity.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export default class InventoriesService {
@@ -139,5 +140,19 @@ export default class InventoriesService {
     } finally {
       await queryRunner.release();
     }
+  };
+
+  public listInventories = async (
+    { page, limit }: IPaginationOptions,
+    { id }: Enterprise,
+  ) => {
+    const queryBuilder = this.inventoryRepository
+      .createQueryBuilder('inventory')
+      .where('inventory.enterprise.id = :id', { id });
+    return await paginate<Inventory>(queryBuilder, {
+      page,
+      limit,
+      route: 'inventories',
+    });
   };
 }
