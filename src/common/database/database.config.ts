@@ -11,6 +11,7 @@ const getTypeOrmConfig = async (
   password: configService.get('DB_PASSWORD'),
   database: configService.get('DB_NAME'),
   entities: [__dirname + '../../**/*.entity{.ts,.js}'],
-  synchronize: true,
+  migrations: [__dirname + '../../**/*.migration{.ts,.js}'],
+  synchronize: configService.get('DB_SYNCHRONIZE', true),
 });
 export default getTypeOrmConfig;

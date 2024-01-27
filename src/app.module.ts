@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import JoiValidation from './common/env.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import getTypeOrmConfig from './common/database.config';
+import getTypeOrmConfig from './common/database/database.config';
 import AuthModule from './auth/auth.module';
 import CommonModule from './common/common.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
