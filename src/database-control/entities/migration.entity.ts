@@ -3,8 +3,8 @@ import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 @Entity('migrations')
 @Unique(['name'])
 export default class Migration {
-  @PrimaryGeneratedColumn('uuid')
-  readonly id: string;
+  @PrimaryGeneratedColumn()
+  readonly id: number;
 
   @Column({ type: 'varchar' })
   name: string;
