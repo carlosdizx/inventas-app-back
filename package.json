@@ -17,8 +17,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "npm run build && npx typeorm -d dist/database/database.config.js",
     "migration:create": "typeorm migration:create database/migrations/mig",
-    "migration:run": "typeorm migration:run -- -d database/database.config.ts"
-    "migration:create": "typeorm migration:create database/migrations/mig"
+    "migration:generate": "npm run typeorm -- migration:generate database/migrations/mig"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
