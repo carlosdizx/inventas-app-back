@@ -22,7 +22,7 @@ export default class TypeormExceptionFilter implements ExceptionFilter {
 
     if (exception.message.includes('unique constraint')) {
       statusError = HttpStatus.CONFLICT;
-      message = `Ya existe un registro: ${driverError.detail
+      message = `Ya existe un registro: ${driverError.message
         .split(')=(')[1]
         .replace(') already exists.', '')}`;
     }
