@@ -15,6 +15,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "npm run build && npx typeorm -d dist/database/database.config.js",
     "migration:create": "typeorm migration:create database/migrations/mig",
     "migration:run": "typeorm migration:run -- -d database/database.config.ts"
     "migration:create": "typeorm migration:create database/migrations/mig"
