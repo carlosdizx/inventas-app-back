@@ -42,14 +42,12 @@ export default class UserCrudService {
     enterprise: Enterprise = null,
   ) => {
     const password = generatePasswordUtil(20);
-    console.log({ password });
     const newUser = this.userRepository.create({
       email,
       password: this.encryptService.encrypt(await hashPassword(password)),
       roles,
       status: StatusEntity.ACTIVE,
     });
-    console.log({ password: newUser.password });
 
     const details = this.userDetailsRepository.create({
       firstName,

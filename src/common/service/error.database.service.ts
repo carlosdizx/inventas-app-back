@@ -21,7 +21,7 @@ export default class ErrorDatabaseService {
         );
       default:
         this.logger.error(error, '', context);
-        console.log(error);
+        console.error(error);
         throw new InternalServerErrorException(
           'Unexpected error, check server logs',
         );
