@@ -8,4 +8,7 @@ export default class Migration {
 
   @Column({ type: 'varchar' })
   name: string;
+
+  @Column({ type: 'timestamp' })
+  timestamp: Date;
 }
