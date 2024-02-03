@@ -4,8 +4,6 @@ export class Seed1706982409093 implements MigrationInterface {
   name = 'Seed1706982409093';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    console.log('Un video ma mi gente');
-    console.log('Empezemos');
     await queryRunner.query(`
       INSERT INTO user_details (first_name, last_name, document_number, document_type, phone, gender, birthdate)
       VALUES ('Laura', 'Pérez', '1029384756', 0, '3104567890', false, '1990-05-22'),
