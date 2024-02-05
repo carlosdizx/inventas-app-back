@@ -73,7 +73,6 @@ export default class InventoriesService {
           await queryRunner.manager.save(ProductInventory, productInventory);
         } else {
           console.log(productQuantity);
-          debugger;
           const product = await this.productsService.findProductById(
             productQuantity.id,
             enterprise,
