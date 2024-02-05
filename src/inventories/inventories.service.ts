@@ -64,9 +64,9 @@ export default class InventoriesService {
           },
           relations: ['product'],
         });
-        if (productInventory.product.status !== StatusEntity.ACTIVE)
-          throw new ConflictException('Hay un producto inactivo');
         if (productInventory) {
+          if (productInventory.product.status !== StatusEntity.ACTIVE)
+            throw new ConflictException('Hay un producto inactivo');
           productInventory.quantity += productQuantity.quantity;
           await queryRunner.manager.save(ProductInventory, productInventory);
         } else {
