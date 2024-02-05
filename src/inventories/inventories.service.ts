@@ -12,7 +12,7 @@ import CreateInventoryDto from './dto/create-inventory.dto';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import ProductQuantityDto from '../sales/dto/product-quantity.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
-import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import ProductsService from '../products/products.service';
 
 @Injectable()
@@ -158,11 +158,46 @@ export default class InventoriesService {
   ) => {
     const queryBuilder = this.inventoryRepository
       .createQueryBuilder('inventory')
-      .where('inventory.enterprise.id = :id', { id });
-    return await paginate<Inventory>(queryBuilder, {
-      page,
-      limit,
-      route: 'inventories',
-    });
+      .leftJoin('inventory.productInventories', 'productInventory')
+      .leftJoin('productInventory.product', 'product')
+      .select('inventory.id', 'id')
+      .addSelect('inventory.location', 'location')
+      .addSelect('SUM(productInventory.quantity)', 'total')
+      .where('inventory.enterprise.id = :id', { id })
+      .groupBy('inventory.id')
+      .addGroupBy('inventory.location')
+      .orderBy('inventory.location');
+
+    const total = await queryBuilder.getCount();
+
+    const results = await queryBuilder
+      .offset((+page - 1) * +limit)
+      .limit(+limit)
+      .getRawMany();
+
+    const meta = {
+      totalItems: total,
+      itemCount: results.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(total / +limit),
+      currentPage: page,
+    };
+
+    const baseUrl = 'inventories';
+    const links = {
+      first: `${baseUrl}?limit=${limit}`,
+      previous: page > 1 ? `${baseUrl}?page=${+page - 1}&limit=${limit}` : '',
+      next:
+        page < meta.totalPages
+          ? `${baseUrl}?page=${+page + 1}&limit=${limit}`
+          : '',
+      last: `${baseUrl}?page=${meta.totalPages}&limit=${limit}`,
+    };
+
+    return {
+      items: results,
+      meta,
+      links,
+    };
   };
 }
