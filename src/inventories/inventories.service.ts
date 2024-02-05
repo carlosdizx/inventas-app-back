@@ -13,6 +13,7 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import ProductQuantityDto from '../sales/dto/product-quantity.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import ProductsService from '../products/products.service';
 
 @Injectable()
 export default class InventoriesService {
@@ -22,6 +23,7 @@ export default class InventoriesService {
     private readonly inventoryRepository: Repository<Inventory>,
     @InjectRepository(ProductInventory)
     private readonly productInventoryRepository: Repository<ProductInventory>,
+    private readonly productsService: ProductsService,
   ) {}
 
   public createInventory = async (
@@ -70,6 +72,15 @@ export default class InventoriesService {
           productInventory.quantity += productQuantity.quantity;
           await queryRunner.manager.save(ProductInventory, productInventory);
         } else {
+          console.log(productQuantity);
+          debugger;
+          const product = await this.productsService.findProductById(
+            productQuantity.id,
+            enterprise,
+          );
+          console.log(product);
+          if (product.status !== StatusEntity.ACTIVE)
+            throw new ConflictException('Hay un producto inactivo');
           productInventory = this.productInventoryRepository.create({
             inventory,
             product: { id: productQuantity.id },
