@@ -113,7 +113,12 @@ export default class ProductsService {
       relations: ['category', 'subcategory'],
     });
 
-    if (product) return product;
+    if (product)
+      return {
+        ...product,
+        costPrice: +product.costPrice,
+        salePrice: +product.salePrice,
+      };
     throw new NotFoundException('Producto no encontrado');
   };
 
