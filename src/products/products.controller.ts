@@ -59,4 +59,10 @@ export default class ProductsController {
   ) {
     return this.productsService.findProductById(id, enterprise);
   }
+
+  @Get('find/all')
+  @Auth()
+  public async findAllProducts(@getDataReq() enterprise: Enterprise) {
+    return await this.productsService.findAllProducts(enterprise);
+  }
 }

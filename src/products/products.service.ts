@@ -148,4 +148,9 @@ export default class ProductsService {
       };
     });
   };
+
+  public findAllProducts = async ({ id }: Enterprise) =>
+    await this.productRepository.find({
+      where: { enterprise: { id } },
+    });
 }
