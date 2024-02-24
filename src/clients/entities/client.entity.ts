@@ -15,7 +15,7 @@ import Enterprise from '../../enterprise/entities/enterprise.entity';
 @Unique(['documentNumber', 'documentType'])
 export default class Client {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  readonly id: string;
 
   @Column({ name: 'document_number' })
   documentNumber: string;
