@@ -5,8 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Unique,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { documentTypes } from '../../common/enums/document.type.enum';
+import Enterprise from '../../enterprise/entities/enterprise.entity';
 
 @Entity('clients')
 @Unique(['documentNumber', 'documentType'])
@@ -31,6 +34,10 @@ export default class Client {
 
   @Column({ nullable: true })
   email: string;
+
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.categories)
+  @JoinColumn({ name: 'enterprise_id' })
+  enterprise: Enterprise;
 
   @CreateDateColumn()
   createdAt: Date;
