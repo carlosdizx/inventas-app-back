@@ -17,9 +17,20 @@ export class Mig1708811070041 implements MigrationInterface {
         "updatedAt" TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL
     );
     `);
+
+    await queryRunner.query(
+      `ALTER TABLE sales ADD COLUMN client_id UUID DEFAULT NULL;
+            ALTER TABLE sales ADD CONSTRAINT fk_sales_clients FOREIGN KEY (client_id) REFERENCES clients (id) ON DELETE SET NULL;`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE sales DROP CONSTRAINT IF EXISTS fk_sales_clients;`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE sales DROP COLUMN IF EXISTS client_id;`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS clients CASCADE;`);
   }
 }
