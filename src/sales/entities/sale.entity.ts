@@ -12,6 +12,7 @@ import SaleDetails from './sale.details.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
 import Inventory from '../../inventories/entities/inventory.entity';
+import Client from '../../clients/entities/client.entity';
 
 @Entity('sales')
 export default class Sale {
@@ -37,6 +38,10 @@ export default class Sale {
   @ManyToOne(() => Inventory, { nullable: false })
   @JoinColumn({ name: 'inventory_id' })
   inventory: Inventory;
+
+  @ManyToOne(() => Client, { nullable: true })
+  @JoinColumn({ name: 'client_id' })
+  client: Client | null;
 
   @CreateDateColumn()
   createdAt: Date;
