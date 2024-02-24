@@ -4,7 +4,7 @@ import { Type } from 'class-transformer';
 export default class PaginationDto {
   @IsInt()
   @IsOptional()
-  @Min(1)
+  @Min(-1)
   @Max(999)
   @Type(() => Number)
   limit?: number = 10;
