@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { documentTypes } from '../../common/enums/document.type.enum';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
+import { StatusEntity } from '../../common/enums/status.entity.enum}';
 
 @Entity('clients')
 @Unique(['documentNumber', 'documentType'])
@@ -22,6 +23,9 @@ export default class Client {
 
   @Column({ name: 'document_type', enum: documentTypes })
   documentType: documentTypes;
+
+  @Column({ enum: StatusEntity, default: StatusEntity.ACTIVE })
+  status: StatusEntity;
 
   @Column()
   names: string;

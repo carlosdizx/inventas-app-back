@@ -13,6 +13,7 @@ export class Mig1708811070041 implements MigrationInterface {
         surnames VARCHAR(255) NOT NULL,
         phone VARCHAR(255) NOT NULL,
         email VARCHAR(255) NULL,
+        status INTEGER NOT NULL DEFAULT 2,
         enterprise_id UUID NOT NULL REFERENCES enterprises (id),
         "createdAt" TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,
         "updatedAt" TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL
