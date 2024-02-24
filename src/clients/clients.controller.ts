@@ -22,7 +22,10 @@ export default class ClientsController {
 
   @Post()
   @Auth(UserRoles.OWNER, UserRoles.CASHIER)
-  public async createClient(@Body() dto: CreateClientDto) {
-    return dto;
+  public async createClient(
+    @Body() dto: CreateClientDto,
+    @getDataReq() enterprise: Enterprise,
+  ) {
+    return this.clientsService.createClient(dto, enterprise);
   }
 }

@@ -4,6 +4,7 @@ import Client from './entities/client.entity';
 import { Repository } from 'typeorm';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import Enterprise from '../enterprise/entities/enterprise.entity';
+import CreateClientDto from './dto/create-client.dto';
 
 @Injectable()
 export default class ClientsService {
@@ -24,5 +25,13 @@ export default class ClientsService {
       limit,
       route: 'clients',
     });
+  };
+
+  public createClient = async (
+    dto: CreateClientDto,
+    enterprise: Enterprise,
+  ) => {
+    const client = this.clientRepository.create({ ...dto, enterprise });
+    return this.clientRepository.save(client);
   };
 }
