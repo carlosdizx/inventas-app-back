@@ -34,4 +34,9 @@ export default class ClientsService {
     const client = this.clientRepository.create({ ...dto, enterprise });
     return this.clientRepository.save(client);
   };
+
+  public findClientById = async (id: string, enterprise: Enterprise) =>
+    await this.clientRepository.findOne({
+      where: { id, enterprise: { id: enterprise.id } },
+    });
 }

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import ClientsService from './clients.service';
 import Auth from '../auth/decorators/auth.decorator';
 import PaginationDto from '../common/dto/pagination.dto';
@@ -27,5 +35,14 @@ export default class ClientsController {
     @getDataReq() enterprise: Enterprise,
   ) {
     return this.clientsService.createClient(dto, enterprise);
+  }
+
+  @Get(':id')
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  public async findClientById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @getDataReq() enterprise: Enterprise,
+  ) {
+    return this.clientsService.findClientById(id, enterprise);
   }
 }
