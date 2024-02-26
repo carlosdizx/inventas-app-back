@@ -60,4 +60,9 @@ export default class ClientsService {
     if (!clientFound) throw new NotFoundException('Cliente no encontrado');
     return this.clientRepository.save(clientFound);
   };
+
+  public findClientByFilter = async (filter: any) =>
+    await this.clientRepository.findOne({
+      where: { ...filter },
+    });
 }

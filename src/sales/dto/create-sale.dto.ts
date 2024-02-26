@@ -1,7 +1,7 @@
 import {
   ArrayMinSize,
   IsArray,
-  IsNotEmpty,
+  IsOptional,
   IsUUID,
   ValidateNested,
 } from 'class-validator';
@@ -17,4 +17,8 @@ export default class CreateSaleDto {
 
   @IsUUID()
   inventoryId: string;
+
+  @IsUUID()
+  @IsOptional()
+  clientId?: string;
 }

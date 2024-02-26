@@ -15,6 +15,8 @@ import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import UpdateSaleDto from './dto/update-sale.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import InventoriesService from '../inventories/inventories.service';
+import ClientsService from '../clients/clients.service';
+import Client from '../clients/entities/client.entity';
 
 @Injectable()
 export default class SalesService {
@@ -26,10 +28,11 @@ export default class SalesService {
     private readonly productsService: ProductsService,
     private readonly errorDatabaseService: ErrorDatabaseService,
     private readonly inventoriesService: InventoriesService,
+    private readonly clientsService: ClientsService,
   ) {}
 
   public registerSale = async (
-    { productsIds, inventoryId, ...resData }: CreateSaleDto,
+    { productsIds, inventoryId, clientId, ...resData }: CreateSaleDto,
     enterprise: Enterprise,
   ) => {
     const products =
@@ -43,11 +46,24 @@ export default class SalesService {
       0,
     );
 
+    let clientFound: Client = null;
+    if (clientId) {
+      clientFound = await this.clientsService.findClientByFilter({
+        id: clientId,
+        status: StatusEntity.ACTIVE,
+        enterprise: { id: enterprise.id },
+      });
+
+      if (!clientFound)
+        throw new ConflictException('Cliente no encontrado o inactivo');
+    }
+
     const sale = this.saleRepository.create({
       ...resData,
       inventory: { id: inventoryId },
       enterprise,
       totalAmount,
+      client: clientFound,
     });
 
     const queryRunner = this.datasource.createQueryRunner();
