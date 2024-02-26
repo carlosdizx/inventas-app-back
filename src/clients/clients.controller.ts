@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import getDataReq from '../auth/decorators/get-data-req.decorator';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import { UserRoles } from '../auth/enums/user.roles.enum';
 import CreateClientDto from './dto/create-client.dto';
+import UpdateClientDto from './dto/update-client.dto';
 
 @Controller('clients')
 export default class ClientsController {
@@ -44,5 +46,14 @@ export default class ClientsController {
     @getDataReq() enterprise: Enterprise,
   ) {
     return this.clientsService.findClientById(id, enterprise);
+  }
+
+  @Patch(':id')
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  public async updateClientById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateClientDto,
+  ) {
+    return this.clientsService.updateClientById(id, dto);
   }
 }
