@@ -19,9 +19,6 @@ export default class Sale {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @Column({ name: 'document_client' })
-  documentClient: string;
-
   @OneToMany(() => SaleDetails, (salesDetail) => salesDetail.sale)
   salesDetails: SaleDetails[];
 
