@@ -38,5 +38,15 @@ export default class ClientsService {
   public findClientById = async (id: string, enterprise: Enterprise) =>
     await this.clientRepository.findOne({
       where: { id, enterprise: { id: enterprise.id } },
+      select: [
+        'id',
+        'names',
+        'surnames',
+        'documentType',
+        'documentNumber',
+        'phone',
+        'email',
+        'status',
+      ],
     });
 }
