@@ -16,7 +16,8 @@ export class Mig1708811070041 implements MigrationInterface {
         status INTEGER NOT NULL DEFAULT 2,
         enterprise_id UUID NOT NULL REFERENCES enterprises (id),
         "createdAt" TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,
-        "updatedAt" TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL
+        "updatedAt" TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,
+        UNIQUE (document_number, document_type)
     );
     `);
 
