@@ -131,4 +131,10 @@ export default class SalesService {
     sale.status = status;
     await this.saleRepository.save(sale);
   };
+
+  public findSaleById = async (id: string, enterprise: Enterprise) =>
+    await this.saleRepository.find({
+      where: { id, enterprise: { id: enterprise.id } },
+      relations: ['salesDetails'],
+    });
 }
