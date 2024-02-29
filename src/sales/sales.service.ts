@@ -107,8 +107,7 @@ export default class SalesService {
     const queryBuilder = this.saleRepository
       .createQueryBuilder('sale')
       .where('sale.enterprise.id = :id', { id })
-      .andWhere('sale.status = :status', { status: StatusEntity.ACTIVE });
-
+      .orderBy('sale.createdAt', 'DESC');
     return await paginate<Sale>(queryBuilder, {
       page,
       limit,
