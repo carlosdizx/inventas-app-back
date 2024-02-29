@@ -133,7 +133,7 @@ export default class SalesService {
   };
 
   public findSaleById = async (id: string, enterprise: Enterprise) =>
-    await this.saleRepository.find({
+    await this.saleRepository.findOne({
       where: { id, enterprise: { id: enterprise.id } },
       relations: ['salesDetails'],
     });
