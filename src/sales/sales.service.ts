@@ -131,9 +131,28 @@ export default class SalesService {
     await this.saleRepository.save(sale);
   };
 
-  public findSaleById = async (id: string, enterprise: Enterprise) =>
-    await this.saleRepository.findOne({
+  public findSaleById = async (id: string, enterprise: Enterprise) => {
+    const sale = await this.saleRepository.findOne({
       where: { id, enterprise: { id: enterprise.id } },
-      relations: ['salesDetails'],
+      relations: ['salesDetails', 'client'],
     });
+
+    sale.salesDetails = sale.salesDetails.map(
+      ({
+        product: { id, salePrice, name, costPrice, ...restData },
+        subtotal,
+        quantity,
+        unitPrice,
+        id: idSale,
+      }) => ({
+        id: idSale,
+        product: { id, salePrice, name, costPrice, ...restData },
+        subtotal,
+        quantity,
+        unitPrice,
+      }),
+    ) as SaleDetails[];
+
+    return sale;
+  };
 }
