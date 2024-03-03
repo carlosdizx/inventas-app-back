@@ -201,4 +201,11 @@ export default class InventoriesService {
       links,
     };
   };
+
+  public findAllInventories = async (enterprise: Enterprise) => {
+    return this.inventoryRepository.find({
+      where: { enterprise: { id: enterprise.id } },
+      relations: ['productInventories', 'productInventories.product'],
+    });
+  };
 }

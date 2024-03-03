@@ -49,4 +49,13 @@ export default class SalesController {
   ) {
     return this.salesService.updateSaleById(id, dto, enterprise);
   }
+
+  @Get(':id')
+  @Auth(UserRoles.OWNER)
+  public async findSaleById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @GetDataReqDecorator() enterprise: Enterprise,
+  ) {
+    return this.salesService.findSaleById(id, enterprise);
+  }
 }

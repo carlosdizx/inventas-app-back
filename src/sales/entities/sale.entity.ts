@@ -13,14 +13,12 @@ import Enterprise from '../../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
 import Inventory from '../../inventories/entities/inventory.entity';
 import Client from '../../clients/entities/client.entity';
+import { TypeSaleEnum } from '../enums/type-sale.enum';
 
 @Entity('sales')
 export default class Sale {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
-
-  @Column({ name: 'document_client' })
-  documentClient: string;
 
   @OneToMany(() => SaleDetails, (salesDetail) => salesDetail.sale)
   salesDetails: SaleDetails[];
@@ -30,6 +28,9 @@ export default class Sale {
 
   @Column({ enum: StatusEntity, default: StatusEntity.ACTIVE })
   status: StatusEntity;
+
+  @Column({ enum: TypeSaleEnum })
+  type: TypeSaleEnum;
 
   @ManyToOne(() => Enterprise)
   @JoinColumn({ name: 'enterprise_id' })
