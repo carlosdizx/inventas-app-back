@@ -23,8 +23,6 @@ export default class SalesService {
   constructor(
     private readonly datasource: DataSource,
     @InjectRepository(Sale) private readonly saleRepository: Repository<Sale>,
-    @InjectRepository(SaleDetails)
-    private readonly saleDetailsRepository: Repository<SaleDetails>,
     private readonly productsService: ProductsService,
     private readonly errorDatabaseService: ErrorDatabaseService,
     private readonly inventoriesService: InventoriesService,
@@ -162,13 +160,13 @@ export default class SalesService {
   ) => {
     const queryBuilder = this.saleRepository
       .createQueryBuilder('sale')
-      .select('client.document_number', 'document_number')
+      .select('client.document_number', 'documentNumber')
       .addSelect('client.names', 'names')
       .addSelect('client.surnames', 'surnames')
-      .addSelect('COALESCE(SUM(sale.total_amount), 0)', 'total_credits')
+      .addSelect('COALESCE(SUM(sale.total_amount), 0)', 'totalCredits')
       .addSelect(
         'COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = client.id), 0)',
-        'total_payments',
+        'totalPayments',
       )
       .leftJoin('sale.client', 'client')
       .where('sale.enterprise.id = :enterpriseId', { enterpriseId: id })
@@ -186,10 +184,22 @@ export default class SalesService {
 
     const total = await queryBuilder.getCount();
 
-    const results = await queryBuilder
+    let results = await queryBuilder
       .offset((+page - 1) * +limit)
       .limit(+limit)
       .getRawMany();
+
+    results = results.map(
+      ({ totalCredits, totalPayments, ...dataRe }: any) => ({
+        ...dataRe,
+        totalCredits: +totalCredits,
+        totalPayments: +totalPayments,
+        diff: totalCredits - totalPayments,
+        percentage: parseFloat(
+          ((+totalPayments / +totalCredits) * 100).toFixed(2),
+        ),
+      }),
+    );
 
     const meta = {
       totalItems: total,
