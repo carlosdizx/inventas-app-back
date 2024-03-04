@@ -61,16 +61,4 @@ export default class SalesController {
   ) {
     return this.salesService.findSaleById(id, enterprise);
   }
-
-  @Get('find/all/credits')
-  @Auth(UserRoles.OWNER)
-  public async findAllCredits(
-    @Query() { page, limit }: PaginationDto,
-    @GetDataReqDecorator() enterprise: Enterprise,
-  ) {
-    return this.salesService.findAllSalesWithCredit(
-      { page, limit },
-      enterprise,
-    );
-  }
 }
