@@ -7,17 +7,17 @@ export class Mig1709522417770 implements MigrationInterface {
     await queryRunner.query(
       `CREATE table payments
        (
-           id UUID  DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
+           id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
            total_amount NUMERIC(10, 2),
-           client_id UUID CONSTRAINT fk_sales_clients REFERENCES clients ON DELETE CASCADE,
-           enterprise_id UUID CONSTRAINT fk_enterprise_enterprise REFERENCES enterprises,
-           "createdAt"   timestamp default now() NOT NULL,
-           "updatedAt"   timestamp default now() NOT NULL
+           client_id UUID CONSTRAINT fk_payments_clients REFERENCES clients ON DELETE CASCADE,
+           enterprise_id UUID CONSTRAINT fk_payments_enterprises REFERENCES enterprises,
+           "createdAt" TIMESTAMP DEFAULT NOW() NOT NULL,
+           "updatedAt" TIMESTAMP DEFAULT NOW() NOT NULL
        );`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE IF EXISTS payment;`);
+    await queryRunner.query(`DROP TABLE IF EXISTS payments;`);
   }
 }
