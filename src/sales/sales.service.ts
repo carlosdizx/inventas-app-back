@@ -155,4 +155,65 @@ export default class SalesService {
 
     return sale;
   };
+
+  public findAllSalesWithCredit = async (
+    { page, limit }: IPaginationOptions,
+    { id }: Enterprise,
+  ) => {
+    const queryBuilder = this.saleRepository
+      .createQueryBuilder('sale')
+      .select('client.document_number', 'document_number')
+      .addSelect('client.names', 'names')
+      .addSelect('client.surnames', 'surnames')
+      .addSelect('COALESCE(SUM(sale.total_amount), 0)', 'total_credits')
+      .addSelect(
+        'COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = client.id), 0)',
+        'total_payments',
+      )
+      .leftJoin('sale.client', 'client')
+      .where('sale.enterprise.id = :enterpriseId', { enterpriseId: id })
+      .andWhere('sale.type = :type', { type: 1 })
+      .groupBy('client.id')
+      .addGroupBy('client.document_number')
+      .addGroupBy('client.names')
+      .addGroupBy('client.surnames')
+      .orderBy('client.names', 'ASC')
+      .loadRelationCountAndMap(
+        'client.total_payments',
+        'client.payments',
+        'payment',
+      );
+
+    const total = await queryBuilder.getCount();
+
+    const results = await queryBuilder
+      .offset((+page - 1) * +limit)
+      .limit(+limit)
+      .getRawMany();
+
+    const meta = {
+      totalItems: total,
+      itemCount: results.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(total / +limit),
+      currentPage: page,
+    };
+
+    const baseUrl = 'sales/find/all/credits';
+    const links = {
+      first: `${baseUrl}?limit=${limit}`,
+      previous: page > 1 ? `${baseUrl}?page=${+page - 1}&limit=${limit}` : '',
+      next:
+        page < meta.totalPages
+          ? `${baseUrl}?page=${+page + 1}&limit=${limit}`
+          : '',
+      last: `${baseUrl}?page=${meta.totalPages}&limit=${limit}`,
+    };
+
+    return {
+      items: results,
+      meta,
+      links,
+    };
+  };
 }
