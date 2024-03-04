@@ -7,10 +7,12 @@ import {
   Unique,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { documentTypes } from '../../common/enums/document.type.enum';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
+import Payment from '../../sales/entities/payment.entity';
 
 @Entity('clients')
 @Unique(['documentNumber', 'documentType'])
@@ -42,6 +44,9 @@ export default class Client {
   @ManyToOne(() => Enterprise, (enterprise) => enterprise.categories)
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
+
+  @OneToMany(() => Payment, (payment) => payment.client)
+  payments: Payment[];
 
   @CreateDateColumn()
   createdAt: Date;

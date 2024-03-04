@@ -10,6 +10,7 @@ import User from '../../auth/entities/user.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
 import Category from '../../categories/entities/category.entity';
 import Product from '../../products/entities/product.entity';
+import Payment from '../../sales/entities/payment.entity';
 
 @Entity('enterprises')
 @Unique(['documentNumber', 'documentType'])
@@ -31,6 +32,9 @@ export default class Enterprise {
 
   @OneToMany(() => User, (user) => user.enterprise)
   users: User[];
+
+  @OneToMany(() => Payment, (payment) => payment.client)
+  payments: Payment[];
 
   @OneToMany(() => Category, (category) => category.enterprise)
   categories: Category[];
