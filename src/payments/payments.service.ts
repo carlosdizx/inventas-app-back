@@ -1,10 +1,11 @@
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import Enterprise from '../enterprise/entities/enterprise.entity';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import Payment from './entities/payment.entity';
 import { TypeSaleEnum } from '../sales/enums/type-sale.enum';
+import CreatePaymentDto from './dto/create-payment.dto';
 
 @Injectable()
 export default class PaymentService {
@@ -76,5 +77,39 @@ export default class PaymentService {
       meta,
       links,
     };
+  };
+
+  public registerPayment = async (
+    { clientId, totalAmount }: CreatePaymentDto,
+    { id: enterpriseId }: Enterprise,
+  ) => {
+    const [dataResult] = await this.paymentRepository.query(
+      `
+          SELECT COALESCE(SUM(s.total_amount), 0) AS total_credits,
+                 COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id), 0) AS total_payments
+          FROM sales s
+                   LEFT JOIN clients c ON c.id = s.client_id
+          WHERE s.type =1 AND s.enterprise_id = $1 AND c.id = $2
+          GROUP BY c.id;
+    `,
+      [enterpriseId, clientId],
+    );
+
+    if (!dataResult) throw new ConflictException('El cliente no tiene deudas');
+
+    const { total_credits, total_payments } = dataResult;
+
+    if (totalAmount > +total_credits - +total_payments)
+      throw new ConflictException(
+        'El valor ingresado es mayor a la deuda del cliente',
+      );
+
+    const payment = this.paymentRepository.create({
+      totalAmount,
+      client: { id: clientId },
+      enterprise: { id: enterpriseId },
+    });
+
+    await this.paymentRepository.save(payment);
   };
 }
