@@ -50,6 +50,12 @@ export default class PaymentService {
         percentage: parseFloat(
           ((+total_payments / +total_credits) * 100).toFixed(2),
         ),
+        inversePercentage: parseFloat(
+          (
+            100 -
+            parseFloat(((+total_payments / +total_credits) * 100).toFixed(2))
+          ).toFixed(2),
+        ),
       }),
     );
 
