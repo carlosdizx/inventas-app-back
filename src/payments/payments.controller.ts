@@ -1,9 +1,10 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import PaymentsService from './payments.service';
 import Auth from '../auth/decorators/auth.decorator';
 import PaginationDto from '../common/dto/pagination.dto';
 import GetDataReqDecorator from '../auth/decorators/get-data-req.decorator';
 import Enterprise from '../enterprise/entities/enterprise.entity';
+import CreatePaymentDto from './dto/create-payment.dto';
 
 @Controller('payments')
 export default class PaymentsController {
@@ -19,5 +20,14 @@ export default class PaymentsController {
       { page, limit },
       enterprise,
     );
+  }
+
+  @Post()
+  @Auth()
+  public async registerPayment(
+    @Body() dto: CreatePaymentDto,
+    @GetDataReqDecorator() enterprise: Enterprise,
+  ) {
+    return await this.paymentsService.registerPayment(dto, enterprise);
   }
 }
