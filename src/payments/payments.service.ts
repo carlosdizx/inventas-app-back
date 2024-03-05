@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import Payment from './entities/payment.entity';
+import { TypeSaleEnum } from '../sales/enums/type-sale.enum';
 
 @Injectable()
 export default class PaymentService {
@@ -14,68 +15,52 @@ export default class PaymentService {
 
   public findAllSalesWithCredit = async (
     { page, limit }: IPaginationOptions,
-    { id }: Enterprise,
+    { id: enterprise_id }: Enterprise,
   ) => {
-    const queryBuilder = this.paymentRepository
-      .createQueryBuilder('client')
-      .select('client.document_number', 'documentNumber')
-      .addSelect('client.names', 'names')
-      .addSelect('client.surnames', 'surnames')
-      .addSelect(
-        `COALESCE((
-      SELECT SUM(sale.total_amount) 
-      FROM sales sale 
-      WHERE sale.client_id = client.id 
-      AND sale.type = :type 
-      AND sale.enterprise_id = :enterpriseId
-    ), 0)`,
-        'totalCredits',
-      )
-      .addSelect(
-        `COALESCE((
-      SELECT SUM(payment.total_amount) 
-      FROM payments payment 
-      WHERE payment.client_id = client.id
-    ), 0)`,
-        'totalPayments',
-      )
-      .leftJoin('client.sales', 'sale')
-      .where('sale.enterprise.id = :enterpriseId', { enterpriseId: id })
-      .andWhere('sale.type = :type', { type: 1 })
-      .groupBy('client.id')
-      .addGroupBy('client.document_number')
-      .addGroupBy('client.names')
-      .addGroupBy('client.surnames')
-      .orderBy('client.names', 'ASC');
+    const offset = (+page - 1) * +limit;
 
-    const total = await queryBuilder.getCount();
+    let result = await this.paymentRepository.query(
+      `
+        SELECT
+            c.id,
+            c.document_number,
+            c.names,
+            c.surnames,
+            COALESCE(SUM(s.total_amount), 0) AS total_credits,
+            COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id), 0) AS total_payments
+        FROM sales s
+                 LEFT JOIN clients c ON c.id = s.client_id
+        WHERE s.type = ${TypeSaleEnum.CREDIT} AND s.enterprise_id = $1
+        GROUP BY c.id
+        LIMIT $2 OFFSET $3;
+    `,
+      [enterprise_id, limit, offset],
+    );
 
-    let results = await queryBuilder
-      .offset((+page - 1) * +limit)
-      .limit(+limit)
-      .getRawMany();
+    const total = await result.length;
 
-    results = results.map(
-      ({ totalCredits, totalPayments, ...dataRe }: any) => ({
+    result = result.map(
+      ({ document_number, total_credits, total_payments, ...dataRe }: any) => ({
         ...dataRe,
-        totalCredits: +totalCredits,
-        totalPayments: +totalPayments,
-        diff: totalCredits - totalPayments,
+        documentNumber: document_number,
+        totalCredits: +total_credits,
+        totalPayments: +total_payments,
+        diff: +total_credits - +total_payments,
         percentage: parseFloat(
-          ((+totalPayments / +totalCredits) * 100).toFixed(2),
+          ((+total_payments / +total_credits) * 100).toFixed(2),
         ),
       }),
     );
 
     const meta = {
       totalItems: total,
-      itemCount: results.length,
+      itemCount: result.length,
       itemsPerPage: limit,
       totalPages: Math.ceil(total / +limit),
       currentPage: page,
     };
 
-    const baseUrl = 'sales/find/all/credits';
+    const baseUrl = 'payments/find/all/credits';
     const links = {
       first: `${baseUrl}?limit=${limit}`,
       previous: page > 1 ? `${baseUrl}?page=${+page - 1}&limit=${limit}` : '',
@@ -87,7 +72,7 @@ export default class PaymentService {
     };
 
     return {
-      items: results,
+      items: result,
       meta,
       links,
     };
