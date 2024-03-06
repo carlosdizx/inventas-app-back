@@ -54,7 +54,7 @@ export default class UserCrudController {
     @getDataReq() enterprise: Enterprise,
     @getDataReq(true) user: User,
   ) {
-    return await this.userCrudService.listUser(
+    return await this.userCrudService.listUsers(
       { page, limit },
       enterprise,
       user,
