@@ -6,6 +6,7 @@ import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import CreateClientDto from './dto/create-client.dto';
 import UpdateClientDto from './dto/update-client.dto';
+import { StatusEntity } from '../common/enums/status.entity.enum}';
 
 @Injectable()
 export default class ClientsService {
@@ -60,4 +61,14 @@ export default class ClientsService {
     if (!clientFound) throw new NotFoundException('Cliente no encontrado');
     return this.clientRepository.save(clientFound);
   };
+
+  public findClientByFilter = async (filter: any) =>
+    await this.clientRepository.findOne({
+      where: { ...filter },
+    });
+
+  public findAllClients = (enterprise: Enterprise) =>
+    this.clientRepository.find({
+      where: { enterprise: { id: enterprise.id }, status: StatusEntity.ACTIVE },
+    });
 }

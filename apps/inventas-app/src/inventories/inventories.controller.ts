@@ -65,4 +65,10 @@ export default class InventoriesController {
   ) {
     return this.inventoriesService.listInventories({ page, limit }, enterprise);
   }
+
+  @Get('find/all')
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  public async findAllInventories(@getDataReq() enterprise: Enterprise) {
+    return this.inventoriesService.findAllInventories(enterprise);
+  }
 }

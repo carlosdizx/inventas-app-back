@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseFilters,
   ValidationPipe,
 } from '@nestjs/common';
 import SalesService from './sales.service';
@@ -18,8 +19,10 @@ import { UserRoles } from '../auth/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import UpdateSaleDto from './dto/update-sale.dto';
 import GetDataReqDecorator from '../auth/decorators/get-data-req.decorator';
+import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 
 @Controller('sales')
+@UseFilters(TypeormExceptionFilter)
 export default class SalesController {
   constructor(private readonly salesService: SalesService) {}
   @Post()
@@ -48,5 +51,14 @@ export default class SalesController {
     @GetDataReqDecorator() enterprise: Enterprise,
   ) {
     return this.salesService.updateSaleById(id, dto, enterprise);
+  }
+
+  @Get(':id')
+  @Auth(UserRoles.OWNER)
+  public async findSaleById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @GetDataReqDecorator() enterprise: Enterprise,
+  ) {
+    return this.salesService.findSaleById(id, enterprise);
   }
 }

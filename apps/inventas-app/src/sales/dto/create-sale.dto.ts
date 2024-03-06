@@ -1,23 +1,29 @@
 import {
   ArrayMinSize,
   IsArray,
-  IsNotEmpty,
+  IsEnum,
   IsUUID,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import ProductQuantityDto from './product-quantity.dto';
+import { TypeSaleEnum } from '../enums/type-sale.enum';
 
 export default class CreateSaleDto {
-  @IsNotEmpty()
-  documentClient: string;
+  @IsUUID()
+  inventoryId: string;
+
+  @ValidateIf((o) => o.type === TypeSaleEnum.CREDIT)
+  @IsUUID()
+  clientId?: string;
+
+  @IsEnum(TypeSaleEnum)
+  type: TypeSaleEnum;
 
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => ProductQuantityDto)
   productsIds: ProductQuantityDto[];
-
-  @IsUUID()
-  inventoryId: string;
 }

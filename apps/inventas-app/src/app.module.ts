@@ -6,6 +6,7 @@ import AuthModule from './auth/auth.module';
 import CommonModule from './common/common.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import PaymentsModule from './payments/payments.module';
 import ClientsModule from './clients/clients.module';
 import DatabaseControlModule from './database-control/database-control.module';
 import InventoriesModule from './inventories/inventories.module';
@@ -33,6 +34,7 @@ import { dataSourceOptions } from '../../../database/database.config';
     InventoriesModule,
     DatabaseControlModule,
     ClientsModule,
+    PaymentsModule,
   ],
 })
 export default class AppModule {}

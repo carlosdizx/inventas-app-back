@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseFilters,
 } from '@nestjs/common';
 import ClientsService from './clients.service';
 import Auth from '../auth/decorators/auth.decorator';
@@ -16,8 +17,10 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import { UserRoles } from '../auth/enums/user.roles.enum';
 import CreateClientDto from './dto/create-client.dto';
 import UpdateClientDto from './dto/update-client.dto';
+import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 
 @Controller('clients')
+@UseFilters(TypeormExceptionFilter)
 export default class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
@@ -55,5 +58,11 @@ export default class ClientsController {
     @Body() dto: UpdateClientDto,
   ) {
     return this.clientsService.updateClientById(id, dto);
+  }
+
+  @Get('find/all')
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  public async findAllClients(@getDataReq() enterprise: Enterprise) {
+    return this.clientsService.findAllClients(enterprise);
   }
 }
