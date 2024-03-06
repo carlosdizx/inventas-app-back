@@ -7,8 +7,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import Client from '../../clients/entities/client.entity';
-import Enterprise from '../../enterprise/entities/enterprise.entity';
+import Client from '../../../apps/inventas-app/src/clients/entities/client.entity';
+import Enterprise from '../../../apps/inventas-app/src/enterprise/entities/enterprise.entity';
 
 @Entity('payments')
 export default class Payment {

@@ -12,8 +12,8 @@ import {
 import { documentTypes } from '../../common/enums/document.type.enum';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
-import Payment from '../../payments/entities/payment.entity';
 import Sale from '../../sales/entities/sale.entity';
+import Payment from '../../../../../src/payments/entities/payment.entity';
 
 @Entity('clients')
 @Unique(['documentNumber', 'documentType'])

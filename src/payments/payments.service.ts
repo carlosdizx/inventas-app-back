@@ -1,11 +1,11 @@
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
-import Enterprise from '../enterprise/entities/enterprise.entity';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import Payment from './entities/payment.entity';
 import { TypeSaleEnum } from '../sales/enums/type-sale.enum';
 import CreatePaymentDto from './dto/create-payment.dto';
+import Enterprise from '../../apps/inventas-app/src/enterprise/entities/enterprise.entity';
 
 @Injectable()
 export default class PaymentService {
