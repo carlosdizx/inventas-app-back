@@ -73,12 +73,10 @@ export default class InventoriesService {
           productInventory.quantity += productQuantity.quantity;
           await queryRunner.manager.save(ProductInventory, productInventory);
         } else {
-          console.log(productQuantity);
           const product = await this.productsService.findProductById(
             productQuantity.id,
             enterprise,
           );
-          console.log(product);
           if (product.status !== StatusEntity.ACTIVE)
             throw new ConflictException('Hay un producto inactivo');
           productInventory = this.productInventoryRepository.create({
