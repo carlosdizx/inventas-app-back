@@ -132,7 +132,7 @@ export default class UserCrudService {
     await this.userRepository.save(userPreload);
   };
 
-  public listUser = async (
+  public listUsers = async (
     { page, limit }: IPaginationOptions,
     enterprise: Enterprise,
     user: User,
@@ -144,6 +144,17 @@ export default class UserCrudService {
         enterpriseId: enterprise.id,
       })
       .andWhere('user.id != :userId', { userId: user.id });
-    return await paginate<User>(queryBuilder, { page, limit, route: 'users' });
+    const data = await paginate<User>(queryBuilder, {
+      page,
+      limit,
+      route: 'users',
+    });
+    const itemMapped = data.items.map(({ id, userDetails, ...restData }) => ({
+      ...restData,
+      ...userDetails,
+      id,
+    }));
+
+    return { ...data, items: itemMapped };
   };
 }
