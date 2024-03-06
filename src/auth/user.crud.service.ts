@@ -91,32 +91,8 @@ export default class UserCrudService {
       .where('user.id = :id', { id })
       .getOne();
     if (!userFound) throw new NotFoundException('Usuario no encontrado');
-    const {
-      email,
-      roles,
-      status,
-      userDetails: {
-        firstName,
-        lastName,
-        documentNumber,
-        documentType,
-        gender,
-        birthdate,
-        phone,
-      },
-    } = userFound;
-    return {
-      status,
-      firstName,
-      lastName,
-      documentType,
-      documentNumber,
-      email,
-      gender,
-      birthdate,
-      phone,
-      roles,
-    };
+    const { userDetails, ...restData } = userFound;
+    return { ...restData, ...userDetails, id };
   };
 
   public deleteUserById = async (id: string) => {
