@@ -1,5 +1,5 @@
 {
-  "name": "oauth-server",
+  "name": "inventas-app",
   "version": "1.0.0",
   "description": "Inventas-App",
   "author": "Ernesto Díaz",
@@ -26,6 +26,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.1.1",
     "@nestjs/mapped-types": "*",
+    "@nestjs/microservices": "^10.3.3",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/serve-static": "^4.0.0",
