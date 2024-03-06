@@ -24,10 +24,10 @@ export default class Client {
   @Column({ name: 'document_number' })
   documentNumber: string;
 
-  @Column({ name: 'document_type', enum: documentTypes })
+  @Column({ type: 'enum', name: 'document_type', enum: documentTypes })
   documentType: documentTypes;
 
-  @Column({ enum: StatusEntity, default: StatusEntity.ACTIVE })
+  @Column({ type: 'enum', enum: StatusEntity, default: StatusEntity.ACTIVE })
   status: StatusEntity;
 
   @Column()

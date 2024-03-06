@@ -22,7 +22,11 @@ export default class User {
   @Column({ select: false })
   password: string;
 
-  @Column({ enum: StatusEntity, default: StatusEntity.PENDING_CONFIRMATION })
+  @Column({
+    type: 'enum',
+    enum: StatusEntity,
+    default: StatusEntity.PENDING_CONFIRMATION,
+  })
   status: StatusEntity;
 
   @Column('enum', {

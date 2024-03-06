@@ -24,10 +24,14 @@ export default class Enterprise {
   @Column({ name: 'document_number' })
   documentNumber: string;
 
-  @Column({ name: 'document_type', enum: documentTypes })
+  @Column({ type: 'enum', name: 'document_type', enum: documentTypes })
   documentType: documentTypes;
 
-  @Column({ enum: StatusEntity, default: StatusEntity.PENDING_APPROVAL })
+  @Column({
+    type: 'enum',
+    enum: StatusEntity,
+    default: StatusEntity.PENDING_APPROVAL,
+  })
   status: StatusEntity;
 
   @OneToMany(() => User, (user) => user.enterprise)

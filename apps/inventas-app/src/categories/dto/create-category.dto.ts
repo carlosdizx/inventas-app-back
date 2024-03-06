@@ -11,7 +11,7 @@ export default class CreateCategoryDto {
   @MinLength(2)
   name: string;
 
-  @IsNotEmpty()
+  @IsString()
   description: string;
 
   @IsArray()

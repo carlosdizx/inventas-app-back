@@ -26,10 +26,10 @@ export default class Sale {
   @Column({ type: 'decimal', precision: 10, scale: 2, name: 'total_amount' })
   totalAmount: number;
 
-  @Column({ enum: StatusEntity, default: StatusEntity.ACTIVE })
+  @Column({ type: 'enum', enum: StatusEntity, default: StatusEntity.ACTIVE })
   status: StatusEntity;
 
-  @Column({ enum: TypeSaleEnum })
+  @Column({ type: 'enum', enum: TypeSaleEnum })
   type: TypeSaleEnum;
 
   @ManyToOne(() => Enterprise)

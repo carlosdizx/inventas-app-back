@@ -23,7 +23,7 @@ export default class UserDetails {
   @Column({ name: 'document_number' })
   documentNumber: string;
 
-  @Column({ name: 'document_type', enum: documentTypes })
+  @Column({ type: 'enum', name: 'document_type', enum: documentTypes })
   documentType: documentTypes;
 
   @Column()

@@ -24,7 +24,7 @@ export default class Category {
   @Column('text')
   description: string;
 
-  @Column({ enum: StatusEntity, default: StatusEntity.ACTIVE })
+  @Column({ type: 'enum', enum: StatusEntity, default: StatusEntity.ACTIVE })
   status: StatusEntity;
 
   @OneToMany(() => Subcategory, (subcategory) => subcategory.category, {

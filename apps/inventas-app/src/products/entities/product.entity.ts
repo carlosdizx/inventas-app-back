@@ -40,7 +40,7 @@ export default class Product {
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
 
-  @Column({ enum: StatusEntity, default: StatusEntity.ACTIVE })
+  @Column({ type: 'enum', enum: StatusEntity, default: StatusEntity.ACTIVE })
   status: StatusEntity;
 
   @ManyToOne(() => Category, (category) => category.products)
