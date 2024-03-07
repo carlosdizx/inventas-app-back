@@ -55,39 +55,41 @@ export default class InventoriesService {
 
     if (!inventory) throw new NotFoundException('Inventario no existe');
 
+    const productsInventory: ProductInventory[] = [];
+
+    for (const productQuantity of productsQuantity) {
+      let productInventory = await this.productInventoryRepository.findOne({
+        where: {
+          inventory: { id: inventory.id },
+          product: { id: productQuantity.id },
+        },
+        relations: ['product'],
+      });
+      if (productInventory) {
+        if (productInventory.product.status !== StatusEntity.ACTIVE)
+          throw new ConflictException('Hay un producto inactivo');
+        productInventory.quantity += productQuantity.quantity;
+        productsInventory.push(productInventory);
+      } else {
+        const product = await this.productsService.findProductById(
+          productQuantity.id,
+          enterprise,
+        );
+        if (product.status !== StatusEntity.ACTIVE)
+          throw new ConflictException('Hay un producto inactivo');
+        productInventory = this.productInventoryRepository.create({
+          inventory,
+          product: { id: productQuantity.id },
+          quantity: productQuantity.quantity,
+        });
+        productsInventory.push(productInventory);
+      }
+    }
     const queryRunner = this.datasource.createQueryRunner();
     await queryRunner.startTransaction();
 
     try {
-      for (const productQuantity of productsQuantity) {
-        let productInventory = await this.productInventoryRepository.findOne({
-          where: {
-            inventory: { id: inventory.id },
-            product: { id: productQuantity.id },
-          },
-          relations: ['product'],
-        });
-        if (productInventory) {
-          if (productInventory.product.status !== StatusEntity.ACTIVE)
-            throw new ConflictException('Hay un producto inactivo');
-          productInventory.quantity += productQuantity.quantity;
-          await queryRunner.manager.save(ProductInventory, productInventory);
-        } else {
-          const product = await this.productsService.findProductById(
-            productQuantity.id,
-            enterprise,
-          );
-          if (product.status !== StatusEntity.ACTIVE)
-            throw new ConflictException('Hay un producto inactivo');
-          productInventory = this.productInventoryRepository.create({
-            inventory,
-            product: { id: productQuantity.id },
-            quantity: productQuantity.quantity,
-          });
-          await queryRunner.manager.save(ProductInventory, productInventory);
-        }
-      }
-
+      await queryRunner.manager.save(productsInventory);
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -111,8 +113,6 @@ export default class InventoriesService {
 
     const productsInventories: ProductInventory[] = [];
 
-    const queryRunner = this.datasource.createQueryRunner();
-    await queryRunner.startTransaction();
     for (const productQuantity of productsQuantity) {
       const productInventory = await this.productInventoryRepository.findOne({
         where: {
@@ -140,6 +140,8 @@ export default class InventoriesService {
         );
     }
 
+    const queryRunner = this.datasource.createQueryRunner();
+    await queryRunner.startTransaction();
     try {
       await queryRunner.manager.save(ProductInventory, productsInventories);
       await queryRunner.commitTransaction();
