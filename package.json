@@ -8,6 +8,7 @@
   "scripts": {
     "build": "nest build",
     "core:build": "nest build inventas-app",
+    "report:build": "nest build reports",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "core:dev": "nest start inventas-app --watch --debug",
     "report:dev": "nest start reports --watch --debug",
