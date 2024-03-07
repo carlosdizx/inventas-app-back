@@ -9,11 +9,12 @@ export const dataSourceOptions: DataSourceOptions = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [__dirname + '../../**/*.entity{.ts,.js}'],
-  migrations: ['dist/database/migrations/*.js'],
+  autoLoadEntities: true,
+  // entities: [__dirname + '../../**/*.entity{.ts,.js}'],
+  // migrations: ['dist/database/migrations/*.js'],
   migrationsTableName: 'migrations',
   synchronize: process.env.DB_SYNCHRONIZE === 'true',
-};
+} as any;
 
 const dataSource = new DataSource(dataSourceOptions);
 export default dataSource;

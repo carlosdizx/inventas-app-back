@@ -1,5 +1,5 @@
 {
-  "name": "oauth-server",
+  "name": "inventas-app",
   "version": "1.0.0",
   "description": "Inventas-App",
   "author": "Ernesto Díaz",
@@ -7,18 +7,19 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start:dev": "nest start --watch --debug",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
+    "core:dev": "nest start inventas-app --watch --debug",
+    "report:dev": "nest start reports --watch --debug",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "jest --config ./apps/inventas-app/test/jest-e2e.json",
     "typeorm": "npm run build && npx typeorm -d dist/database/database.config.js",
     "seed:generate": "npm run typeorm -- migration:generate database/migrations/seed",
     "migration:generate": "npm run typeorm -- migration:generate database/migrations/mig",
-    "orm-execute": "npm run typeorm -- migration:run"
+    "migration:run": "npm run typeorm -- migration:run"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -26,6 +27,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.1.1",
     "@nestjs/mapped-types": "*",
+    "@nestjs/microservices": "^10.3.3",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/serve-static": "^4.0.0",
@@ -40,7 +42,7 @@
     "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.2",
     "nestjs-typeorm-paginate": "^4.0.4",
-    "nodemailer": "6.9.11",
+    "nodemailer": "^6.9.7",
     "passport-jwt": "^4.0.1",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
@@ -82,7 +84,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -90,7 +92,7 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "./coverage",
     "coveragePathIgnorePatterns": [
       "main.ts",
       "\\.dto\\.ts$",
@@ -99,6 +101,9 @@
       "\\.config\\.ts$",
       "\\.module\\.ts$"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/apps/"
+    ]
   }
 }
