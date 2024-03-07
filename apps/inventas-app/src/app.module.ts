@@ -13,8 +13,8 @@ import SalesModule from './sales/sales.module';
 import ProductsModule from './products/products.module';
 import CategoriesModule from './categories/categories.module';
 import EnterpriseModule from './enterprise/enterprise.module';
+import PaymentsModule from './payments/payments.module';
 import { dataSourceOptions } from '../../../database/database.config';
-import PaymentsModule from '../../../src/payments/payments.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({

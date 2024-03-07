@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import PaymentsService from './payments.service';
 import CreatePaymentDto from './dto/create-payment.dto';
-import PaginationDto from '../../apps/inventas-app/src/common/dto/pagination.dto';
-import Auth from '../../apps/inventas-app/src/auth/decorators/auth.decorator';
-import GetDataReqDecorator from '../../apps/inventas-app/src/auth/decorators/get-data-req.decorator';
-import Enterprise from '../../apps/inventas-app/src/enterprise/entities/enterprise.entity';
+import Auth from '../auth/decorators/auth.decorator';
+import PaginationDto from '../common/dto/pagination.dto';
+import GetDataReqDecorator from '../auth/decorators/get-data-req.decorator';
+import Enterprise from '../enterprise/entities/enterprise.entity';
 
 @Controller('payments')
 export default class PaymentsController {

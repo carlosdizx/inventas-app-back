@@ -10,7 +10,7 @@ import User from '../../auth/entities/user.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
 import Category from '../../categories/entities/category.entity';
 import Product from '../../products/entities/product.entity';
-import Payment from '../../../../../src/payments/entities/payment.entity';
+import Payment from '../../payments/entities/payment.entity';
 
 @Entity('enterprises')
 @Unique(['documentNumber', 'documentType'])

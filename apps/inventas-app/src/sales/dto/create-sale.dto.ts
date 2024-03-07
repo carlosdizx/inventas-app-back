@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import ProductQuantityDto from './product-quantity.dto';
-import { TypeSaleEnum } from '../../../../../src/sales/enums/type-sale.enum';
+import { TypeSaleEnum } from '../enums/type-sale.enum';
 
 export default class CreateSaleDto {
   @IsUUID()

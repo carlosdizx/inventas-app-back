@@ -13,7 +13,7 @@ import Enterprise from '../../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
 import Inventory from '../../inventories/entities/inventory.entity';
 import Client from '../../clients/entities/client.entity';
-import { TypeSaleEnum } from '../../../../../src/sales/enums/type-sale.enum';
+import { TypeSaleEnum } from '../enums/type-sale.enum';
 
 @Entity('sales')
 export default class Sale {
