@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 const bootstrap = async () => {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['https://inventas-app-v3.web.app/', 'http://localhost:5173/'],
+    origin: process.env.APP_CORS.split(','),
   });
 
   app.useGlobalPipes(
