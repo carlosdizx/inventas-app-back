@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "start": "nest start",
     "core:build": "nest build inventas-app",
     "report:build": "nest build reports",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
