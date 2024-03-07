@@ -6,6 +6,7 @@ import Payment from './entities/payment.entity';
 import CreatePaymentDto from './dto/create-payment.dto';
 import { TypeSaleEnum } from '../sales/enums/type-sale.enum';
 import Enterprise from '../enterprise/entities/enterprise.entity';
+import { StatusEntity } from '../common/enums/status.entity.enum}';
 
 @Injectable()
 export default class PaymentService {
@@ -31,7 +32,7 @@ export default class PaymentService {
             COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id), 0) AS total_payments
         FROM sales s
                  LEFT JOIN clients c ON c.id = s.client_id
-        WHERE s.type = ${TypeSaleEnum.CREDIT} AND s.enterprise_id = $1
+        WHERE s.type = ${TypeSaleEnum.CREDIT} AND s.status = ${StatusEntity.ACTIVE} AND s.enterprise_id = $1
         GROUP BY c.id
         LIMIT $2 OFFSET $3;
     `,
