@@ -1,10 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import AppModule from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 const bootstrap = async () => {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({});
+  const configService = app.get<ConfigService>(ConfigService);
+
+  app.enableCors({
+    origin: configService.getOrThrow<string>('APP_CORS').split(','),
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -13,8 +18,8 @@ const bootstrap = async () => {
     }),
   );
 
-  const port = process.env.APP_PORT;
-  const prefix = process.env.APP_PREFIX;
+  const port = configService.getOrThrow<string>('APP_PORT');
+  const prefix = configService.getOrThrow<string>('APP_PREFIX');
   app.setGlobalPrefix(prefix);
   await app.listen(port);
   console.log('Running application at', `...:${port}/${prefix}/`);
