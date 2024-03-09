@@ -14,7 +14,7 @@ import ProductsModule from './products/products.module';
 import CategoriesModule from './categories/categories.module';
 import EnterpriseModule from './enterprise/enterprise.module';
 import PaymentsModule from './payments/payments.module';
-import { dataSourceOptions } from '../../../database/database.config';
+import { dataSourceOptions } from '../database/database.config';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
