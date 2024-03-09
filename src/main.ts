@@ -19,10 +19,8 @@ const bootstrap = async () => {
   );
 
   const port = configService.getOrThrow<string>('APP_PORT');
-  const prefix = configService.getOrThrow<string>('APP_PREFIX');
-  app.setGlobalPrefix(prefix);
   await app.listen(port);
-  console.log('Running application at', `...:${port}/${prefix}/`);
+  console.log('Running application at', `...:${port}/`);
 };
 
 (async () => {
