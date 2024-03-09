@@ -15,6 +15,7 @@ import CategoriesModule from './categories/categories.module';
 import EnterpriseModule from './enterprise/enterprise.module';
 import PaymentsModule from './payments/payments.module';
 import { dataSourceOptions } from '../database/database.config';
+import AppController from './app.controller';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -36,5 +37,6 @@ import { dataSourceOptions } from '../database/database.config';
     ClientsModule,
     PaymentsModule,
   ],
+  controllers: [AppController],
 })
 export default class AppModule {}
