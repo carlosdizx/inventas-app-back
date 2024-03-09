@@ -14,7 +14,9 @@ const bootstrap = async () => {
   const app = await NestFactory.create(AppModule, { httpsOptions });
   const configService = app.get<ConfigService>(ConfigService);
 
-  app.enableCors({});
+  app.enableCors({
+    origin: configService.getOrThrow<string>('APP_CORS').split(','),
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
