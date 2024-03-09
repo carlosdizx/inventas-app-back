@@ -13,8 +13,9 @@ import JwtPayload from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import LoginUserDto from './dto/login.dto';
 import EncryptService from '../common/service/encrypt.service';
-import { comparePasswords } from '../common/util/encrypt.util';
+import { comparePasswords, hashPassword } from '../common/util/encrypt.util';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
+import generatePasswordUtil from '../common/util/generate.password.util';
 
 @Injectable()
 export default class AuthService {
@@ -69,5 +70,14 @@ export default class AuthService {
     } catch (error) {
       throw new UnauthorizedException('Refresh token inválido');
     }
+  };
+
+  public generateRandomPassword = async () => {
+    const password = generatePasswordUtil(20);
+    const passwordEncrypted = this.encryptService.encrypt(
+      await hashPassword(password),
+    );
+
+    return { password, passwordEncrypted };
   };
 }
