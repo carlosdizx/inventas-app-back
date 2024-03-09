@@ -42,3 +42,7 @@ lerna-debug.log*
 # Docker
 postgres-data/
 pgadmin-data/
+
+#SSL
+certificate.crt
+private.key
