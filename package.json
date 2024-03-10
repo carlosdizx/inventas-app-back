@@ -7,13 +7,13 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "start": "nest start",
+    "start": "pm2 start dist/src/main.js --name inventas-app-backend",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --watch --debug",
     "typeorm": "npm run build && npx typeorm -d dist/database/database.config.js",
     "seed:generate": "npm run typeorm -- migration:generate database/migrations/seed",
     "migration:generate": "npm run typeorm -- migration:generate database/migrations/mig",
-    "migration:run": "npm run typeorm -- migration:run"
+    "migrate": "npm run typeorm -- migration:run"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
