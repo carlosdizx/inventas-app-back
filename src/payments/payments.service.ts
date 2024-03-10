@@ -20,9 +20,6 @@ export default class PaymentService {
     { id: enterprise_id }: Enterprise,
   ) => {
     const offset = (+page - 1) * +limit;
-    Logger.log('init');
-    console.log(TypeSaleEnum.CREDIT, StatusEntity.ACTIVE, enterprise_id);
-    const typeSale = `${TypeSaleEnum.CREDIT}`;
 
     let result = await this.paymentRepository.query(
       `
