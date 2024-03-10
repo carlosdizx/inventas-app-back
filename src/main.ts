@@ -12,16 +12,12 @@ const bootstrap = async () => {
   let app: INestApplication;
 
   if (usageHttps) {
-    Logger.debug('https');
     const httpsOptions: HttpsOptions = {
       key: fs.readFileSync('private.key'),
       cert: fs.readFileSync('certificate.crt'),
     };
     app = await NestFactory.create(AppModule, { httpsOptions });
-  } else {
-    Logger.debug('http');
-    app = await NestFactory.create(AppModule);
-  }
+  } else app = await NestFactory.create(AppModule);
 
   app.enableCors({});
   app.useGlobalPipes(
@@ -34,10 +30,8 @@ const bootstrap = async () => {
   const port = configService.getOrThrow<string>('APP_PORT');
   await app.listen(port);
 
-  Logger.log(
-    '://[...]:${port}/',
-    'Running application at',
-    usageHttps ? `https` : `http`,
+  Logger.debug(
+    `Running application at ${usageHttps ? `https` : `http`}://[...]:${port}/`,
   );
 };
 
