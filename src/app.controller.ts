@@ -2,12 +2,12 @@ import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
 @Controller()
 export default class AppController {
-  @Get('.well-known/pki-validation/CACCD383921144021879B02C34E6D491.txt')
+  @Get('.well-known/pki-validation/61F1833FF64B35DB1772ED8770423EF6.txt')
   public async pkiValidation(@Res() res: Response) {
     const content =
-      '80072C9AEE9AEB1A3E1913550F5DFBBBD6A145DCDB9DA9E5F2445A058962A541\n' +
+      '852D09B7668BD4EE736848C772C46614E7934A4B93E466322A69CE8ACB569A3E\n' +
       'comodoca.com\n' +
-      '9e951994a712ef3';
+      '9aab2d8bc400da9';
     res.type('text/plain');
     res.send(content);
   }
