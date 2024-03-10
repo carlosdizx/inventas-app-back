@@ -1,5 +1,5 @@
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import Payment from './entities/payment.entity';
@@ -20,6 +20,9 @@ export default class PaymentService {
     { id: enterprise_id }: Enterprise,
   ) => {
     const offset = (+page - 1) * +limit;
+    Logger.log('init');
+    console.log(TypeSaleEnum.CREDIT, StatusEntity.ACTIVE, enterprise_id);
+    const typeSale = `${TypeSaleEnum.CREDIT}`;
 
     let result = await this.paymentRepository.query(
       `
@@ -32,12 +35,13 @@ export default class PaymentService {
             COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id), 0) AS total_payments
         FROM sales s
                  LEFT JOIN clients c ON c.id = s.client_id
-        WHERE s.type = ${TypeSaleEnum.CREDIT} AND s.status = ${StatusEntity.ACTIVE} AND s.enterprise_id = $1
+        WHERE s.enterprise_id = $1 AND s.type = '${TypeSaleEnum.CREDIT}' AND s.status = '${StatusEntity.ACTIVE}'
         GROUP BY c.id
         LIMIT $2 OFFSET $3;
     `,
       [enterprise_id, limit, offset],
     );
+    Logger.log('pass');
 
     const total = await result.length;
 
@@ -96,7 +100,7 @@ export default class PaymentService {
                  COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id), 0) AS total_payments
           FROM sales s
                    LEFT JOIN clients c ON c.id = s.client_id
-          WHERE s.type =1 AND s.enterprise_id = $1 AND c.id = $2
+          WHERE s.type = '${TypeSaleEnum.CREDIT}' AND s.enterprise_id = $1 AND c.id = $2
           GROUP BY c.id;
     `,
       [enterpriseId, clientId],
