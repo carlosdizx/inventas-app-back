@@ -6,7 +6,7 @@ import Auth from '../auth/decorators/auth.decorator';
 import { UserRoles } from '../auth/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 
-@Controller('enterprise')
+@Controller('enterprises')
 @UseFilters(TypeormExceptionFilter)
 export default class EnterpriseController {
   constructor(private readonly enterpriseService: EnterpriseService) {}

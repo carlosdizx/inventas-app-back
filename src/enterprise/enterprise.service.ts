@@ -42,6 +42,7 @@ export default class EnterpriseService {
 
       await queryRunner.commitTransaction();
       await queryRunner.release();
+      return { message: 'Success' };
     } catch (error) {
       await this.userCrudService.deleteUserById(userSaved.user.id);
       await queryRunner.rollbackTransaction();

@@ -1,25 +1,25 @@
 import {
-  IsEnum,
+  IsEmail,
   IsNotEmpty,
   IsObject,
-  IsString,
+  IsOptional,
+  MaxLength,
   ValidateNested,
 } from 'class-validator';
-import { documentTypes } from '../../common/enums/document.type.enum';
 import CreateUserDto from '../../auth/dto/create-user.dto';
 import { Type } from 'class-transformer';
 
 export default class CreateEnterpriseDTO {
   @IsNotEmpty()
+  @MaxLength(100)
   name: string;
 
-  @IsString()
-  @IsNotEmpty()
-  documentNumber: string;
+  @IsEmail()
+  email: string;
 
-  @IsEnum(documentTypes)
-  @IsNotEmpty()
-  documentType: documentTypes;
+  @MaxLength(100)
+  @IsOptional()
+  address?: string;
 
   @IsObject()
   @ValidateNested()

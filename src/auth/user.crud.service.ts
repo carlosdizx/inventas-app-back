@@ -14,6 +14,7 @@ import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import generatePasswordUtil from '../common/util/generate.password.util';
 import registerEnterpriseMail from '../common/templates/mails/register.enterprise.mail';
 import NodemailerService from '../common/service/nodemailer.service';
+import { UserRoles } from './enums/user.roles.enum';
 
 @Injectable()
 export default class UserCrudService {
@@ -30,7 +31,7 @@ export default class UserCrudService {
   public createUser = async (
     {
       email,
-      roles,
+      roles = [UserRoles.OWNER],
       firstName,
       lastName,
       documentType,
