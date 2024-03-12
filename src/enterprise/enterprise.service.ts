@@ -59,4 +59,14 @@ export default class EnterpriseService {
       route: 'enterprise',
     });
   };
+
+  public findEnterpriseById = async (id: string) => {
+    const enterprise = await this.enterpriseRepository.findOne({
+      where: { id },
+    });
+
+    delete enterprise.createdAt;
+    delete enterprise.updatedAt;
+    return { ...enterprise, id: undefined };
+  };
 }

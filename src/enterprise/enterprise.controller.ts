@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, UseFilters } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Query,
+  UseFilters,
+} from '@nestjs/common';
 import EnterpriseService from './enterprise.service';
 import CreateEnterpriseDTO from './dto/create-enterprise.dto';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
@@ -21,5 +30,11 @@ export default class EnterpriseController {
   @Auth(UserRoles.SUPER_ADMIN)
   public async listEnterprises(@Query() { page, limit }: PaginationDto) {
     return await this.enterpriseService.listEnterprises({ page, limit });
+  }
+
+  @Get(':id')
+  @Auth(UserRoles.SUPER_ADMIN)
+  public async findById(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.enterpriseService.findEnterpriseById(id);
   }
 }
