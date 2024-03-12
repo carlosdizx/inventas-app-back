@@ -7,6 +7,7 @@ import ErrorDatabaseService from '../common/service/error.database.service';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import UserCrudService from '../auth/user.crud.service';
 import User from '../auth/entities/user.entity';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export default class EnterpriseService {
@@ -46,5 +47,15 @@ export default class EnterpriseService {
       await queryRunner.rollbackTransaction();
       this.errorDatabaseService.handleException(error);
     }
+  };
+
+  public listEnterprises = async ({ page, limit }: IPaginationOptions) => {
+    const queryBuilder =
+      this.enterpriseRepository.createQueryBuilder('enterprise');
+    return await paginate<Enterprise>(queryBuilder, {
+      page,
+      limit,
+      route: 'enterprise',
+    });
   };
 }
