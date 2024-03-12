@@ -2,6 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   Unique,
@@ -34,6 +36,10 @@ export default class Enterprise {
     default: StatusEntity.PENDING_APPROVAL,
   })
   status: StatusEntity;
+
+  @ManyToOne(() => User, (user) => user.enterprise, { nullable: false })
+  @JoinColumn({ name: 'owner_id' })
+  owner: User;
 
   @OneToMany(() => User, (user) => user.enterprise)
   users: User[];

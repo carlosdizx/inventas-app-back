@@ -29,6 +29,9 @@ export default class EnterpriseService {
     });
 
     const userSaved = await this.userCrudService.createUser(user);
+    console.log(userSaved);
+
+    enterprise.owner = userSaved.user;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
