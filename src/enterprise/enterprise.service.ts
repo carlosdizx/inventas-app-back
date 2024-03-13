@@ -29,7 +29,6 @@ export default class EnterpriseService {
     });
 
     const userSaved = await this.userCrudService.createUser(user);
-    console.log(userSaved);
 
     enterprise.owner = userSaved.user;
 
@@ -45,7 +44,12 @@ export default class EnterpriseService {
 
       await queryRunner.commitTransaction();
       await queryRunner.release();
-      return { message: 'Success' };
+      return {
+        title: `Empresa registrada con exito`,
+        message:
+          'La empresa ha sido registrada exitosamente.<br/>' +
+          ' Se ha enviado un correo electrónico con la contraseña de acceso a la plataforma.',
+      };
     } catch (error) {
       await this.userCrudService.deleteUserById(userSaved.user.id);
       await queryRunner.rollbackTransaction();
