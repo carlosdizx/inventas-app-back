@@ -70,10 +70,22 @@ export default class EnterpriseService {
   public findEnterpriseById = async (id: string) => {
     const enterprise = await this.enterpriseRepository.findOne({
       where: { id },
+      relations: ['owner', 'owner.userDetails'],
     });
+
+    const user = {
+      ...enterprise.owner,
+      ...enterprise.owner.userDetails,
+      id: undefined,
+    };
 
     delete enterprise.createdAt;
     delete enterprise.updatedAt;
-    return { ...enterprise, id: undefined };
+    return {
+      ...enterprise,
+      user,
+      id: undefined,
+      owner: undefined,
+    };
   };
 }
