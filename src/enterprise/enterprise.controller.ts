@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
   Query,
   UseFilters,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import Auth from '../auth/decorators/auth.decorator';
 import { UserRoles } from '../auth/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
+import ChangeStatusDto from '../common/dto/change-status.dto';
 
 @Controller('enterprises')
 @UseFilters(TypeormExceptionFilter)
@@ -35,6 +37,15 @@ export default class EnterpriseController {
   @Get(':id')
   @Auth(UserRoles.SUPER_ADMIN)
   public async findById(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.enterpriseService.findEnterpriseById(id);
+    return await this.enterpriseService.findEnterpriseAndOwnerById(id);
+  }
+
+  @Put('status/:id')
+  @Auth(UserRoles.SUPER_ADMIN)
+  public async changeStatusEnterprise(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: ChangeStatusDto,
+  ) {
+    return await this.enterpriseService.changeStatus(id, dto);
   }
 }

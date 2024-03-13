@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import Enterprise from './entities/enterprise.entity';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +12,7 @@ import { StatusEntity } from '../common/enums/status.entity.enum}';
 import UserCrudService from '../auth/user.crud.service';
 import User from '../auth/entities/user.entity';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import ChangeStatusDto from '../common/dto/change-status.dto';
 
 @Injectable()
 export default class EnterpriseService {
@@ -67,11 +72,13 @@ export default class EnterpriseService {
     });
   };
 
-  public findEnterpriseById = async (id: string) => {
+  public findEnterpriseAndOwnerById = async (id: string) => {
     const enterprise = await this.enterpriseRepository.findOne({
       where: { id },
       relations: ['owner', 'owner.userDetails'],
     });
+
+    if (!enterprise) throw new NotFoundException('Empresa no encontrada');
 
     const user = {
       ...enterprise.owner,
@@ -87,5 +94,27 @@ export default class EnterpriseService {
       id: undefined,
       owner: undefined,
     };
+  };
+
+  public findOneBy = async (filter: any) =>
+    await this.enterpriseRepository.findOneBy(filter);
+
+  public changeStatus = async (id: string, { status }: ChangeStatusDto) => {
+    const enterprise = await this.findOneBy({ id });
+    if (!enterprise) throw new NotFoundException('Empresa no encontrada');
+
+    if (
+      (enterprise.status === StatusEntity.ACTIVE ||
+        enterprise.status === StatusEntity.INACTIVE) &&
+      (status === StatusEntity.PENDING_CONFIRMATION ||
+        status === StatusEntity.PENDING_APPROVAL)
+    )
+      throw new ConflictException(
+        'No puedes revertir el estado de este registro a este estado',
+      );
+
+    enterprise.status = status;
+
+    await this.enterpriseRepository.save(enterprise);
   };
 }
