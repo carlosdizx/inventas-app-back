@@ -1,7 +1,6 @@
 import {
   ConflictException,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
@@ -159,7 +158,7 @@ export default class SalesService {
   public changeStatus = async (
     id: string,
     enterprise: Enterprise,
-    { status, restore }: ChangeStatusForSaleDto,
+    { status, restore, id: inventoryId }: ChangeStatusForSaleDto,
   ) => {
     const sale = await this.findSaleById(id, enterprise);
     if (!sale) throw new NotFoundException('Venta no encontrada');
@@ -174,10 +173,21 @@ export default class SalesService {
         'No puedes revertir el estado de este registro a este estado',
       );
 
-    if (restore) Logger.warn('Restore inventory');
-    else Logger.log('Ok');
-
     sale.status = status;
+
+    const products = sale.salesDetails.map(({ quantity, product: { id } }) => ({
+      id,
+      quantity,
+    }));
+    if (restore) {
+      if (sale.status === StatusEntity.INACTIVE) {
+        await this.inventoriesService.addProductsToInventory(
+          inventoryId,
+          enterprise,
+          products,
+        );
+      }
+    }
 
     await this.saleRepository.save(sale);
   };
