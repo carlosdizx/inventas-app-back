@@ -186,6 +186,11 @@ export default class SalesService {
           enterprise,
           products,
         );
+      } else {
+        await this.inventoriesService.removeProductsFromInventory(
+          inventoryId,
+          products,
+        );
       }
     }
 
