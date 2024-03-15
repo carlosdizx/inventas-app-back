@@ -14,14 +14,14 @@ import {
 import SalesService from './sales.service';
 import CreateSaleDto from './dto/create-sale.dto';
 import getDataReq from '../auth/decorators/get-data-req.decorator';
+import GetDataReqDecorator from '../auth/decorators/get-data-req.decorator';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import Auth from '../auth/decorators/auth.decorator';
 import { UserRoles } from '../auth/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import UpdateSaleDto from './dto/update-sale.dto';
-import GetDataReqDecorator from '../auth/decorators/get-data-req.decorator';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
-import ChangeStatusDto from '../common/dto/change-status.dto';
+import ChangeStatusForSaleDto from './dto/change-status-for-sale.dto';
 
 @Controller('sales')
 @UseFilters(TypeormExceptionFilter)
@@ -69,10 +69,8 @@ export default class SalesController {
   public async changeStatusEnterprise(
     @Param('id', ParseUUIDPipe) id: string,
     @getDataReq() enterprise: Enterprise,
-    @Body() dto: ChangeStatusDto,
+    @Body() dto: ChangeStatusForSaleDto,
   ) {
-    console.log('id =>', id);
-    debugger;
     return await this.salesService.changeStatus(id, enterprise, dto);
   }
 }
