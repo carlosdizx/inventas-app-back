@@ -6,6 +6,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Put,
   Query,
   UseFilters,
   ValidationPipe,
@@ -20,6 +21,7 @@ import PaginationDto from '../common/dto/pagination.dto';
 import UpdateSaleDto from './dto/update-sale.dto';
 import GetDataReqDecorator from '../auth/decorators/get-data-req.decorator';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
+import ChangeStatusDto from '../common/dto/change-status.dto';
 
 @Controller('sales')
 @UseFilters(TypeormExceptionFilter)
@@ -60,5 +62,17 @@ export default class SalesController {
     @GetDataReqDecorator() enterprise: Enterprise,
   ) {
     return this.salesService.findSaleById(id, enterprise);
+  }
+
+  @Put('status/:id')
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  public async changeStatusEnterprise(
+    @Param('id', ParseUUIDPipe) id: string,
+    @getDataReq() enterprise: Enterprise,
+    @Body() dto: ChangeStatusDto,
+  ) {
+    console.log('id =>', id);
+    debugger;
+    return await this.salesService.changeStatus(id, enterprise, dto);
   }
 }

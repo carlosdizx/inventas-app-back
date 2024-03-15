@@ -17,6 +17,7 @@ import { StatusEntity } from '../common/enums/status.entity.enum}';
 import InventoriesService from '../inventories/inventories.service';
 import ClientsService from '../clients/clients.service';
 import Client from '../clients/entities/client.entity';
+import ChangeStatusDto from '../common/dto/change-status.dto';
 
 @Injectable()
 export default class SalesService {
@@ -152,5 +153,28 @@ export default class SalesService {
     ) as SaleDetails[];
 
     return sale;
+  };
+
+  public changeStatus = async (
+    id: string,
+    enterprise: Enterprise,
+    { status }: ChangeStatusDto,
+  ) => {
+    const sale = await this.findSaleById(id, enterprise);
+    if (!sale) throw new NotFoundException('Venta no encontrada');
+
+    if (
+      (sale.status === StatusEntity.ACTIVE ||
+        sale.status === StatusEntity.INACTIVE) &&
+      (status === StatusEntity.PENDING_CONFIRMATION ||
+        status === StatusEntity.PENDING_APPROVAL)
+    )
+      throw new ConflictException(
+        'No puedes revertir el estado de este registro a este estado',
+      );
+
+    sale.status = status;
+
+    await this.saleRepository.save(sale);
   };
 }
