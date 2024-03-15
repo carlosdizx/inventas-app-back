@@ -1,5 +1,5 @@
 import {
-  IsInt,
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsNumberString,
@@ -12,9 +12,9 @@ export default class CreateProductDto {
   @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
   @IsNumberString()
   @MinLength(5)
+  @IsOptional()
   barcode: string;
 
   @IsNumber()
@@ -23,9 +23,9 @@ export default class CreateProductDto {
   @IsNumber()
   costPrice: number;
 
+  @IsBoolean()
   @IsOptional()
-  @IsInt()
-  discountPercentage = 0;
+  requiresInventory = true;
 
   @IsOptional()
   @IsUUID()

@@ -24,7 +24,10 @@ export default class Product {
   @Column({ unique: true })
   name: string;
 
-  @Column({ unique: true })
+  @Column({ default: true })
+  requiresInventory: boolean;
+
+  @Column({ unique: true, nullable: true })
   barcode: string;
 
   @Column('decimal', { name: 'sale_price' })
@@ -32,9 +35,6 @@ export default class Product {
 
   @Column('decimal', { name: 'cost_price' })
   costPrice: number;
-
-  @Column('int', { name: 'discount_percentage' })
-  discountPercentage: number;
 
   @ManyToOne(() => Enterprise, (enterprise) => enterprise.products)
   @JoinColumn({ name: 'enterprise_id' })
