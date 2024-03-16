@@ -37,19 +37,17 @@ export default class InventoriesService {
     return await this.inventoryRepository.save(inventory);
   };
 
-  public findInventoryById = async (id: string, enterprise: Enterprise) =>
-    await this.inventoryRepository.findOne({
+  public findInventoryById = async (id: string, enterprise: Enterprise) => {
+    const inventory = await this.inventoryRepository.findOne({
       where: {
         id,
         enterprise: { id: enterprise.id },
-        productInventories: {
-          product: {
-            requiresInventory: true,
-          },
-        },
       },
       relations: ['productInventories', 'productInventories.product'],
     });
+    if (!inventory) throw new NotFoundException('Inventorio no encontrado');
+    return inventory;
+  };
 
   public addProductsToInventory = async (
     id: string,
