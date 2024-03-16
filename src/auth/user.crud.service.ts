@@ -117,10 +117,12 @@ export default class UserCrudService {
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.userDetails', 'details')
+      .leftJoinAndSelect('user.enterprise', 'enterprise')
       .where('user.enterprise.id = :enterpriseId', {
         enterpriseId: enterprise.id,
       })
-      .andWhere('user.id != :userId', { userId: user.id });
+      .andWhere('user.id != :userId', { userId: user.id })
+      .andWhere('user.id != enterprise.owner.id');
     const data = await paginate<User>(queryBuilder, {
       page,
       limit,
