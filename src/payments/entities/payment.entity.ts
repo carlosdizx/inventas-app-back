@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import Client from '../../clients/entities/client.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
+import { StatusEntity } from '../../common/enums/status.entity.enum}';
 
 @Entity('payments')
 export default class Payment {
@@ -25,6 +26,9 @@ export default class Payment {
   @ManyToOne(() => Enterprise, (enterprise) => enterprise.payments)
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
+
+  @Column({ type: 'enum', enum: StatusEntity, default: StatusEntity.ACTIVE })
+  status: StatusEntity;
 
   @CreateDateColumn({ name: 'createdAt' })
   createdAt: Date;

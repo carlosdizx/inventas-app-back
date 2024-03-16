@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import Product from '../../products/entities/product.entity';
 import Inventory from './inventory.entity';
@@ -23,4 +25,10 @@ export default class ProductInventory {
 
   @Column('int')
   quantity: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

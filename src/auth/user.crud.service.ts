@@ -14,6 +14,7 @@ import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import generatePasswordUtil from '../common/util/generate.password.util';
 import registerEnterpriseMail from '../common/templates/mails/register.enterprise.mail';
 import NodemailerService from '../common/service/nodemailer.service';
+import { UserRoles } from './enums/user.roles.enum';
 
 @Injectable()
 export default class UserCrudService {
@@ -30,7 +31,7 @@ export default class UserCrudService {
   public createUser = async (
     {
       email,
-      roles,
+      roles = [UserRoles.OWNER],
       firstName,
       lastName,
       documentType,
@@ -116,10 +117,12 @@ export default class UserCrudService {
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.userDetails', 'details')
+      .leftJoinAndSelect('user.enterprise', 'enterprise')
       .where('user.enterprise.id = :enterpriseId', {
         enterpriseId: enterprise.id,
       })
-      .andWhere('user.id != :userId', { userId: user.id });
+      .andWhere('user.id != :userId', { userId: user.id })
+      .andWhere('user.id != enterprise.owner.id');
     const data = await paginate<User>(queryBuilder, {
       page,
       limit,

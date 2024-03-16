@@ -17,6 +17,7 @@ import { StatusEntity } from '../common/enums/status.entity.enum}';
 import InventoriesService from '../inventories/inventories.service';
 import ClientsService from '../clients/clients.service';
 import Client from '../clients/entities/client.entity';
+import ChangeStatusForSaleDto from './dto/change-status-for-sale.dto';
 
 @Injectable()
 export default class SalesService {
@@ -152,5 +153,47 @@ export default class SalesService {
     ) as SaleDetails[];
 
     return sale;
+  };
+
+  public changeStatus = async (
+    id: string,
+    enterprise: Enterprise,
+    { status, restore, id: inventoryId }: ChangeStatusForSaleDto,
+  ) => {
+    const sale = await this.findSaleById(id, enterprise);
+    if (!sale) throw new NotFoundException('Venta no encontrada');
+
+    if (
+      (sale.status === StatusEntity.ACTIVE ||
+        sale.status === StatusEntity.INACTIVE) &&
+      (status === StatusEntity.PENDING_CONFIRMATION ||
+        status === StatusEntity.PENDING_APPROVAL)
+    )
+      throw new ConflictException(
+        'No puedes revertir el estado de este registro a este estado',
+      );
+
+    sale.status = status;
+
+    const products = sale.salesDetails.map(({ quantity, product: { id } }) => ({
+      id,
+      quantity,
+    }));
+    if (restore) {
+      if (sale.status === StatusEntity.INACTIVE) {
+        await this.inventoriesService.addProductsToInventory(
+          inventoryId,
+          enterprise,
+          products,
+        );
+      } else {
+        await this.inventoriesService.removeProductsFromInventory(
+          inventoryId,
+          products,
+        );
+      }
+    }
+
+    await this.saleRepository.save(sale);
   };
 }

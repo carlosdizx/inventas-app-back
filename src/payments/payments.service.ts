@@ -1,5 +1,10 @@
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import Payment from './entities/payment.entity';
@@ -7,6 +12,7 @@ import CreatePaymentDto from './dto/create-payment.dto';
 import { TypeSaleEnum } from '../sales/enums/type-sale.enum';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
+import ChangeStatusDto from '../common/dto/change-status.dto';
 
 @Injectable()
 export default class PaymentService {
@@ -29,7 +35,7 @@ export default class PaymentService {
             c.names,
             c.surnames,
             COALESCE(SUM(s.total_amount), 0) AS total_credits,
-            COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id), 0) AS total_payments
+            COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id AND p.status = '${StatusEntity.ACTIVE}'), 0) AS total_payments
         FROM sales s
                  LEFT JOIN clients c ON c.id = s.client_id
         WHERE s.enterprise_id = $1 AND s.type = '${TypeSaleEnum.CREDIT}' AND s.status = '${StatusEntity.ACTIVE}'
@@ -94,7 +100,7 @@ export default class PaymentService {
     const [dataResult] = await this.paymentRepository.query(
       `
           SELECT COALESCE(SUM(s.total_amount), 0) AS total_credits,
-                 COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id), 0) AS total_payments
+                 COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id AND p.status = '${StatusEntity.ACTIVE}'), 0) AS total_payments
           FROM sales s
                    LEFT JOIN clients c ON c.id = s.client_id
           WHERE s.type = '${TypeSaleEnum.CREDIT}' AND s.enterprise_id = $1 AND c.id = $2
@@ -117,6 +123,42 @@ export default class PaymentService {
       client: { id: clientId },
       enterprise: { id: enterpriseId },
     });
+
+    await this.paymentRepository.save(payment);
+  };
+
+  public findAllPaymentsByClient = async (
+    clientId: string,
+    { id: enterpriseId }: Enterprise,
+  ) => {
+    return await this.paymentRepository.find({
+      where: { client: { id: clientId }, enterprise: { id: enterpriseId } },
+      order: {
+        createdAt: 'DESC',
+        updatedAt: 'DESC',
+      },
+    });
+  };
+
+  public changeStatus = async (
+    id: string,
+    enterprise: Enterprise,
+    { status }: ChangeStatusDto,
+  ) => {
+    const payment = await this.paymentRepository.findOneBy({ id });
+    if (!payment) throw new NotFoundException('Pago no encontrada');
+
+    if (
+      (payment.status === StatusEntity.ACTIVE ||
+        payment.status === StatusEntity.INACTIVE) &&
+      (status === StatusEntity.PENDING_CONFIRMATION ||
+        status === StatusEntity.PENDING_APPROVAL)
+    )
+      throw new ConflictException(
+        'No puedes revertir el estado de este registro a este estado',
+      );
+
+    payment.status = status;
 
     await this.paymentRepository.save(payment);
   };

@@ -39,7 +39,15 @@ export default class InventoriesService {
 
   public findInventoryById = async (id: string, enterprise: Enterprise) =>
     await this.inventoryRepository.findOne({
-      where: { id, enterprise: { id: enterprise.id } },
+      where: {
+        id,
+        enterprise: { id: enterprise.id },
+        productInventories: {
+          product: {
+            requiresInventory: true,
+          },
+        },
+      },
       relations: ['productInventories', 'productInventories.product'],
     });
 

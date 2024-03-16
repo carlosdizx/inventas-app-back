@@ -1,11 +1,14 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
-import { documentTypes } from '../../common/enums/document.type.enum';
 import User from '../../auth/entities/user.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
 import Category from '../../categories/entities/category.entity';
@@ -13,7 +16,7 @@ import Product from '../../products/entities/product.entity';
 import Payment from '../../payments/entities/payment.entity';
 
 @Entity('enterprises')
-@Unique(['documentNumber', 'documentType'])
+@Unique(['name'])
 export default class Enterprise {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
@@ -21,11 +24,11 @@ export default class Enterprise {
   @Column()
   name: string;
 
-  @Column({ name: 'document_number' })
-  documentNumber: string;
+  @Column({ unique: true })
+  email: string;
 
-  @Column({ type: 'enum', name: 'document_type', enum: documentTypes })
-  documentType: documentTypes;
+  @Column({ nullable: true })
+  address: string;
 
   @Column({
     type: 'enum',
@@ -33,6 +36,10 @@ export default class Enterprise {
     default: StatusEntity.PENDING_APPROVAL,
   })
   status: StatusEntity;
+
+  @ManyToOne(() => User, (user) => user.enterprise, { nullable: false })
+  @JoinColumn({ name: 'owner_id' })
+  owner: User;
 
   @OneToMany(() => User, (user) => user.enterprise)
   users: User[];
@@ -45,4 +52,10 @@ export default class Enterprise {
 
   @OneToMany(() => Product, (product) => product.enterprise)
   products: Product[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
