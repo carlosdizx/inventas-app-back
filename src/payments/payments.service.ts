@@ -120,4 +120,13 @@ export default class PaymentService {
 
     await this.paymentRepository.save(payment);
   };
+
+  public findAllPaymentsByClient = async (
+    clientId: string,
+    { id: enterpriseId }: Enterprise,
+  ) => {
+    return await this.paymentRepository.find({
+      where: { client: { id: clientId }, enterprise: { id: enterpriseId } },
+    });
+  };
 }

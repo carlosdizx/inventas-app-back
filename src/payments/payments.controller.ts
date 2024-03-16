@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseFilters } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseFilters,
+} from '@nestjs/common';
 import PaymentsService from './payments.service';
 import CreatePaymentDto from './dto/create-payment.dto';
 import Auth from '../auth/decorators/auth.decorator';
@@ -31,5 +39,14 @@ export default class PaymentsController {
     @GetDataReqDecorator() enterprise: Enterprise,
   ) {
     return await this.paymentsService.registerPayment(dto, enterprise);
+  }
+
+  @Get('client/:id')
+  @Auth()
+  public async getPaymentsByClientId(
+    @Param('id') clientId: string,
+    @GetDataReqDecorator() enterprise: Enterprise,
+  ) {
+    return this.paymentsService.findAllPaymentsByClient(clientId, enterprise);
   }
 }
