@@ -100,10 +100,10 @@ export default class PaymentService {
     const [dataResult] = await this.paymentRepository.query(
       `
           SELECT COALESCE(SUM(s.total_amount), 0) AS total_credits,
-                 COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id AND p.status = '${StatusEntity.ACTIVE}'), 0) AS total_payments
+                 COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id AND p.status = '${StatusEntity.ACTIVE}' AND p.status = '${StatusEntity.ACTIVE}'), 0) AS total_payments
           FROM sales s
                    LEFT JOIN clients c ON c.id = s.client_id
-          WHERE s.type = '${TypeSaleEnum.CREDIT}' AND s.enterprise_id = $1 AND c.id = $2
+          WHERE s.type = '${TypeSaleEnum.CREDIT}' AND s.enterprise_id = $1 AND c.id = $2 AND s.status = '${StatusEntity.ACTIVE}'
           GROUP BY c.id;
     `,
       [enterpriseId, clientId],
