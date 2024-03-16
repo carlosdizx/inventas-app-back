@@ -133,6 +133,10 @@ export default class PaymentService {
   ) => {
     return await this.paymentRepository.find({
       where: { client: { id: clientId }, enterprise: { id: enterpriseId } },
+      order: {
+        createdAt: 'DESC',
+        updatedAt: 'DESC',
+      },
     });
   };
 
