@@ -4,8 +4,6 @@ import JoiValidation from './common/env.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import AuthModule from './auth/auth.module';
 import CommonModule from './common/common.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import ClientsModule from './clients/clients.module';
 import DatabaseControlModule from './database-control/database-control.module';
 import InventoriesModule from './inventories/inventories.module';
@@ -18,9 +16,6 @@ import { dataSourceOptions } from '../database/database.config';
 import AppController from './app.controller';
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-    }),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: JoiValidation,
