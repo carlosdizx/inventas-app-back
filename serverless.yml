@@ -1,0 +1,32 @@
+service: erp-provider
+useDotenv: true
+
+plugins:
+  - serverless-jetpack
+  - serverless-offline
+  - serverless-plugin-optimize
+  - serverless-plugin-typescript
+  # - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  logRetentionInDays: 1
+  timeout: 60
+  stage: api
+
+package:
+  individually: true
+
+functions:
+  main:
+    handler: src/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /{any+}
+
+custom:
+  serverless-offline:
+    httpPort: ${env:APP_PORT}
