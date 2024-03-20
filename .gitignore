@@ -46,3 +46,7 @@ pgadmin-data/
 #SSL
 certificate.crt
 private.key
+
+# Serverless
+.build
+.serverless

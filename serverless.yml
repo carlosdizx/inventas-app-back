@@ -1,0 +1,31 @@
+service: inventas-app-lambda
+useDotenv: true
+
+plugins:
+  - serverless-jetpack
+  - serverless-offline
+  - serverless-plugin-optimize
+  - serverless-plugin-typescript
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  logRetentionInDays: 1
+  timeout: 30
+  stage: api
+
+package:
+  individually: true
+
+functions:
+  main:
+    handler: src/lambda.handler
+    events:
+      - httpApi:
+          method: any
+          path: /{any+}
+
+custom:
+  serverless-offline:
+    httpPort: ${env:APP_PORT}
