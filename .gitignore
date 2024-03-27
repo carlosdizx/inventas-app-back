@@ -48,5 +48,6 @@ certificate.crt
 private.key
 
 # Serverless
+env.**.yml
 .build
 .serverless
