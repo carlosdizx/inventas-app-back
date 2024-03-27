@@ -21,6 +21,7 @@ const handler = async (event: any, context: any) => {
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       allowedHeaders: '*',
     });
+
     await nestApp.init();
     cachedServer = serverlessExpress({
       app: nestApp.getHttpAdapter().getInstance(),
