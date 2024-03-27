@@ -14,6 +14,13 @@ const handler = async (event: any, context: any) => {
         forbidNonWhitelisted: true,
       }),
     );
+
+    nestApp.enableCors({
+      origin: '*',
+      credentials: true,
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      allowedHeaders: '*',
+    });
     await nestApp.init();
     cachedServer = serverlessExpress({
       app: nestApp.getHttpAdapter().getInstance(),

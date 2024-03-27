@@ -22,9 +22,12 @@ functions:
   main:
     handler: src/lambda.handler
     events:
-      - httpApi:
-          method: any
-          path: /{any+}
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'
 
 custom:
   serverless-offline:
