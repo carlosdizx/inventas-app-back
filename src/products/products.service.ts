@@ -136,12 +136,13 @@ export default class ProductsService {
     if (products.length !== productQuantities.length)
       throw new ConflictException('Un producto no existe o esta repetido');
 
-    return products.map(({ id, salePrice }) => {
+    return products.map(({ id, salePrice, name }) => {
       const { quantity } = productQuantities.find(
         (product) => product.id === id,
       );
       return {
         id,
+        name,
         salePrice,
         quantity,
         subtotal: salePrice * quantity,
