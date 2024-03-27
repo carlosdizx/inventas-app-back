@@ -16,7 +16,8 @@
     "migrate": "npm run typeorm -- migration:run",
     "serverless:local": "serverless offline --stage local",
     "serverless:production": "serverless offline --stage production",
-    "deploy-serverless:production": "serverless deploy --aws-profile personal --stage production"
+    "deploy-serverless:production": "serverless deploy --aws-profile personal --stage production",
+    "undeploy-serverless:production": "serverless remove --aws-profile personal --stage production"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
