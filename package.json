@@ -14,7 +14,8 @@
     "seed:generate": "npm run typeorm -- migration:generate database/migrations/seed",
     "migration:generate": "npm run typeorm -- migration:generate database/migrations/mig",
     "migrate": "npm run typeorm -- migration:run",
-    "serverless:dev": "serverless offline"
+    "serverless:dev": "serverless offline",
+    "serverless:deploy": "serverless deploy --aws-profile personal"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
