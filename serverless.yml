@@ -14,7 +14,7 @@ provider:
   logRetentionInDays: 1
   timeout: 30
   stage: api
-  environment: ${file(./env.local.yml)}
+  environment: ${file(./env.${opt:stage, 'local'}.yml)}
 
 package:
   individually: true
@@ -32,4 +32,4 @@ functions:
 
 custom:
   serverless-offline:
-    httpPort: ${file(./env.local.yml):APP_PORT}
+    httpPort: ${file(./env.${opt:stage, 'local'}.yml):APP_PORT}
