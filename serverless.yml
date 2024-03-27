@@ -14,7 +14,7 @@ provider:
   logRetentionInDays: 1
   timeout: 30
   stage: api
-  environment: ${file(./env.${opt:stage, 'local'}.yml)}
+  environment: ${file(./env.${opt:stage, 'develop'}.yml)}
 
 package:
   individually: true
@@ -23,13 +23,14 @@ functions:
   main:
     handler: src/lambda.handler
     events:
-      - http:
-          method: ANY
+      - httpApi:
+          method: any
           path: /
-      - http:
-          method: ANY
-          path: '{proxy+}'
+      - httpApi:
+          method: any
+          path: /{any+}
+
 
 custom:
   serverless-offline:
-    httpPort: ${file(./env.${opt:stage, 'local'}.yml):APP_PORT}
+    httpPort: ${file(./env.${opt:stage, 'develop'}.yml):APP_PORT}
