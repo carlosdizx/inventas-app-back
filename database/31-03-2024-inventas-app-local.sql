@@ -57,15 +57,6 @@ CREATE TABLE IF NOT EXISTS public.inventories
     CONSTRAINT "UQ_ca4c6c3abea84f4ea813467cc7f" UNIQUE (location)
 );
 
-CREATE TABLE IF NOT EXISTS public.migrations
-(
-    id serial NOT NULL,
-    name character varying COLLATE pg_catalog."default" NOT NULL,
-    "timestamp" timestamp without time zone NOT NULL,
-    CONSTRAINT "PK_8c82d7f526340ab734260ea46be" PRIMARY KEY (id),
-    CONSTRAINT "UQ_2d4874d85cd312e39b375e45dd8" UNIQUE (name)
-);
-
 CREATE TABLE IF NOT EXISTS public.payments
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
