@@ -14,6 +14,7 @@ import { StatusEntity } from '../../common/enums/status.entity.enum}';
 import Category from '../../categories/entities/category.entity';
 import Product from '../../products/entities/product.entity';
 import Payment from '../../payments/entities/payment.entity';
+import PlanEnterprise from './plan.enterprise.entity';
 
 @Entity('enterprises')
 @Unique(['name'])
@@ -52,6 +53,14 @@ export default class Enterprise {
 
   @OneToMany(() => Product, (product) => product.enterprise)
   products: Product[];
+
+  @ManyToOne(
+    () => PlanEnterprise,
+    (planEnterprise) => planEnterprise.enterprises,
+    { nullable: true },
+  )
+  @JoinColumn()
+  plan: PlanEnterprise;
 
   @CreateDateColumn()
   createdAt: Date;
