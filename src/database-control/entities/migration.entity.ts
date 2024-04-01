@@ -9,6 +9,6 @@ export default class Migration {
   @Column({ type: 'varchar' })
   name: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   timestamp: Date;
 }
