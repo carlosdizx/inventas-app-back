@@ -30,4 +30,15 @@ export default class PlanService {
     const planEnterprise = this.planEnterpriseRepository.create(dto);
     return this.planEnterpriseRepository.save(planEnterprise);
   };
+
+  public findOneBy = async (filter: any) => {
+    return await this.planEnterpriseRepository.findOneBy(filter);
+  };
+
+  public findById = async (id: string) => {
+    return await this.planEnterpriseRepository.findOne({
+      where: { id },
+      relations: ['enterprises'],
+    });
+  };
 }
