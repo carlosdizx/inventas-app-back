@@ -16,6 +16,7 @@ import Auth from '../auth/decorators/auth.decorator';
 import { UserRoles } from '../auth/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import ChangeStatusDto from '../common/dto/change-status.dto';
+import ChangePlanDto from './dto/change-plan.dto';
 
 @Controller('enterprises')
 @UseFilters(TypeormExceptionFilter)
@@ -47,5 +48,14 @@ export default class EnterpriseController {
     @Body() dto: ChangeStatusDto,
   ) {
     return await this.enterpriseService.changeStatus(id, dto);
+  }
+
+  @Put('plan/:id')
+  @Auth(UserRoles.SUPER_ADMIN)
+  public async changePlanEnterprise(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() { id: planId }: ChangePlanDto,
+  ) {
+    return await this.enterpriseService.changePlanEnterprise(id, planId);
   }
 }

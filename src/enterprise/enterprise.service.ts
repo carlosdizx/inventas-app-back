@@ -85,7 +85,7 @@ export default class EnterpriseService {
   public findEnterpriseAndOwnerById = async (id: string) => {
     const enterprise = await this.enterpriseRepository.findOne({
       where: { id },
-      relations: ['owner', 'owner.userDetails'],
+      relations: ['owner', 'owner.userDetails', 'plan'],
     });
 
     if (!enterprise) throw new NotFoundException('Empresa no encontrada');
@@ -124,6 +124,18 @@ export default class EnterpriseService {
       );
 
     enterprise.status = status;
+
+    return await this.enterpriseRepository.save(enterprise);
+  };
+
+  public changePlanEnterprise = async (id: string, planId: string) => {
+    const enterprise = await this.findOneBy({ id });
+    if (!enterprise) throw new NotFoundException('Empresa no encontrada');
+
+    const plan = await this.planService.findOneBy({ id: planId });
+    if (!plan) throw new NotFoundException('Plan no encontrado');
+
+    enterprise.plan = plan;
 
     await this.enterpriseRepository.save(enterprise);
   };
