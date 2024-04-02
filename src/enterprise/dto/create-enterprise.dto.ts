@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsObject,
   IsOptional,
+  IsUUID,
   MaxLength,
   ValidateNested,
 } from 'class-validator';
@@ -25,4 +26,8 @@ export default class CreateEnterpriseDTO {
   @ValidateNested()
   @Type(() => CreateUserDto)
   user: CreateUserDto;
+
+  @IsUUID()
+  @IsOptional()
+  planId?: string;
 }

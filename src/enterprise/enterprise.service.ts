@@ -13,6 +13,7 @@ import UserCrudService from '../auth/user.crud.service';
 import User from '../auth/entities/user.entity';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import ChangeStatusDto from '../common/dto/change-status.dto';
+import PlanService from './plan.service';
 
 @Injectable()
 export default class EnterpriseService {
@@ -22,12 +23,21 @@ export default class EnterpriseService {
     private readonly enterpriseRepository: Repository<Enterprise>,
     private readonly errorDatabaseService: ErrorDatabaseService,
     private readonly userCrudService: UserCrudService,
+    private readonly planService: PlanService,
   ) {}
 
   public createEnterpriseAndUser = async ({
     user,
+    planId,
     ...resDataEnterprise
   }: CreateEnterpriseDTO) => {
+    if (planId) {
+      const plan = await this.planService.findOneBy({ id: planId });
+      if (!plan) throw new NotFoundException('Plan no encontrado');
+
+      resDataEnterprise['plan'] = plan;
+    }
+
     const enterprise = this.enterpriseRepository.create({
       ...resDataEnterprise,
       status: StatusEntity.ACTIVE,
