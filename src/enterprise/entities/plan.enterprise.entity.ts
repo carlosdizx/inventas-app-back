@@ -21,8 +21,8 @@ export default class PlanEnterprise extends BaseEntity {
   @Column()
   description: string;
 
-  @Column()
-  max_users: number;
+  @Column({ name: 'max_users' })
+  maxUsers: number;
 
   @OneToMany(() => Enterprise, (enterprise) => enterprise.plan)
   products: Product[];

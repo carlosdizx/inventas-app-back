@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import PlanEnterprise from './entities/plan.enterprise.entity';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { InjectRepository } from '@nestjs/typeorm';
+import CreatePlanEnterpriseDto from './dto/create-plan.dto';
 
 @Injectable()
 export default class PlanService {
@@ -23,5 +24,10 @@ export default class PlanService {
       limit,
       route: 'plans',
     });
+  };
+
+  public createPlanEnterprise = async (dto: CreatePlanEnterpriseDto) => {
+    const planEnterprise = this.planEnterpriseRepository.create(dto);
+    return this.planEnterpriseRepository.save(planEnterprise);
   };
 }
