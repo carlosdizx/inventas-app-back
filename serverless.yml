@@ -14,6 +14,7 @@ provider:
   logRetentionInDays: 1
   timeout: 30
   stage: api
+  environment: ${file(./env.${opt:stage, 'develop'}.yml)}
 
 package:
   individually: true
