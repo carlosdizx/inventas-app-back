@@ -2,6 +2,17 @@
 -- Please log an issue at https://github.com/pgadmin-org/pgadmin4/issues/new/choose if you find any bugs, including reproduction steps.
 BEGIN;
 
+create type categories_status_enum as enum ('0', '1', '2', '3');
+create type clients_document_type_enum as enum ('0', '1', '2', '3');
+create type clients_status_enum as enum ('0', '1', '2', '3');
+create type enterprises_status_enum as enum ('0', '1', '2', '3');
+create type payments_status_enum as enum ('0', '1', '2', '3');
+create type products_status_enum as enum ('0', '1', '2', '3');
+create type sales_status_enum as enum ('0', '1', '2', '3');
+create type sales_type_enum as enum ('0', '1');
+create type user_details_document_type_enum as enum ('0', '1', '2', '3');
+create type users_roles_enum as enum ('0', '1', '2', '3');
+create type users_status_enum as enum ('0', '1', '2', '3');
 
 CREATE TABLE IF NOT EXISTS public.categories
 (
