@@ -28,6 +28,5 @@ export default class CreateEnterpriseDTO {
   user: CreateUserDto;
 
   @IsUUID()
-  @IsOptional()
-  planId?: string;
+  planId: string;
 }
