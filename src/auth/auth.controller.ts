@@ -17,7 +17,7 @@ export default class AuthController {
     return this.authService.refreshAndValidateToken(token);
   }
 
-  @Get('generate/password')
+  @Get('generate-password')
   public async getPassword() {
     return this.authService.generateRandomPassword();
   }
