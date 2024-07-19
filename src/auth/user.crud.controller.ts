@@ -18,17 +18,25 @@ import Auth from './decorators/auth.decorator';
 import { UserRoles } from './enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import User from './entities/user.entity';
+import EnterpriseService from '../enterprise/enterprise.service';
 
 @Controller('users')
 @UseFilters(TypeormExceptionFilter)
 export default class UserCrudController {
-  constructor(private readonly userCrudService: UserCrudService) {}
+  constructor(
+    private readonly userCrudService: UserCrudService,
+    private readonly enterpriseService: EnterpriseService,
+  ) {}
   @Post()
   @Auth(UserRoles.OWNER)
   public async create(
     @Body() dto: CreateUserDto,
     @getDataReq() enterprise: Enterprise,
   ) {
+    const { plan } = await this.enterpriseService.findEnterpriseAndOwnerById(
+      enterprise.id,
+    );
+    enterprise.plan = plan;
     return await this.userCrudService.createUser(dto, enterprise);
   }
 

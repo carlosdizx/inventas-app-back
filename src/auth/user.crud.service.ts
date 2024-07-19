@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -28,6 +32,14 @@ export default class UserCrudService {
     private readonly nodemailerService: NodemailerService,
   ) {}
 
+  private async findActiveUsersByEnterprise(enterpriseId: string) {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.enterprise.id = :enterpriseId', { enterpriseId })
+      .andWhere('user.status = :status', { status: StatusEntity.ACTIVE })
+      .getMany();
+  }
+
   public createUser = async (
     {
       email,
@@ -42,6 +54,20 @@ export default class UserCrudService {
     }: CreateUserDto,
     enterprise: Enterprise = null,
   ) => {
+    if (enterprise && enterprise.plan) {
+      const { maxUsers } = enterprise.plan;
+      const usersFound = await this.findActiveUsersByEnterprise(enterprise.id);
+      if (usersFound.length >= maxUsers) {
+        const users = usersFound.map(({ email }: User) => email);
+        const message = `Tu plan solo permite ${maxUsers} usuarios activos, incluyendo al dueño de la empresa
+        <br/>
+        <hr/>
+        ${users.join('<br/>')}
+        <br/>`;
+        throw new ConflictException(message);
+      }
+    }
+
     const password = generatePasswordUtil(20);
     const newUser = this.userRepository.create({
       email,

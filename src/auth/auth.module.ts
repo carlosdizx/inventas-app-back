@@ -11,6 +11,7 @@ import User from './entities/user.entity';
 import UserDetails from './entities/user.details.entity';
 import UserCrudService from './user.crud.service';
 import UserCrudController from './user.crud.controller';
+import EnterpriseModule from '../enterprise/enterprise.module';
 
 @Global()
 @Module({
@@ -25,6 +26,7 @@ import UserCrudController from './user.crud.controller';
       inject: [ConfigService],
       useFactory: getJwtConfig,
     }),
+    EnterpriseModule,
   ],
   controllers: [AuthController, UserCrudController],
   providers: [JwtStrategy, AuthService, UserCrudService],

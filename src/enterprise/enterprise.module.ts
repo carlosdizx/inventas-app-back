@@ -11,5 +11,6 @@ import PlanController from './plan.controller';
   imports: [TypeOrmModule.forFeature([Enterprise, PlanEnterprise])],
   controllers: [EnterpriseController, PlanController],
   providers: [EnterpriseService, PlanService],
+  exports: [EnterpriseService],
 })
 export default class EnterpriseModule {}
