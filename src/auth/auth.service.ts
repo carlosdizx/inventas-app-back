@@ -35,11 +35,21 @@ export default class AuthService {
     return this.jwtService.sign(payload);
   };
 
+  private validateEnterpriseIsActive = async (id: string) => {
+    const enterpriseFound = await this.userRepository.findOne({
+      where: { id },
+      relations: ['enterprise'],
+    });
+    if (enterpriseFound?.enterprise.status === StatusEntity.INACTIVE)
+      throw new UnauthorizedException('Tu empresa se encuentra inactiva');
+  };
+
   public login = async ({ email, password }: LoginUserDto) => {
     const userFound = await this.userRepository.findOne({
       where: { email, status: StatusEntity.ACTIVE },
       select: ['id', 'email', 'password', 'roles'],
     });
+    await this.validateEnterpriseIsActive(userFound.id);
     if (!userFound)
       throw new NotFoundException('Email no encontrado o inactivo');
     const decryptPassword = this.encryptService.decrypt(userFound.password);
@@ -58,18 +68,21 @@ export default class AuthService {
   };
 
   public refreshAndValidateToken = async (refreshToken: string) => {
+    let payload;
     try {
-      const payload = this.jwtService.verify(refreshToken);
-      return {
-        token: this.generateJWT({ id: payload.id, roles: payload.roles }),
-        refreshToken: this.generateRefreshToken({
-          id: payload.id,
-          roles: payload.roles,
-        }),
-      };
+      payload = this.jwtService.verify(refreshToken);
     } catch (error) {
       throw new UnauthorizedException('Refresh token inválido');
     }
+    await this.validateEnterpriseIsActive(payload.id);
+
+    return {
+      token: this.generateJWT({ id: payload.id, roles: payload.roles }),
+      refreshToken: this.generateRefreshToken({
+        id: payload.id,
+        roles: payload.roles,
+      }),
+    };
   };
 
   public generateRandomPassword = async () => {
