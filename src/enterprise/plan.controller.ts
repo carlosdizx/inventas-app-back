@@ -12,7 +12,17 @@ export default class PlanController {
   @Get()
   @Auth(UserRoles.SUPER_ADMIN)
   public async listPlans(@Query() { page, limit }: PaginationDto) {
-    return this.planService.listPlans({ page, limit });
+    const res = await this.planService.listPlans({ page, limit });
+
+    return {
+      ...res,
+      items: res.items.map(({ id, name, description, maxUsers }) => ({
+        id,
+        name,
+        description,
+        maxUsers,
+      })),
+    };
   }
 
   @Post()

@@ -15,7 +15,7 @@ export default class PlanService {
   public listPlans = async ({ page, limit }: IPaginationOptions) => {
     const queryBuilder = this.planEnterpriseRepository
       .createQueryBuilder('planEnterprise')
-      .orderBy('planEnterprise.createdAt', 'DESC')
+      .orderBy('planEnterprise.maxUsers', 'ASC')
       .skip(+page * +limit)
       .take(+limit);
 
