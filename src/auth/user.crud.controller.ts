@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -33,6 +34,11 @@ export default class UserCrudController {
     @Body() dto: CreateUserDto,
     @getDataReq() enterprise: Enterprise,
   ) {
+    const isSuper = dto.roles.includes(UserRoles.SUPER_ADMIN);
+    const isOwner = dto.roles.includes(UserRoles.OWNER);
+    if (isSuper || isOwner)
+      throw new BadRequestException('Roles no permitidos');
+
     const { plan } = await this.enterpriseService.findEnterpriseAndOwnerById(
       enterprise.id,
     );
