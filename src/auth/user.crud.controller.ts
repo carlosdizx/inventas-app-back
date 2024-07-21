@@ -28,7 +28,7 @@ export default class UserCrudController {
     private readonly enterpriseService: EnterpriseService,
   ) {}
   @Post()
-  @Auth(UserRoles.OWNER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN)
   public async create(
     @Body() dto: CreateUserDto,
     @getDataReq() enterprise: Enterprise,
@@ -41,13 +41,13 @@ export default class UserCrudController {
   }
 
   @Get(':id')
-  @Auth(UserRoles.OWNER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN)
   public async getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.userCrudService.findUserById(id);
   }
 
   @Patch(':id')
-  @Auth(UserRoles.OWNER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN)
   public async changeStatusAndRoles(
     @Body() dto: UpdateUserDto,
     @Param('id', ParseUUIDPipe) id: string,
@@ -56,7 +56,7 @@ export default class UserCrudController {
   }
 
   @Get()
-  @Auth(UserRoles.OWNER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN)
   public async listUsers(
     @Body() { page, limit }: PaginationDto,
     @getDataReq() enterprise: Enterprise,
