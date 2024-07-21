@@ -52,12 +52,14 @@ export default class AuthService {
       where: { email, status: StatusEntity.ACTIVE },
       select: ['id', 'email', 'password', 'roles'],
     });
+    if (!userFound)
+      throw new NotFoundException('Email no encontrado o inactivo');
+
     const notRequireValid = userFound.roles.some(
       (userRole) => userRole === UserRoles.SUPER_ADMIN,
     );
     if (!notRequireValid) await this.validateEnterpriseIsActive(userFound.id);
-    if (!userFound)
-      throw new NotFoundException('Email no encontrado o inactivo');
+
     const decryptPassword = this.encryptService.decrypt(userFound.password);
     if (decryptPassword === '')
       throw new ConflictException('Llave de encriptación es errada');
