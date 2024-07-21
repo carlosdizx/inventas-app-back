@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -16,9 +17,11 @@ import EncryptService from '../common/service/encrypt.service';
 import { comparePasswords, hashPassword } from '../common/util/encrypt.util';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import generatePasswordUtil from '../common/util/generate.password.util';
+import { UserRoles } from './enums/user.roles.enum';
 
 @Injectable()
 export default class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly errorDatabaseService: ErrorDatabaseService,
@@ -49,7 +52,10 @@ export default class AuthService {
       where: { email, status: StatusEntity.ACTIVE },
       select: ['id', 'email', 'password', 'roles'],
     });
-    await this.validateEnterpriseIsActive(userFound.id);
+    const notRequireValid = userFound.roles.some(
+      (userRole) => userRole === UserRoles.SUPER_ADMIN,
+    );
+    if (!notRequireValid) await this.validateEnterpriseIsActive(userFound.id);
     if (!userFound)
       throw new NotFoundException('Email no encontrado o inactivo');
     const decryptPassword = this.encryptService.decrypt(userFound.password);
