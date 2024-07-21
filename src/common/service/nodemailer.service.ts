@@ -16,6 +16,7 @@ export default class NodemailerService {
     const user = configService.get<string>('SMTP_USER');
     const pass = configService.get<string>('SMTP_PASSWORD');
 
+    /*
     this.transporter = nodemailer.createTransport({
       host,
       port,
@@ -28,6 +29,7 @@ export default class NodemailerService {
     this.transporter
       .verify()
       .then(() => this.logger.debug('Connected to email successfully'));
+     */
   }
 
   public main = async ({ from, to, subject, html }: SendEmailDto) =>
