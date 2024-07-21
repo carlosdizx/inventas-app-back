@@ -12,7 +12,6 @@ const JoiValidation = Joi.object({
   DB_PASSWORD: Joi.string().required(),
   DB_NAME: Joi.string().required(),
   DB_SYNCHRONIZE: Joi.boolean().required().default(false),
-  DB_URL: Joi.string().required(),
 
   // JWT
   JWT_SECRET: Joi.string().required(),
