@@ -7,7 +7,6 @@ const registerEnterpriseMail = (password: string) => `
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             color: #333;
-            text-align: center;
             padding: 50px;
         }
         .container {
@@ -17,6 +16,10 @@ const registerEnterpriseMail = (password: string) => `
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #007bff;
         }
         .button {
             background-color: #007bff;
@@ -25,11 +28,13 @@ const registerEnterpriseMail = (password: string) => `
             text-decoration: none;
             border-radius: 5px;
             display: inline-block;
+            margin-top: 20px;
         }
-        .button:hover {
-            background-color: #0056b3;
+        p {
+            line-height: 1.6;
         }
-    </style><title>Registro exitoso</title>
+    </style>
+    <title>Registro Exitoso</title>
 </head>
 <body>
     <div class="container">
@@ -38,9 +43,12 @@ const registerEnterpriseMail = (password: string) => `
         <p>Como parte de tu registro, te hemos asignado una contraseña temporal:</p>
         <p><strong>Password Temporal: ${password}</strong></p>
         <p>Por favor, cambia tu contraseña una vez que inicies sesión por primera vez.</p>
+        <p>Alguien te ha registrado en <a href="https://app.inventas-app.com/">Login</a>.</p>
+        <a href="https://app.inventas-app.com/" class="button">Iniciar Sesión</a>
     </div>
 </body>
 </html>
+
 `;
 
 export default registerEnterpriseMail;
