@@ -2,23 +2,19 @@ import { NestFactory } from '@nestjs/core';
 import AppModule from './app.module';
 import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
-import * as fs from 'fs';
+import { LogLevel } from '@nestjs/common/services/logger.service';
 
 const bootstrap = async () => {
   const configService = new ConfigService();
 
-  const usageHttps = configService.get<string>('APP_HTTPS', 'false') === 'true';
-  let app: INestApplication;
+  const logLevel: LogLevel[] =
+    configService.get('NODE_ENV') === 'production'
+      ? ['error', 'warn', 'fatal']
+      : ['error', 'warn', 'log', 'debug', 'fatal', 'verbose'];
 
-  if (usageHttps) {
-    const httpsOptions: HttpsOptions = {
-      key: fs.readFileSync('private.key'),
-      cert: fs.readFileSync('certificate.crt'),
-    };
-    app = await NestFactory.create(AppModule, { httpsOptions });
-  } else app = await NestFactory.create(AppModule);
+  const app: INestApplication = await NestFactory.create(AppModule);
 
+  app.useLogger(logLevel);
   app.enableCors({});
   app.useGlobalPipes(
     new ValidationPipe({
@@ -30,9 +26,7 @@ const bootstrap = async () => {
   const port = configService.getOrThrow<string>('APP_PORT');
   await app.listen(port);
 
-  Logger.debug(
-    `Running application at ${usageHttps ? `https` : `http`}://[...]:${port}/`,
-  );
+  Logger.debug(`Running application at http://localhost:${port}/`);
 };
 
 (async () => {
