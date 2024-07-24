@@ -13,7 +13,6 @@ import CategoriesModule from './categories/categories.module';
 import EnterpriseModule from './enterprise/enterprise.module';
 import PaymentsModule from './payments/payments.module';
 import { dataSourceOptions } from '../database/database.config';
-import AppController from './app.controller';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,6 +31,6 @@ import AppController from './app.controller';
     ClientsModule,
     PaymentsModule,
   ],
-  controllers: [AppController],
+  controllers: [],
 })
 export default class AppModule {}
