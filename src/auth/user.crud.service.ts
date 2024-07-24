@@ -58,12 +58,8 @@ export default class UserCrudService {
       const { maxUsers } = enterprise.plan;
       const usersFound = await this.findActiveUsersByEnterprise(enterprise.id);
       if (usersFound.length >= maxUsers) {
-        const users = usersFound.map(({ email }: User) => email);
-        const message = `Tu plan solo permite ${maxUsers} usuarios activos, incluyendo al dueño de la empresa
-        <br/>
-        <hr/>
-        ${users.join('<br/>')}
-        <br/>`;
+        const message =
+          'Tu plan solo permite ${maxUsers} usuarios activos, incluyendo al dueño de la empresa';
         throw new ConflictException(message);
       }
     }
