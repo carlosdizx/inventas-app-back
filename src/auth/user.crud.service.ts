@@ -98,14 +98,12 @@ export default class UserCrudService {
       await queryRunner.release();
       delete details.user.password;
 
-      /*
       await this.nodemailerService.main({
         from: 'Registro exitoso <noreply_inventa@gmail.com>',
         to: email,
         subject: 'Registro en Inventas-App',
         html: registerEnterpriseMail(password),
       });
-       */
       return details;
     } catch (error) {
       await queryRunner.rollbackTransaction();
