@@ -72,10 +72,11 @@ export default class EnterpriseService {
 
       const password = generatePasswordUtil(20);
 
-      const userSaved = this.userRepository.create({
+      let userSaved = this.userRepository.create({
         email: email,
         roles: [UserRoles.OWNER],
         password: this.encryptService.encrypt(await hashPassword(password)),
+        status: StatusEntity.ACTIVE,
       });
 
       const userDetails = this.userDetailsRepository.create({
@@ -88,14 +89,20 @@ export default class EnterpriseService {
         phone,
       });
 
-      userDetails.user = await queryRunner.manager.save<User>(userSaved);
+      userSaved = await queryRunner.manager.save<User>(userSaved);
       this.logger.debug('User Saved');
+      userDetails.user = userSaved;
       enterprise.owner = userDetails.user;
-      await queryRunner.manager.save<Enterprise>(enterprise);
-      this.logger.debug('Enterprise Saved');
 
       await queryRunner.manager.save<UserDetails>(userDetails);
       this.logger.debug('User Details Saved');
+
+      userSaved.enterprise = await queryRunner.manager.save<Enterprise>(
+        enterprise,
+      );
+      this.logger.debug('Enterprise Saved');
+
+      await queryRunner.manager.save<User>(userSaved);
 
       await this.nodemailerService.main({
         from: 'Registro exitoso <noreply_inventa@gmail.com>',
@@ -114,6 +121,7 @@ export default class EnterpriseService {
           ' Se ha enviado un correo electrónico con la contraseña de acceso a la plataforma.',
       };
     } catch (error) {
+      this.logger.error(error);
       await queryRunner.rollbackTransaction();
       await queryRunner.release();
       this.errorDatabaseService.handleException(error);

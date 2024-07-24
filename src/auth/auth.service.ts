@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
   UnauthorizedException,
@@ -37,18 +38,23 @@ export default class AuthService {
   };
 
   private validateEnterpriseIsActive = async (id: string) => {
-    const enterpriseFound = await this.userRepository.findOne({
+    const userEnterprise = await this.userRepository.findOne({
       where: { id },
       relations: ['enterprise'],
     });
-    if (enterpriseFound?.enterprise.status === StatusEntity.INACTIVE)
+    if (!userEnterprise?.enterprise)
+      throw new UnauthorizedException(
+        'Tu empresa se encuentra inactiva o no existe',
+      );
+    if (userEnterprise?.enterprise?.status === StatusEntity.INACTIVE)
       throw new UnauthorizedException('Tu empresa se encuentra inactiva');
   };
 
   public login = async ({ email, password }: LoginUserDto) => {
+    this.logger.debug({ email, password });
     const userFound = await this.userRepository.findOne({
       where: { email, status: StatusEntity.ACTIVE },
-      select: ['id', 'email', 'password', 'roles'],
+      select: ['id', 'email', 'password', 'roles', 'status'],
     });
     if (!userFound)
       throw new NotFoundException('Email no encontrado o inactivo');
@@ -58,7 +64,14 @@ export default class AuthService {
     );
     if (!notRequireValid) await this.validateEnterpriseIsActive(userFound.id);
 
-    const decryptPassword = this.encryptService.decrypt(userFound.password);
+    let decryptPassword: string;
+    try {
+      decryptPassword = this.encryptService.decrypt(userFound.password);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error al interno, comuniquese con el administrador',
+      );
+    }
     if (decryptPassword === '')
       throw new ConflictException('Llave de encriptación es errada');
     const isValid = await comparePasswords(password, decryptPassword);
