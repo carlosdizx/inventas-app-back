@@ -9,12 +9,11 @@ import {
 } from '@nestjs/common';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import LoginUserDto from './dto/login.dto';
-import AuthService from './auth.service';
 import ChangePasswordDto from './dto/change-password.dto';
 import Auth from './decorators/auth.decorator';
-import { UserRoles } from './enums/user.roles.enum';
 import getDataReq from './decorators/get-data-req.decorator';
 import User from './entities/user.entity';
+import AuthService from './auth.service';
 
 @Controller('auth')
 @UseFilters(TypeormExceptionFilter)
