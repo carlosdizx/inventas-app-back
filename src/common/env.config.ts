@@ -13,6 +13,9 @@ const JoiValidation = Joi.object({
   DB_NAME: Joi.string().required(),
   DB_SYNCHRONIZE: Joi.boolean().required().default(false),
 
+  // Cache
+  CACHE_TTL: Joi.number().required(),
+
   // JWT
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRES_IN: Joi.string().default('1d'),
