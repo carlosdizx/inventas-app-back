@@ -26,7 +26,7 @@ export default class InventoriesController {
   constructor(private readonly inventoriesService: InventoriesService) {}
 
   @Post()
-  @Auth(UserRoles.OWNER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN)
   public async createInventory(
     @Body() dto: CreateInventoryDto,
     @GetDataReqDecorator() enterprise: Enterprise,
@@ -35,7 +35,7 @@ export default class InventoriesController {
   }
 
   @Get(':id')
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER, UserRoles.ACCOUNTANT)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN, UserRoles.CASHIER)
   public async findInventoryById(
     @Param('id', ParseUUIDPipe) id: string,
     @GetDataReqDecorator() enterprise: Enterprise,
@@ -44,7 +44,7 @@ export default class InventoriesController {
   }
 
   @Put(':id')
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN, UserRoles.CASHIER)
   public async addProductsToInventory(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: ProductQuantityDto[],
@@ -58,7 +58,7 @@ export default class InventoriesController {
   }
 
   @Get()
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN, UserRoles.CASHIER)
   public async listInventories(
     @Query() { page, limit }: PaginationDto,
     @getDataReq() enterprise: Enterprise,

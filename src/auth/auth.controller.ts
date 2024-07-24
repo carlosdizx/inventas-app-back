@@ -1,7 +1,20 @@
-import { Body, Controller, Get, Param, Post, UseFilters } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseFilters,
+} from '@nestjs/common';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import LoginUserDto from './dto/login.dto';
 import AuthService from './auth.service';
+import ChangePasswordDto from './dto/change-password.dto';
+import Auth from './decorators/auth.decorator';
+import { UserRoles } from './enums/user.roles.enum';
+import getDataReq from './decorators/get-data-req.decorator';
+import User from './entities/user.entity';
 
 @Controller('auth')
 @UseFilters(TypeormExceptionFilter)
@@ -20,5 +33,17 @@ export default class AuthController {
   @Get('generate-password')
   public async getPassword() {
     return this.authService.generateRandomPassword();
+  }
+
+  @Post('change/password')
+  @Auth()
+  public async changePassword(
+    @Body() { password, passwordConfirm }: ChangePasswordDto,
+    @getDataReq(true) user: User,
+  ) {
+    if (password !== passwordConfirm)
+      throw new BadRequestException('Las contraseñas no coinciden');
+
+    await this.authService.changePassword(user.id, password);
   }
 }

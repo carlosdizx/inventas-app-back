@@ -8,6 +8,7 @@
   "scripts": {
     "build": "nest build",
     "start": "pm2 start dist/src/main.js --name inventas-app-backend",
+    "kill": "pm2 kill",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --watch --debug",
     "seed:create": "typeorm migration:create database/migrations/seed",

@@ -9,7 +9,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './entities/user.entity';
 import { Repository } from 'typeorm';
-import ErrorDatabaseService from '../common/service/error.database.service';
 import JwtPayload from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import LoginUserDto from './dto/login.dto';
@@ -24,7 +23,6 @@ export default class AuthService {
   private readonly logger = new Logger(AuthService.name);
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly errorDatabaseService: ErrorDatabaseService,
     private readonly encryptService: EncryptService,
     private readonly jwtService: JwtService,
   ) {}
@@ -100,5 +98,16 @@ export default class AuthService {
     );
 
     return { password, passwordEncrypted };
+  };
+
+  public changePassword = async (id: string, password: string) => {
+    const userPreload = await this.userRepository.preload({ id });
+    if (!userPreload) throw new NotFoundException('Usuario no encontrado');
+
+    userPreload.password = this.encryptService.encrypt(
+      await hashPassword(password),
+    );
+    await this.userRepository.save(userPreload);
+    return { message: 'Contraseña actualizada correctamente' };
   };
 }

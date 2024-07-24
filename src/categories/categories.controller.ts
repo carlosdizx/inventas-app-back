@@ -34,7 +34,7 @@ export default class CategoriesController {
   }
 
   @Post()
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN, UserRoles.CASHIER)
   public async createCategory(
     @Body() dto: CreateCategoryDto,
     @getDataReq() enterprise: Enterprise,
@@ -43,7 +43,7 @@ export default class CategoriesController {
   }
 
   @Patch(':id')
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN, UserRoles.CASHIER)
   public async updateCategory(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateCategoryDto,
