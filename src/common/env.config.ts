@@ -29,6 +29,15 @@ const JoiValidation = Joi.object({
   SMTP_SECURE: Joi.boolean().required(),
   SMTP_USER: Joi.string().required(),
   SMTP_PASSWORD: Joi.string().required(),
+
+  // Firebase
+  FIREBASE_API_KEY: Joi.string().required(),
+  FIREBASE_AUTH_DOMAIN: Joi.string().required(),
+  FIREBASE_PROJECT_ID: Joi.string().required(),
+  FIREBASE_STORAGE_BUCKET: Joi.string().required(),
+  FIREBASE_MESSAGING_SENDER_ID: Joi.string().required(),
+  FIREBASE_APP_ID: Joi.string().required(),
+  FIREBASE_MEASUREMENT_ID: Joi.string().required(),
 });
 
 export default JoiValidation;

@@ -4,6 +4,7 @@ import EncryptService from './service/encrypt.service';
 import NodemailerService from './service/nodemailer.service';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import FirebaseService from './service/firebase.service';
 
 @Global()
 @Module({
@@ -16,7 +17,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
     }),
   ],
-  providers: [ErrorDatabaseService, EncryptService, NodemailerService],
-  exports: [ErrorDatabaseService, EncryptService, NodemailerService],
+  providers: [
+    ErrorDatabaseService,
+    EncryptService,
+    NodemailerService,
+    FirebaseService,
+  ],
+  exports: [
+    ErrorDatabaseService,
+    EncryptService,
+    NodemailerService,
+    FirebaseService,
+  ],
 })
 export default class CommonModule {}
