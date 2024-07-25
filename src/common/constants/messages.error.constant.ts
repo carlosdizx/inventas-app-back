@@ -28,4 +28,8 @@ const ENTERPRISE = {
   PLAN_NOT_FOUND: 'El plan de la empresa no fue encontrado',
 };
 
-export { SERVER, CRUD, AUTH, OTP, ENTERPRISE };
+const INVENTORY = {
+  INACTIVE_PRODUCT: 'Se encontró un producto inactivo o no existe',
+};
+
+export { SERVER, CRUD, AUTH, OTP, ENTERPRISE, INVENTORY };
