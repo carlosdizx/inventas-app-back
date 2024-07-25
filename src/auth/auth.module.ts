@@ -6,7 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import AuthService from './auth.service';
 import AuthController from './auth.controller';
 import JwtStrategy from './strategies/jwt.strategy';
-import getJwtConfig from '../common/jwt.config';
+import getJwtConfig from '../common/config/jwt.config';
 import User from './entities/user.entity';
 import UserDetails from './entities/user.details.entity';
 import UserCrudService from './user.crud.service';
