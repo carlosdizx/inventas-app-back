@@ -6,7 +6,7 @@ const CRUD = {
   UPDATED: 'Registro actualizado',
   CREATED: 'Registro creado exitosamente',
   NOT_FOUND: 'Registro no encontrado',
-  CONFLICT: 'Operación invalida o genera',
+  CONFLICT: 'Operación invalida, genera o contiene una inconsistencia',
 };
 const AUTH = {
   INVALID_CREDENTIALS: 'Credenciales invalidas o erradas',
