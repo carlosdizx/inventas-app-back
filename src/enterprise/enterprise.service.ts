@@ -21,10 +21,13 @@ import EncryptService from '../common/service/encrypt.service';
 import { hashPassword } from '../common/util/encrypt.util';
 import registerEnterpriseMail from '../common/templates/mails/register.enterprise.mail';
 import NodemailerService from '../common/service/nodemailer.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export default class EnterpriseService {
   private readonly logger = new Logger(EnterpriseService.name);
+
+  private readonly urlApp: string;
 
   constructor(
     private dataSource: DataSource,
@@ -37,7 +40,10 @@ export default class EnterpriseService {
     private readonly encryptService: EncryptService,
     private readonly planService: PlanService,
     private readonly nodemailerService: NodemailerService,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.urlApp = this.configService.get('APP_CLIENT_URL');
+  }
 
   public createEnterpriseAndUser = async ({
     user: {
@@ -108,7 +114,7 @@ export default class EnterpriseService {
         from: 'Registro exitoso <noreply_inventa@gmail.com>',
         to: email,
         subject: 'Registro en Inventas-App',
-        html: registerEnterpriseMail(password),
+        html: registerEnterpriseMail(password, this.urlApp),
       });
 
       await queryRunner.commitTransaction();

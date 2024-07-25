@@ -1,4 +1,4 @@
-const registerEnterpriseMail = (password: string) => `
+const registerEnterpriseMail = (password: string, url: string) => `
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -43,8 +43,8 @@ const registerEnterpriseMail = (password: string) => `
         <p>Como parte de tu registro, te hemos asignado una contraseña temporal:</p>
         <p><strong>Password Temporal: ${password}</strong></p>
         <p>Por favor, cambia tu contraseña una vez que inicies sesión por primera vez.</p>
-        <p>Alguien te ha registrado en <a href="https://app.inventas-app.com/">Login</a>.</p>
-        <a href="https://app.inventas-app.com/" class="button">Iniciar Sesión</a>
+        <p>Alguien te ha registrado en <a href="${url}">Login</a>.</p>
+        <a href="${url}" class="button">Iniciar Sesión</a>
     </div>
 </body>
 </html>

@@ -19,9 +19,12 @@ import generatePasswordUtil from '../common/util/generate.password.util';
 import registerEnterpriseMail from '../common/templates/mails/register.enterprise.mail';
 import NodemailerService from '../common/service/nodemailer.service';
 import { UserRoles } from './enums/user.roles.enum';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export default class UserCrudService {
+  private readonly urlApp: string;
+
   constructor(
     private dataSource: DataSource,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
@@ -30,7 +33,10 @@ export default class UserCrudService {
     private readonly errorDatabaseService: ErrorDatabaseService,
     private readonly encryptService: EncryptService,
     private readonly nodemailerService: NodemailerService,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.urlApp = this.configService.get('APP_CLIENT_URL');
+  }
 
   private async findActiveUsersByEnterprise(enterpriseId: string) {
     return await this.userRepository
@@ -98,7 +104,7 @@ export default class UserCrudService {
         from: 'Registro exitoso <noreply_inventa@gmail.com>',
         to: email,
         subject: 'Registro en Inventas-App',
-        html: registerEnterpriseMail(password),
+        html: registerEnterpriseMail(password, this.urlApp),
       });
       return details;
     } catch (error) {

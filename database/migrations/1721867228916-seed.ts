@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Seed1721544980376 implements MigrationInterface {
+export class Seed1721867228916 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.manager
       .createQueryBuilder()
