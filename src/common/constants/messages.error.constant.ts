@@ -9,8 +9,8 @@ const CRUD = {
 };
 const AUTH = {
   INVALID_CREDENTIALS: 'Credenciales invalidas o erradas',
-  USER_NOT_FOUND: 'Usuario no encontrado o inactivo',
-  EXPIRE_SESSION: 'Sesión expirada, vuelva a iniciar sesión',
+  NOT_FOUND: 'Usuario no encontrado o inactivo',
+  EXPIRE_SESSION: 'Es necesario que vuelva a iniciar sesión',
 };
 
 const OTP = {
@@ -19,4 +19,8 @@ const OTP = {
   EXPIRED: 'Otp expirado',
 };
 
-export { SERVER, CRUD, AUTH, OTP };
+const ENTERPRISE = {
+  NOT_FOUND: 'Empresa no encontrada o se encuentra inactiva',
+};
+
+export { SERVER, CRUD, AUTH, OTP, ENTERPRISE };

@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ConflictException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -18,6 +17,12 @@ import { comparePasswords, hashPassword } from '../common/util/encrypt.util';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import generatePasswordUtil from '../common/util/generate.password.util';
 import { UserRoles } from './enums/user.roles.enum';
+import {
+  AUTH,
+  CRUD,
+  ENTERPRISE,
+  SERVER,
+} from '../common/constants/messages.error.constant';
 
 @Injectable()
 export default class AuthService {
@@ -43,11 +48,9 @@ export default class AuthService {
       relations: ['enterprise'],
     });
     if (!userEnterprise?.enterprise)
-      throw new UnauthorizedException(
-        'Tu empresa se encuentra inactiva o no existe',
-      );
+      throw new UnauthorizedException(ENTERPRISE.NOT_FOUND);
     if (userEnterprise?.enterprise?.status === StatusEntity.INACTIVE)
-      throw new UnauthorizedException('Tu empresa se encuentra inactiva');
+      throw new UnauthorizedException(ENTERPRISE.NOT_FOUND);
   };
 
   public login = async ({ email, password }: LoginUserDto) => {
@@ -56,8 +59,7 @@ export default class AuthService {
       where: { email, status: StatusEntity.ACTIVE },
       select: ['id', 'email', 'password', 'roles', 'status'],
     });
-    if (!userFound)
-      throw new NotFoundException('Email no encontrado o inactivo');
+    if (!userFound) throw new NotFoundException(AUTH.NOT_FOUND);
 
     const notRequireValid = userFound.roles.some(
       (userRole) => userRole === UserRoles.SUPER_ADMIN,
@@ -68,12 +70,13 @@ export default class AuthService {
     try {
       decryptPassword = this.encryptService.decrypt(userFound.password);
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Error al interno, comuniquese con el administrador',
-      );
+      this.logger.error(error);
+      throw new InternalServerErrorException(SERVER.FATAL);
     }
-    if (decryptPassword === '')
-      throw new ConflictException('Llave de encriptación es errada');
+    if (decryptPassword === '') {
+      this.logger.error('Llave de encriptación es errada');
+      throw new InternalServerErrorException(SERVER.FATAL);
+    }
     const isValid = await comparePasswords(password, decryptPassword);
     if (isValid)
       return {
@@ -83,7 +86,7 @@ export default class AuthService {
           roles: userFound.roles,
         }),
       };
-    else throw new BadRequestException('Credenciales erradas');
+    else throw new BadRequestException(AUTH.INVALID_CREDENTIALS);
   };
 
   public refreshAndValidateToken = async (refreshToken: string) => {
@@ -91,7 +94,7 @@ export default class AuthService {
     try {
       payload = this.jwtService.verify(refreshToken);
     } catch (error) {
-      throw new UnauthorizedException('Refresh token inválido');
+      throw new UnauthorizedException(AUTH.EXPIRE_SESSION);
     }
     await this.validateEnterpriseIsActive(payload.id);
 
@@ -115,12 +118,12 @@ export default class AuthService {
 
   public changePassword = async (id: string, password: string) => {
     const userPreload = await this.userRepository.preload({ id });
-    if (!userPreload) throw new NotFoundException('Usuario no encontrado');
+    if (!userPreload) throw new NotFoundException(AUTH.NOT_FOUND);
 
     userPreload.password = this.encryptService.encrypt(
       await hashPassword(password),
     );
     await this.userRepository.save(userPreload);
-    return { message: 'Contraseña actualizada correctamente' };
+    return { message: CRUD.UPDATED };
   };
 }
