@@ -11,6 +11,7 @@ const AUTH = {
   INVALID_CREDENTIALS: 'Credenciales invalidas o erradas',
   NOT_FOUND: 'Usuario no encontrado o inactivo',
   EXPIRE_SESSION: 'Es necesario que vuelva a iniciar sesión',
+  FORBIDDEN: (email: string) => `'${email}' no tiene permiso para esta acción`,
 };
 
 const OTP = {
