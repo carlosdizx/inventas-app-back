@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import AuthModule from './auth/auth.module';
 import CommonModule from './common/common.module';
 import ClientsModule from './clients/clients.module';
-import DatabaseControlModule from './database-control/database-control.module';
 import InventoriesModule from './inventories/inventories.module';
 import SalesModule from './sales/sales.module';
 import ProductsModule from './products/products.module';
@@ -27,7 +26,6 @@ import { dataSourceOptions } from '../database/database.config';
     ProductsModule,
     SalesModule,
     InventoriesModule,
-    DatabaseControlModule,
     ClientsModule,
     PaymentsModule,
   ],
