@@ -6,6 +6,7 @@ const CRUD = {
   UPDATED: 'Registro actualizado',
   CREATED: 'Registro creado exitosamente',
   NOT_FOUND: 'Registro no encontrado',
+  CONFLICT: 'Operación invalida o genera',
 };
 const AUTH = {
   INVALID_CREDENTIALS: 'Credenciales invalidas o erradas',
@@ -24,6 +25,7 @@ const ENTERPRISE = {
   NOT_FOUND: 'Empresa no encontrada o se encuentra inactiva',
   MAX_USER: (maxUsers: number) =>
     `Tu plan solo permite ${maxUsers} usuarios activos`,
+  PLAN_NOT_FOUND: 'El plan de la empresa no fue encontrado',
 };
 
 export { SERVER, CRUD, AUTH, OTP, ENTERPRISE };

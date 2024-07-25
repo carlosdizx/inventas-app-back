@@ -8,6 +8,7 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import Subcategory from './entities/subcategory.entity';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { CRUD } from '../common/constants/messages.error.constant';
 
 @Injectable()
 export default class CategoriesService {
@@ -73,7 +74,7 @@ export default class CategoriesService {
     { subcategories, ...resData }: UpdateCategoryDto,
   ) => {
     const category = await this.categoryRepository.preload({ id, ...resData });
-    if (!category) throw new NotFoundException('Categoría no encontrada');
+    if (!category) throw new NotFoundException(CRUD.NOT_FOUND);
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();

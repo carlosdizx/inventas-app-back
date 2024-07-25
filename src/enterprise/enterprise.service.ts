@@ -22,6 +22,7 @@ import { hashPassword } from '../common/util/encrypt.util';
 import registerEnterpriseMail from '../common/templates/mails/register.enterprise.mail';
 import NodemailerService from '../common/service/nodemailer.service';
 import { ConfigService } from '@nestjs/config';
+import { CRUD, ENTERPRISE } from '../common/constants/messages.error.constant';
 
 @Injectable()
 export default class EnterpriseService {
@@ -61,7 +62,7 @@ export default class EnterpriseService {
   }: CreateEnterpriseDTO) => {
     if (planId) {
       const plan = await this.planService.findOneBy({ id: planId });
-      if (!plan) throw new NotFoundException('Plan no encontrado');
+      if (!plan) throw new NotFoundException(ENTERPRISE.PLAN_NOT_FOUND);
       resDataEnterprise['plan'] = plan;
     }
 
@@ -150,7 +151,7 @@ export default class EnterpriseService {
       relations: ['owner', 'owner.userDetails', 'plan'],
     });
 
-    if (!enterprise) throw new NotFoundException('Empresa no encontrada');
+    if (!enterprise) throw new NotFoundException(ENTERPRISE.NOT_FOUND);
 
     const user = {
       ...enterprise.owner,
@@ -173,7 +174,7 @@ export default class EnterpriseService {
 
   public changeStatus = async (id: string, { status }: ChangeStatusDto) => {
     const enterprise = await this.findOneBy({ id });
-    if (!enterprise) throw new NotFoundException('Empresa no encontrada');
+    if (!enterprise) throw new NotFoundException(ENTERPRISE.NOT_FOUND);
 
     if (
       (enterprise.status === StatusEntity.ACTIVE ||
@@ -181,9 +182,7 @@ export default class EnterpriseService {
       (status === StatusEntity.PENDING_CONFIRMATION ||
         status === StatusEntity.PENDING_APPROVAL)
     )
-      throw new ConflictException(
-        'No puedes revertir el estado de este registro a este estado',
-      );
+      throw new ConflictException(CRUD.CONFLICT);
 
     enterprise.status = status;
 
@@ -192,10 +191,10 @@ export default class EnterpriseService {
 
   public changePlanEnterprise = async (id: string, planId: string) => {
     const enterprise = await this.findOneBy({ id });
-    if (!enterprise) throw new NotFoundException('Empresa no encontrada');
+    if (!enterprise) throw new NotFoundException(ENTERPRISE.NOT_FOUND);
 
     const plan = await this.planService.findOneBy({ id: planId });
-    if (!plan) throw new NotFoundException('Plan no encontrado');
+    if (!plan) throw new NotFoundException(ENTERPRISE.PLAN_NOT_FOUND);
 
     enterprise.plan = plan;
 
