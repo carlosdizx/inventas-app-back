@@ -20,6 +20,7 @@ import registerEnterpriseMail from '../common/templates/mails/register.enterpris
 import NodemailerService from '../common/service/nodemailer.service';
 import { UserRoles } from './enums/user.roles.enum';
 import { ConfigService } from '@nestjs/config';
+import { AUTH, ENTERPRISE } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class UserCrudService {
@@ -63,11 +64,8 @@ export default class UserCrudService {
     if (enterprise && enterprise.plan) {
       const { maxUsers } = enterprise.plan;
       const usersFound = await this.findActiveUsersByEnterprise(enterprise.id);
-      if (usersFound.length >= maxUsers) {
-        const message =
-          'Tu plan solo permite ${maxUsers} usuarios activos, incluyendo al dueño de la empresa';
-        throw new ConflictException(message);
-      }
+      if (usersFound.length >= maxUsers)
+        throw new ConflictException(ENTERPRISE.MAX_USER(maxUsers));
     }
 
     const password = generatePasswordUtil(20);
@@ -119,20 +117,20 @@ export default class UserCrudService {
       .leftJoinAndSelect('user.userDetails', 'details')
       .where('user.id = :id', { id })
       .getOne();
-    if (!userFound) throw new NotFoundException('Usuario no encontrado');
+    if (!userFound) throw new NotFoundException(AUTH.NOT_FOUND);
     const { userDetails, ...restData } = userFound;
     return { ...restData, ...userDetails, id };
   };
 
   public deleteUserById = async (id: string) => {
     const result = await this.userRepository.delete(id);
-    if (result.affected === 0) throw new NotFoundException('User not found');
+    if (result.affected === 0) throw new NotFoundException(AUTH.NOT_FOUND);
     return { message: `User was removed` };
   };
 
   public updateStatusAndRolesById = async (id: string, dto: UpdateUserDto) => {
     const userPreload = await this.userRepository.preload({ id, ...dto });
-    if (!userPreload) throw new NotFoundException('Usuario no encontrado');
+    if (!userPreload) throw new NotFoundException(AUTH.NOT_FOUND);
 
     await this.userRepository.save(userPreload);
   };

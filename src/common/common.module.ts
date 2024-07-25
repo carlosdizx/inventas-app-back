@@ -6,6 +6,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import FirebaseService from './service/firebase.service';
 import FirestoreService from './service/firestore.service';
+import OtpService from './service/otp.service';
 
 @Global()
 @Module({
@@ -24,6 +25,7 @@ import FirestoreService from './service/firestore.service';
     NodemailerService,
     FirebaseService,
     FirestoreService,
+    OtpService,
   ],
   exports: [
     ErrorDatabaseService,
@@ -31,6 +33,7 @@ import FirestoreService from './service/firestore.service';
     NodemailerService,
     FirebaseService,
     FirestoreService,
+    OtpService,
   ],
 })
 export default class CommonModule {}

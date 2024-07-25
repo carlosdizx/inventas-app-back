@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,9 +15,12 @@ import ProductQuantityDto from '../sales/dto/product-quantity.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import ProductsService from '../products/products.service';
+import { CRUD, INVENTORY, SERVER } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class InventoriesService {
+  private readonly logger = new Logger(InventoriesService.name);
+
   constructor(
     private readonly datasource: DataSource,
     @InjectRepository(Inventory)
@@ -45,7 +49,7 @@ export default class InventoriesService {
       },
       relations: ['productInventories', 'productInventories.product'],
     });
-    if (!inventory) throw new NotFoundException('Inventorio no encontrado');
+    if (!inventory) throw new NotFoundException(CRUD.NOT_FOUND);
     return inventory;
   };
 
@@ -59,7 +63,7 @@ export default class InventoriesService {
       enterprise: { id: enterprise.id },
     });
 
-    if (!inventory) throw new NotFoundException('Inventario no existe');
+    if (!inventory) throw new NotFoundException(CRUD.NOT_FOUND);
 
     const productsInventory: ProductInventory[] = [];
 
@@ -82,7 +86,7 @@ export default class InventoriesService {
           enterprise,
         );
         if (product.status !== StatusEntity.ACTIVE)
-          throw new ConflictException('Hay un producto inactivo');
+          throw new ConflictException(INVENTORY.INACTIVE_PRODUCT);
         productInventory = this.productInventoryRepository.create({
           inventory,
           product: { id: productQuantity.id },
@@ -98,10 +102,9 @@ export default class InventoriesService {
       await queryRunner.manager.save(productsInventory);
       await queryRunner.commitTransaction();
     } catch (error) {
+      this.logger.error(error);
       await queryRunner.rollbackTransaction();
-      throw new InternalServerErrorException(
-        `Error al tratar de registrar los productos en el inventario: ${error} - ${error.message}`,
-      );
+      throw new InternalServerErrorException(SERVER.FATAL);
     } finally {
       await queryRunner.release();
     }
@@ -113,9 +116,7 @@ export default class InventoriesService {
   ) => {
     const inventory = await this.inventoryRepository.findOneBy({ id });
 
-    if (!inventory) {
-      throw new NotFoundException('Inventario no existe');
-    }
+    if (!inventory) throw new NotFoundException(CRUD.NOT_FOUND);
 
     const productsInventories: ProductInventory[] = [];
 
@@ -140,10 +141,7 @@ export default class InventoriesService {
           productInventory.quantity -= productQuantity.quantity;
           productsInventories.push(productInventory);
         }
-      } else
-        throw new NotFoundException(
-          'Hay un producto en el inventario que no ha sido encontrado o está inactivo',
-        );
+      } else throw new NotFoundException(INVENTORY.INACTIVE_PRODUCT);
     }
 
     const queryRunner = this.datasource.createQueryRunner();

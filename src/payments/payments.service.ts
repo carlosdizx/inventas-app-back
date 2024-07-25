@@ -13,6 +13,7 @@ import { TypeSaleEnum } from '../sales/enums/type-sale.enum';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import ChangeStatusDto from '../common/dto/change-status.dto';
+import { CRUD } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class PaymentService {
@@ -109,14 +110,12 @@ export default class PaymentService {
       [enterpriseId, clientId],
     );
 
-    if (!dataResult) throw new ConflictException('El cliente no tiene deudas');
+    if (!dataResult) throw new ConflictException(CRUD.NOT_FOUND);
 
     const { total_credits, total_payments } = dataResult;
 
     if (totalAmount > +total_credits - +total_payments)
-      throw new ConflictException(
-        'El valor ingresado es mayor a la deuda del cliente',
-      );
+      throw new ConflictException(CRUD.CONFLICT);
 
     const payment = this.paymentRepository.create({
       totalAmount,
@@ -146,7 +145,7 @@ export default class PaymentService {
     { status }: ChangeStatusDto,
   ) => {
     const payment = await this.paymentRepository.findOneBy({ id });
-    if (!payment) throw new NotFoundException('Pago no encontrada');
+    if (!payment) throw new NotFoundException(CRUD.NOT_FOUND);
 
     if (
       (payment.status === StatusEntity.ACTIVE ||
@@ -154,9 +153,7 @@ export default class PaymentService {
       (status === StatusEntity.PENDING_CONFIRMATION ||
         status === StatusEntity.PENDING_APPROVAL)
     )
-      throw new ConflictException(
-        'No puedes revertir el estado de este registro a este estado',
-      );
+      throw new ConflictException(CRUD.CONFLICT);
 
     payment.status = status;
 

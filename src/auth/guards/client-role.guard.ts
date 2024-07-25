@@ -2,14 +2,15 @@ import { Reflector } from '@nestjs/core';
 import {
   CanActivate,
   ExecutionContext,
-  Injectable,
-  BadRequestException,
   ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { META_ROLES } from '../decorators/role-protected.decorator';
 import { UserRoles } from '../enums/user.roles.enum';
 import User from '../entities/user.entity';
+import { AUTH, SERVER } from '../../common/constants/messages.constant';
 
 @Injectable()
 export default class ClientRoleGuard implements CanActivate {
@@ -29,7 +30,7 @@ export default class ClientRoleGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const user = req.user as User;
 
-    if (!user) throw new BadRequestException('Cliente no encontrado');
+    if (!user) throw new InternalServerErrorException(SERVER.FATAL);
 
     for (const role of user.roles) {
       if (validRoles.includes(role)) {
@@ -37,8 +38,6 @@ export default class ClientRoleGuard implements CanActivate {
       }
     }
 
-    throw new ForbiddenException(
-      `Cliente '${user.email}' requiere un permiso para poder hacer esta acción`,
-    );
+    throw new ForbiddenException(AUTH.FORBIDDEN(user.email));
   }
 }
