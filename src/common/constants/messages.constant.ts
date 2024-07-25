@@ -18,9 +18,10 @@ const AUTH = {
 
 const OTP = {
   SUCCESS: 'OTP registrado y solicitado exitosamente',
-  NOT_FOUND: 'No se encontró una solicitud de confirmación via OTP',
+  NOT_FOUND:
+    'No se encontró una solicitud de confirmación via OTP, vuelve solicita un código',
   INVALID: 'Otp invalido',
-  EXPIRED: 'Otp expirado',
+  EXPIRED: 'Otp expirado, vuelve a solicitar un código otp',
 };
 
 const ENTERPRISE = {

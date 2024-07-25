@@ -4,17 +4,19 @@ import {
   InternalServerErrorException,
   Logger,
   NestMiddleware,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import User from '../../auth/entities/user.entity';
 import { AUTH, SERVER } from '../constants/messages.constant';
 import OtpService from '../service/otp.service';
 import UserCrudService from '../../auth/user.crud.service';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class OtpVerifyMiddleware implements NestMiddleware {
   private readonly logger: Logger = new Logger(OtpVerifyMiddleware.name);
 
   constructor(
+    private readonly jwtService: JwtService,
     private readonly otpService: OtpService,
     private readonly userCrudService: UserCrudService,
   ) {}
@@ -27,19 +29,27 @@ export class OtpVerifyMiddleware implements NestMiddleware {
 
     const [token] = authorization.split(' ').reverse();
 
-    this.logger.debug(token);
-    //this.userCrudService.findUserById()
+    let payload;
+    try {
+      payload = this.jwtService.verify(token);
+    } catch (error) {
+      throw new UnauthorizedException(AUTH.INVALID);
+    }
 
-    // if (!user) throw new InternalServerErrorException(SERVER.FATAL);
-    //
-    // const { email } = user;
-    // const otp = req.headers['x-otp-code'] as string;
-    //
-    // if (!otp) throw new BadRequestException(AUTH.INVALID);
-    //
-    // this.logger.debug(`email: ${email}`);
-    //
-    // await this.otpService.verifyOtp(email, otp);
+    if (!payload) throw new BadRequestException(AUTH.INVALID);
+
+    const user = await this.userCrudService.findUserById(payload.id);
+
+    if (!user) throw new InternalServerErrorException(SERVER.FATAL);
+
+    const { email } = user;
+    const otp = req.headers['x-otp-code'] as string;
+
+    if (!otp) throw new BadRequestException(AUTH.INVALID);
+
+    this.logger.debug(`email: ${email}`);
+
+    await this.otpService.verifyOtp(email, otp);
 
     next();
   }

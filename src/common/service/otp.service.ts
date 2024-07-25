@@ -48,7 +48,7 @@ export default class OtpService {
 
     if (otpData.expiresAt < Date.now()) {
       await this.deleteOtp(email);
-      return false;
+      throw new BadRequestException(OTP.EXPIRED);
     }
 
     if (otpData.otp === otp) {
