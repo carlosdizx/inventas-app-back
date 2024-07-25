@@ -18,6 +18,7 @@ import InventoriesService from '../inventories/inventories.service';
 import ClientsService from '../clients/clients.service';
 import Client from '../clients/entities/client.entity';
 import ChangeStatusForSaleDto from './dto/change-status-for-sale.dto';
+import { CRUD } from '../common/constants/messages.error.constant';
 
 @Injectable()
 export default class SalesService {
@@ -53,8 +54,7 @@ export default class SalesService {
         enterprise: { id: enterprise.id },
       });
 
-      if (!clientFound)
-        throw new ConflictException('Cliente no encontrado o inactivo');
+      if (!clientFound) throw new ConflictException(CRUD.NOT_FOUND);
     }
 
     const sale = this.saleRepository.create({
@@ -120,12 +120,12 @@ export default class SalesService {
     enterprise: Enterprise,
   ) => {
     if (status !== StatusEntity.INACTIVE && status !== StatusEntity.ACTIVE)
-      throw new ConflictException('Estado de la venta no permitido');
+      throw new ConflictException(CRUD.CONFLICT);
     const sale = await this.saleRepository.findOneBy({
       id,
       enterprise: { id: enterprise.id },
     });
-    if (!sale) throw new NotFoundException('Venta no encontrada');
+    if (!sale) throw new NotFoundException(CRUD.NOT_FOUND);
     sale.status = status;
     await this.saleRepository.save(sale);
   };
@@ -161,7 +161,7 @@ export default class SalesService {
     { status, restore, id: inventoryId }: ChangeStatusForSaleDto,
   ) => {
     const sale = await this.findSaleById(id, enterprise);
-    if (!sale) throw new NotFoundException('Venta no encontrada');
+    if (!sale) throw new NotFoundException(CRUD.NOT_FOUND);
 
     if (
       (sale.status === StatusEntity.ACTIVE ||
@@ -169,9 +169,7 @@ export default class SalesService {
       (status === StatusEntity.PENDING_CONFIRMATION ||
         status === StatusEntity.PENDING_APPROVAL)
     )
-      throw new ConflictException(
-        'No puedes revertir el estado de este registro a este estado',
-      );
+      throw new ConflictException(CRUD.CONFLICT);
 
     sale.status = status;
 
