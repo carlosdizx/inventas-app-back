@@ -38,6 +38,9 @@ const JoiValidation = Joi.object({
   FIREBASE_MESSAGING_SENDER_ID: Joi.string().required(),
   FIREBASE_APP_ID: Joi.string().required(),
   FIREBASE_MEASUREMENT_ID: Joi.string().required(),
+
+  // App Client
+  APP_CLIENT_URL: Joi.string().uri().required(),
 });
 
 export default JoiValidation;
