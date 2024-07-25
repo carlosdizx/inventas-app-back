@@ -21,6 +21,8 @@ const OTP = {
 
 const ENTERPRISE = {
   NOT_FOUND: 'Empresa no encontrada o se encuentra inactiva',
+  MAX_USER: (maxUsers: number) =>
+    `Tu plan solo permite ${maxUsers} usuarios activos`,
 };
 
 export { SERVER, CRUD, AUTH, OTP, ENTERPRISE };
