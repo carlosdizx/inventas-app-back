@@ -7,7 +7,7 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import CreateClientDto from './dto/create-client.dto';
 import UpdateClientDto from './dto/update-client.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
-import { CRUD } from '../common/constants/messages.error.constant';
+import { CRUD } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class ClientsService {

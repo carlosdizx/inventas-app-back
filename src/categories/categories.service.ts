@@ -8,7 +8,7 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import Subcategory from './entities/subcategory.entity';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
-import { CRUD } from '../common/constants/messages.error.constant';
+import { CRUD } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class CategoriesService {

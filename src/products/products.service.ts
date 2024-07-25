@@ -13,7 +13,7 @@ import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import UpdateProductDto from './dto/update-product.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import ProductQuantityDto from '../sales/dto/product-quantity.dto';
-import { CRUD } from '../common/constants/messages.error.constant';
+import { CRUD } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class ProductsService {

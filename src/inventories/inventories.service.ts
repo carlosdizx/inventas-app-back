@@ -15,11 +15,7 @@ import ProductQuantityDto from '../sales/dto/product-quantity.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import ProductsService from '../products/products.service';
-import {
-  CRUD,
-  INVENTORY,
-  SERVER,
-} from '../common/constants/messages.error.constant';
+import { CRUD, INVENTORY, SERVER } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class InventoriesService {

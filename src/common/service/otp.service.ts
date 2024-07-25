@@ -15,7 +15,7 @@ import {
 } from 'firebase/firestore';
 import FirebaseService from './firebase.service';
 import generateNumberCodeUtil from '../util/generate-number-code.util';
-import { OTP } from '../constants/messages.error.constant';
+import { OTP } from '../constants/messages.constant';
 
 @Injectable()
 export default class OtpService {
@@ -29,6 +29,7 @@ export default class OtpService {
     };
     const docRef = doc(this.firebaseService.firestore, 'otps', email);
     await setDoc(docRef, data);
+    return { message: OTP.SUCCESS };
   }
 
   private async getOtpByEmail(email: string) {

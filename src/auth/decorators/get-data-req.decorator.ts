@@ -3,7 +3,7 @@ import {
   ExecutionContext,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { SERVER } from '../../common/constants/messages.error.constant';
+import { SERVER } from '../../common/constants/messages.constant';
 
 const getDataReq = createParamDecorator(
   (reqEnterprise: boolean, context: ExecutionContext) => {

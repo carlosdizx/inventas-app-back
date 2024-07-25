@@ -13,7 +13,7 @@ import { TypeSaleEnum } from '../sales/enums/type-sale.enum';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import ChangeStatusDto from '../common/dto/change-status.dto';
-import { CRUD } from '../common/constants/messages.error.constant';
+import { CRUD } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class PaymentService {

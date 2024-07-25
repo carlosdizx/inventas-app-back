@@ -20,7 +20,7 @@ import registerEnterpriseMail from '../common/templates/mails/register.enterpris
 import NodemailerService from '../common/service/nodemailer.service';
 import { UserRoles } from './enums/user.roles.enum';
 import { ConfigService } from '@nestjs/config';
-import { AUTH, ENTERPRISE } from '../common/constants/messages.error.constant';
+import { AUTH, ENTERPRISE } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class UserCrudService {

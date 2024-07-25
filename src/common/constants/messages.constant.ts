@@ -13,9 +13,11 @@ const AUTH = {
   NOT_FOUND: 'Usuario no encontrado o inactivo',
   EXPIRE_SESSION: 'Es necesario que vuelva a iniciar sesión',
   FORBIDDEN: (email: string) => `'${email}' no tiene permiso para esta acción`,
+  INVALID: 'Solicitud es invalida',
 };
 
 const OTP = {
+  SUCCESS: 'OTP registrado y solicitado exitosamente',
   NOT_FOUND: 'No se encontró una solicitud de confirmación via OTP',
   INVALID: 'Otp invalido',
   EXPIRED: 'Otp expirado',

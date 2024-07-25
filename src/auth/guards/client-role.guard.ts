@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { META_ROLES } from '../decorators/role-protected.decorator';
 import { UserRoles } from '../enums/user.roles.enum';
 import User from '../entities/user.entity';
-import { AUTH, SERVER } from '../../common/constants/messages.error.constant';
+import { AUTH, SERVER } from '../../common/constants/messages.constant';
 
 @Injectable()
 export default class ClientRoleGuard implements CanActivate {

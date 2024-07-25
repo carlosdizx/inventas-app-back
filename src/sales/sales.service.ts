@@ -18,7 +18,7 @@ import InventoriesService from '../inventories/inventories.service';
 import ClientsService from '../clients/clients.service';
 import Client from '../clients/entities/client.entity';
 import ChangeStatusForSaleDto from './dto/change-status-for-sale.dto';
-import { CRUD } from '../common/constants/messages.error.constant';
+import { CRUD } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class SalesService {

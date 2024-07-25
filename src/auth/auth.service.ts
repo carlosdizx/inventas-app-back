@@ -22,7 +22,7 @@ import {
   CRUD,
   ENTERPRISE,
   SERVER,
-} from '../common/constants/messages.error.constant';
+} from '../common/constants/messages.constant';
 
 @Injectable()
 export default class AuthService {

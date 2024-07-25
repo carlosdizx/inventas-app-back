@@ -22,7 +22,7 @@ import { hashPassword } from '../common/util/encrypt.util';
 import registerEnterpriseMail from '../common/templates/mails/register.enterprise.mail';
 import NodemailerService from '../common/service/nodemailer.service';
 import { ConfigService } from '@nestjs/config';
-import { CRUD, ENTERPRISE } from '../common/constants/messages.error.constant';
+import { CRUD, ENTERPRISE } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class EnterpriseService {
