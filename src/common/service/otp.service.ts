@@ -3,16 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  getDoc,
-  where,
-} from 'firebase/firestore';
+import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import FirebaseService from './firebase.service';
 import generateNumberCodeUtil from '../util/generate-number-code.util';
 import { OTP } from '../constants/messages.constant';
@@ -58,17 +49,7 @@ export default class OtpService {
   }
 
   public async deleteOtp(email: string) {
-    const colRef = collection(this.firebaseService.firestore, 'otps');
-    const q = query(colRef, where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      const docRef = doc(
-        this.firebaseService.firestore,
-        'otps',
-        querySnapshot.docs[0].id,
-      );
-      await deleteDoc(docRef);
-    }
+    const docRef = doc(this.firebaseService.firestore, 'otps', email);
+    await deleteDoc(docRef);
   }
 }
