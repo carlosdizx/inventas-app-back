@@ -58,17 +58,7 @@ export default class OtpService {
   }
 
   public async deleteOtp(email: string) {
-    const colRef = collection(this.firebaseService.firestore, 'otps');
-    const q = query(colRef, where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      const docRef = doc(
-        this.firebaseService.firestore,
-        'otps',
-        querySnapshot.docs[0].id,
-      );
-      await deleteDoc(docRef);
-    }
+    const docRef = doc(this.firebaseService.firestore, 'otps', email);
+    await deleteDoc(docRef);
   }
 }
