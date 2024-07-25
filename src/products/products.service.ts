@@ -9,18 +9,17 @@ import { In, Repository } from 'typeorm';
 import CreateProductDto from './dto/create-product.dto';
 import Enterprise from '../enterprise/entities/enterprise.entity';
 import CategoriesService from '../categories/categories.service';
-import ErrorDatabaseService from '../common/service/error.database.service';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import UpdateProductDto from './dto/update-product.dto';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
 import ProductQuantityDto from '../sales/dto/product-quantity.dto';
+import { CRUD } from '../common/constants/messages.error.constant';
 
 @Injectable()
 export default class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
-    private readonly errorDatabaseService: ErrorDatabaseService,
     private categoriesService: CategoriesService,
   ) {}
 
@@ -41,17 +40,12 @@ export default class ProductsService {
         product.category === null ||
         product.category.status === StatusEntity.INACTIVE
       )
-        throw new NotFoundException(
-          'Categoría del producto es inexistente o inactiva',
-        );
+        throw new NotFoundException(CRUD.NOT_FOUND);
       if (subcategory) {
         product.subcategory = product.category.subcategories.find(
           (sb) => sb.id === subcategory,
         );
-        if (!product.subcategory)
-          throw new NotFoundException(
-            'Subcategoría del producto es inexistente',
-          );
+        if (!product.subcategory) throw new NotFoundException(CRUD.NOT_FOUND);
       }
     }
 
@@ -80,7 +74,7 @@ export default class ProductsService {
       id,
       ...resData,
     });
-    if (!productFound) throw new NotFoundException('Producto no encontrado');
+    if (!productFound) throw new NotFoundException(CRUD.NOT_FOUND);
 
     if (category) {
       productFound.category = await this.categoriesService.findCategoryById(
@@ -90,17 +84,13 @@ export default class ProductsService {
         productFound.category === null ||
         productFound.category.status === StatusEntity.INACTIVE
       )
-        throw new NotFoundException(
-          'Categoría del producto es inexistente o inactiva',
-        );
+        throw new NotFoundException(CRUD.NOT_FOUND);
       if (subcategory) {
         productFound.subcategory = productFound.category.subcategories.find(
           (sb) => sb.id === subcategory,
         );
         if (!productFound.subcategory)
-          throw new NotFoundException(
-            'Subcategoría del producto es inexistente',
-          );
+          throw new NotFoundException(CRUD.NOT_FOUND);
       }
     }
 
@@ -119,7 +109,7 @@ export default class ProductsService {
         costPrice: +product.costPrice,
         salePrice: +product.salePrice,
       };
-    throw new NotFoundException('Producto no encontrado');
+    throw new NotFoundException(CRUD.NOT_FOUND);
   };
 
   public findProductsMappedByIdsAndEnterprise = async (
@@ -134,7 +124,7 @@ export default class ProductsService {
     });
 
     if (products.length !== productQuantities.length)
-      throw new ConflictException('Un producto no existe o esta repetido');
+      throw new ConflictException(CRUD.CONFLICT);
 
     return products.map(({ id, salePrice, name }) => {
       const { quantity } = productQuantities.find(

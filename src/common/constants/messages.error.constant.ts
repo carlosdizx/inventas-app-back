@@ -5,7 +5,7 @@ const SERVER = {
 const CRUD = {
   UPDATED: 'Registro actualizado',
   CREATED: 'Registro creado exitosamente',
-  NOT_FOUND: 'Registro no encontrado',
+  NOT_FOUND: 'Registro no encontrado o inactivo',
   CONFLICT: 'Operación invalida, genera o contiene una inconsistencia',
 };
 const AUTH = {
