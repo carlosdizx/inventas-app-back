@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import FirebaseService from './firebase.service';
 import generateNumberCodeUtil from '../util/generate-number-code.util';
+import { OTP } from '../constants/messages.error.constant';
 
 @Injectable()
 export default class OtpService {
@@ -34,20 +35,15 @@ export default class OtpService {
     const docRef = doc(this.firebaseService.firestore, 'otps', email);
     const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      return docSnap.data();
-    }
+    if (docSnap.exists()) return docSnap.data();
 
-    return null;
+    throw new NotFoundException(OTP.NOT_FOUND);
   }
 
   public async verifyOtp(email: string, otp: string) {
     const otpData = await this.getOtpByEmail(email);
 
-    if (!otpData)
-      throw new NotFoundException(
-        'No se encontro una solicitud de confirmación via OTP',
-      );
+    if (!otpData) throw new NotFoundException(OTP.NOT_FOUND);
 
     if (otpData.expiresAt < Date.now()) {
       await this.deleteOtp(email);
@@ -57,7 +53,7 @@ export default class OtpService {
     if (otpData.otp === otp) {
       await this.deleteOtp(email);
       return true;
-    } else throw new BadRequestException('Otp invalido');
+    } else throw new BadRequestException(OTP.INVALID);
   }
 
   public async deleteOtp(email: string) {
