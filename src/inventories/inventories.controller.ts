@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseBoolPipe,
   ParseUUIDPipe,
   Post,
   Put,
@@ -38,9 +39,14 @@ export default class InventoriesController {
   @Auth(UserRoles.OWNER, UserRoles.ADMIN, UserRoles.CASHIER)
   public async findInventoryById(
     @Param('id', ParseUUIDPipe) id: string,
+    @Query('sale') sale: string,
     @GetDataReqDecorator() enterprise: Enterprise,
   ) {
-    return await this.inventoriesService.findInventoryById(id, enterprise);
+    return await this.inventoriesService.findInventoryById(
+      id,
+      enterprise,
+      sale === 'true',
+    );
   }
 
   @Put(':id')
