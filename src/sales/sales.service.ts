@@ -35,7 +35,7 @@ export default class SalesService {
     { productsIds, inventoryId, clientId, ...resData }: CreateSaleDto,
     enterprise: Enterprise,
   ) => {
-    const products =
+    let products =
       await this.productsService.findProductsMappedByIdsAndEnterprise(
         productsIds,
         enterprise,
@@ -65,6 +65,18 @@ export default class SalesService {
       client: clientFound,
     });
 
+    const productsTemp = [...products];
+    for (const { id } of productsTemp) {
+      const foundProduct = await this.productsService.findProductById(
+        id,
+        enterprise,
+      );
+      if (!foundProduct) throw new NotFoundException(CRUD.NOT_EXIST);
+
+      if (!foundProduct.requiresInventory)
+        products = products.filter(({ id: idTemp }) => idTemp !== id);
+    }
+
     const queryRunner = this.datasource.createQueryRunner();
     await queryRunner.startTransaction();
 
@@ -75,7 +87,7 @@ export default class SalesService {
 
     try {
       const saleSaved = await queryRunner.manager.save<Sale>(sale);
-      const saleDetailsToInsert = products.map(
+      const saleDetailsToInsert = productsTemp.map(
         ({ quantity, salePrice, subtotal, ...restData }) => ({
           sale: saleSaved,
           quantity,
