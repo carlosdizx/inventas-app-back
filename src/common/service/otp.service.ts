@@ -24,7 +24,7 @@ export default class OtpService {
       expiresAt: Date.now() + 600 * 1000,
     };
     const docRef = doc(this.firebaseService.firestore, 'otps', email);
-    await setDoc(docRef, data);
+    await setDoc(docRef as any, data);
     await this.nodemailerService.main({
       from: 'Registro exitoso <noreply_inventa@gmail.com>',
       to: email,
