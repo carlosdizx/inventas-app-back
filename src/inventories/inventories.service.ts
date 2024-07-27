@@ -50,7 +50,14 @@ export default class InventoriesService {
       relations: ['productInventories', 'productInventories.product'],
     });
     if (!inventory) throw new NotFoundException(CRUD.NOT_FOUND);
-    return inventory;
+    const productWithoutInventory =
+      await this.productsService.findProductsNotRequiereInventory(enterprise);
+    return {
+      ...inventory,
+      productInventories: inventory.productInventories.concat(
+        productWithoutInventory.map((item) => ({ product: item })) as any,
+      ),
+    };
   };
 
   public addProductsToInventory = async (
