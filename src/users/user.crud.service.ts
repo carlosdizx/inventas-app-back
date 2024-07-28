@@ -122,6 +122,17 @@ export default class UserCrudService {
     return { ...restData, ...userDetails, id };
   };
 
+  public findUserByIdAndEnterprise = async (id: string) => {
+    const userFound = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.enterprise', 'enterprise')
+      .where('user.id = :id', { id })
+      .getOne();
+    if (!userFound) throw new NotFoundException(AUTH.NOT_FOUND);
+    const { userDetails, ...restData } = userFound;
+    return { ...restData, ...userDetails, id };
+  };
+
   public deleteUserById = async (id: string) => {
     const result = await this.userRepository.delete(id);
     if (result.affected === 0) throw new NotFoundException(AUTH.NOT_FOUND);

@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Param,
-  ParseBoolPipe,
   ParseUUIDPipe,
   Post,
   Put,
@@ -11,12 +10,12 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import InventoriesService from './inventories.service';
-import Auth from '../auth/decorators/auth.decorator';
+import Auth from '../users/decorators/auth.decorator';
 import CreateInventoryDto from './dto/create-inventory.dto';
-import GetDataReqDecorator from '../auth/decorators/get-data-req.decorator';
-import getDataReq from '../auth/decorators/get-data-req.decorator';
+import GetDataReqDecorator from '../users/decorators/get-data-req.decorator';
+import getDataReq from '../users/decorators/get-data-req.decorator';
 import Enterprise from '../enterprise/entities/enterprise.entity';
-import { UserRoles } from '../auth/enums/user.roles.enum';
+import { UserRoles } from '../users/enums/user.roles.enum';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import ProductQuantityDto from '../sales/dto/product-quantity.dto';
 import PaginationDto from '../common/dto/pagination.dto';

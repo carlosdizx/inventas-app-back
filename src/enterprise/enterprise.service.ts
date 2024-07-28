@@ -10,12 +10,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import CreateEnterpriseDTO from './dto/create-enterprise.dto';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import { StatusEntity } from '../common/enums/status.entity.enum}';
-import User from '../auth/entities/user.entity';
+import User from '../users/entities/user.entity';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import ChangeStatusDto from '../common/dto/change-status.dto';
 import PlanService from './plan.service';
-import UserDetails from '../auth/entities/user.details.entity';
-import { UserRoles } from '../auth/enums/user.roles.enum';
+import UserDetails from '../users/entities/user.details.entity';
+import { UserRoles } from '../users/enums/user.roles.enum';
 import generatePasswordUtil from '../common/util/generate.password.util';
 import EncryptService from '../common/service/encrypt.service';
 import { hashPassword } from '../common/util/encrypt.util';
@@ -104,9 +104,8 @@ export default class EnterpriseService {
       await queryRunner.manager.save<UserDetails>(userDetails);
       this.logger.debug('User Details Saved');
 
-      userSaved.enterprise = await queryRunner.manager.save<Enterprise>(
-        enterprise,
-      );
+      userSaved.enterprise =
+        await queryRunner.manager.save<Enterprise>(enterprise);
       this.logger.debug('Enterprise Saved');
 
       await queryRunner.manager.save<User>(userSaved);

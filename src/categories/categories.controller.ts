@@ -11,10 +11,10 @@ import {
 } from '@nestjs/common';
 import CategoriesService from './categories.service';
 import PaginationDto from '../common/dto/pagination.dto';
-import getDataReq from '../auth/decorators/get-data-req.decorator';
+import getDataReq from '../users/decorators/get-data-req.decorator';
 import Enterprise from '../enterprise/entities/enterprise.entity';
-import Auth from '../auth/decorators/auth.decorator';
-import { UserRoles } from '../auth/enums/user.roles.enum';
+import Auth from '../users/decorators/auth.decorator';
+import { UserRoles } from '../users/enums/user.roles.enum';
 import CreateCategoryDto from './dto/create-category.dto';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import UpdateCategoryDto from './dto/update-category.dto';

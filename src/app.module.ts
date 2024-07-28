@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import JoiValidation from './common/config/env.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import AuthModule from './auth/auth.module';
+import AuthModule from './users/auth.module';
 import CommonModule from './common/common.module';
 import ClientsModule from './clients/clients.module';
 import InventoriesModule from './inventories/inventories.module';
@@ -13,6 +13,7 @@ import EnterpriseModule from './enterprise/enterprise.module';
 import PaymentsModule from './payments/payments.module';
 import { dataSourceOptions } from '../database/database.config';
 import { OtpVerifyMiddleware } from './common/middlewares/otp-verify.middleware';
+import { LoggingMiddleware } from './common/middlewares/logging.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,6 +35,8 @@ import { OtpVerifyMiddleware } from './common/middlewares/otp-verify.middleware'
 })
 export default class AppModule {
   configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes('*');
+
     consumer
       .apply(OtpVerifyMiddleware)
       .forRoutes(

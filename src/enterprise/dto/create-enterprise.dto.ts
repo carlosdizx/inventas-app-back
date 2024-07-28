@@ -7,7 +7,7 @@ import {
   MaxLength,
   ValidateNested,
 } from 'class-validator';
-import CreateUserDto from '../../auth/dto/create-user.dto';
+import CreateUserDto from '../../users/dto/create-user.dto';
 import { Type } from 'class-transformer';
 
 export default class CreateEnterpriseDTO {

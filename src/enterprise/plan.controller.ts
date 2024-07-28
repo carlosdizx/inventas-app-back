@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import PlanService from './plan.service';
 import PaginationDto from '../common/dto/pagination.dto';
-import Auth from '../auth/decorators/auth.decorator';
-import { UserRoles } from '../auth/enums/user.roles.enum';
+import Auth from '../users/decorators/auth.decorator';
+import { UserRoles } from '../users/enums/user.roles.enum';
 import CreatePlanEnterpriseDto from './dto/create-plan.dto';
 
 @Controller('plans')

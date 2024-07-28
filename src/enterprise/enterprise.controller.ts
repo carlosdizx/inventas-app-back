@@ -12,8 +12,8 @@ import {
 import EnterpriseService from './enterprise.service';
 import CreateEnterpriseDTO from './dto/create-enterprise.dto';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
-import Auth from '../auth/decorators/auth.decorator';
-import { UserRoles } from '../auth/enums/user.roles.enum';
+import Auth from '../users/decorators/auth.decorator';
+import { UserRoles } from '../users/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import ChangeStatusDto from '../common/dto/change-status.dto';
 import ChangePlanDto from './dto/change-plan.dto';

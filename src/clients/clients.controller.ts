@@ -10,11 +10,11 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import ClientsService from './clients.service';
-import Auth from '../auth/decorators/auth.decorator';
+import Auth from '../users/decorators/auth.decorator';
 import PaginationDto from '../common/dto/pagination.dto';
-import getDataReq from '../auth/decorators/get-data-req.decorator';
+import getDataReq from '../users/decorators/get-data-req.decorator';
 import Enterprise from '../enterprise/entities/enterprise.entity';
-import { UserRoles } from '../auth/enums/user.roles.enum';
+import { UserRoles } from '../users/enums/user.roles.enum';
 import CreateClientDto from './dto/create-client.dto';
 import UpdateClientDto from './dto/update-client.dto';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
