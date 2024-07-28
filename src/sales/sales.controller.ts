@@ -13,11 +13,11 @@ import {
 } from '@nestjs/common';
 import SalesService from './sales.service';
 import CreateSaleDto from './dto/create-sale.dto';
-import getDataReq from '../auth/decorators/get-data-req.decorator';
-import GetDataReqDecorator from '../auth/decorators/get-data-req.decorator';
+import getDataReq from '../users/decorators/get-data-req.decorator';
+import GetDataReqDecorator from '../users/decorators/get-data-req.decorator';
 import Enterprise from '../enterprise/entities/enterprise.entity';
-import Auth from '../auth/decorators/auth.decorator';
-import { UserRoles } from '../auth/enums/user.roles.enum';
+import Auth from '../users/decorators/auth.decorator';
+import { UserRoles } from '../users/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import UpdateSaleDto from './dto/update-sale.dto';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';

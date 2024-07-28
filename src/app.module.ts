@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import JoiValidation from './common/config/env.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import AuthModule from './auth/auth.module';
+import AuthModule from './users/auth.module';
 import CommonModule from './common/common.module';
 import ClientsModule from './clients/clients.module';
 import InventoriesModule from './inventories/inventories.module';

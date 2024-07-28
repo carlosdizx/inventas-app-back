@@ -9,7 +9,7 @@ import {
 import { Request, Response, NextFunction } from 'express';
 import { AUTH, SERVER } from '../constants/messages.constant';
 import OtpService from '../service/otp.service';
-import UserCrudService from '../../auth/user.crud.service';
+import UserCrudService from '../../users/user.crud.service';
 import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class OtpVerifyMiddleware implements NestMiddleware {
