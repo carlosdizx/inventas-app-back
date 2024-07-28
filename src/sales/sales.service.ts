@@ -185,11 +185,23 @@ export default class SalesService {
 
     sale.status = status;
 
-    const products = sale.salesDetails.map(({ quantity, product: { id } }) => ({
+    let products = sale.salesDetails.map(({ quantity, product: { id } }) => ({
       id,
       quantity,
     }));
     if (restore) {
+      const productsTemp = [...products];
+      for (const { id } of productsTemp) {
+        const foundProduct = await this.productsService.findProductById(
+          id,
+          enterprise,
+        );
+        if (!foundProduct) throw new NotFoundException(CRUD.NOT_EXIST);
+
+        if (!foundProduct.requiresInventory)
+          products = products.filter(({ id: idTemp }) => idTemp !== id);
+      }
+
       if (sale.status === StatusEntity.INACTIVE) {
         await this.inventoriesService.addProductsToInventory(
           inventoryId,
