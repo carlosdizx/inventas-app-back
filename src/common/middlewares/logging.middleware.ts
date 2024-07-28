@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   Logger,
   NestMiddleware,
@@ -7,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import FirestoreService from '../service/firestore.service';
-import User from '../../users/entities/user.entity';
 import { AUTH } from '../constants/messages.constant';
 import { JwtService } from '@nestjs/jwt';
 import UserCrudService from '../../users/user.crud.service';
@@ -15,7 +13,6 @@ import UserCrudService from '../../users/user.crud.service';
 interface Log {
   userId: string;
   action: 'PUT' | 'POST' | 'PATCH';
-  entity: string;
   changes: Record<string, any>;
   timestamp: Date;
 }
@@ -54,25 +51,30 @@ export class LoggingMiddleware implements NestMiddleware {
               payload.id,
             );
 
-            const entity = req.path;
-            const changes = req.body;
+            if (user.enterprise) {
+              let entity = req.path.substring(1);
 
-            const log: Log = {
-              userId: user.id,
-              action: method as 'PUT' | 'POST' | 'PATCH',
-              entity,
-              changes,
-              timestamp: new Date(),
-            };
+              let index = entity.indexOf('/');
+              if (index !== -1) entity = entity.substring(0, index);
 
-            try {
-              await this.firestoreService.addDocument(
-                `logs-${user.enterprise?.id}`,
-                log,
-              );
-            } catch (error) {
-              this.logger.error('Error during register logging');
-              this.logger.error(error);
+              const changes = req.body;
+
+              const log: Log = {
+                userId: user.id,
+                action: method as 'PUT' | 'POST' | 'PATCH',
+                changes,
+                timestamp: new Date(),
+              };
+
+              try {
+                await this.firestoreService.addDocument(
+                  `logs-${user.enterprise.id}-${entity}`,
+                  log,
+                );
+              } catch (error) {
+                this.logger.error('Error during register logging');
+                this.logger.error(error);
+              }
             }
           }
         }
