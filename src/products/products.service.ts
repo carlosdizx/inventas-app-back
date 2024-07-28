@@ -33,9 +33,8 @@ export default class ProductsService {
     });
 
     if (category) {
-      product.category = await this.categoriesService.findCategoryById(
-        category,
-      );
+      product.category =
+        await this.categoriesService.findCategoryById(category);
       if (
         product.category === null ||
         product.category.status === StatusEntity.INACTIVE
@@ -77,9 +76,8 @@ export default class ProductsService {
     if (!productFound) throw new NotFoundException(CRUD.NOT_FOUND);
 
     if (category) {
-      productFound.category = await this.categoriesService.findCategoryById(
-        category,
-      );
+      productFound.category =
+        await this.categoriesService.findCategoryById(category);
       if (
         productFound.category === null ||
         productFound.category.status === StatusEntity.INACTIVE
@@ -148,4 +146,14 @@ export default class ProductsService {
         requiresInventory: true,
       },
     });
+
+  public findProductsNotRequiereInventory = async ({ id }: Enterprise) => {
+    return await this.productRepository.find({
+      where: {
+        enterprise: { id },
+        status: StatusEntity.ACTIVE,
+        requiresInventory: false,
+      },
+    });
+  };
 }

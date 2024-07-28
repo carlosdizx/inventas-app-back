@@ -41,7 +41,11 @@ export default class InventoriesService {
     return await this.inventoryRepository.save(inventory);
   };
 
-  public findInventoryById = async (id: string, enterprise: Enterprise) => {
+  public findInventoryById = async (
+    id: string,
+    enterprise: Enterprise,
+    sale: boolean,
+  ) => {
     const inventory = await this.inventoryRepository.findOne({
       where: {
         id,
@@ -50,7 +54,17 @@ export default class InventoriesService {
       relations: ['productInventories', 'productInventories.product'],
     });
     if (!inventory) throw new NotFoundException(CRUD.NOT_FOUND);
-    return inventory;
+
+    if (!sale) return inventory;
+
+    const productWithoutInventory =
+      await this.productsService.findProductsNotRequiereInventory(enterprise);
+    return {
+      ...inventory,
+      productInventories: inventory.productInventories.concat(
+        productWithoutInventory.map((item) => ({ product: item })) as any,
+      ),
+    };
   };
 
   public addProductsToInventory = async (
@@ -191,9 +205,9 @@ export default class InventoriesService {
     const baseUrl = 'inventories';
     const links = {
       first: `${baseUrl}?limit=${limit}`,
-      previous: page > 1 ? `${baseUrl}?page=${+page - 1}&limit=${limit}` : '',
+      previous: +page > 1 ? `${baseUrl}?page=${+page - 1}&limit=${limit}` : '',
       next:
-        page < meta.totalPages
+        +page < meta.totalPages
           ? `${baseUrl}?page=${+page + 1}&limit=${limit}`
           : '',
       last: `${baseUrl}?page=${meta.totalPages}&limit=${limit}`,

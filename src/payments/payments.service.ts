@@ -79,9 +79,9 @@ export default class PaymentService {
     const baseUrl = 'payments/find/all/credits';
     const links = {
       first: `${baseUrl}?limit=${limit}`,
-      previous: page > 1 ? `${baseUrl}?page=${+page - 1}&limit=${limit}` : '',
+      previous: +page > 1 ? `${baseUrl}?page=${+page - 1}&limit=${limit}` : '',
       next:
-        page < meta.totalPages
+        +page < meta.totalPages
           ? `${baseUrl}?page=${+page + 1}&limit=${limit}`
           : '',
       last: `${baseUrl}?page=${meta.totalPages}&limit=${limit}`,

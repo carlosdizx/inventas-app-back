@@ -7,10 +7,15 @@ import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import FirebaseService from './firebase.service';
 import generateNumberCodeUtil from '../util/generate-number-code.util';
 import { OTP } from '../constants/messages.constant';
+import NodemailerService from './nodemailer.service';
+import notificationOtpUserMail from '../templates/mails/notification-otp-user.mail';
 
 @Injectable()
 export default class OtpService {
-  constructor(private readonly firebaseService: FirebaseService) {}
+  constructor(
+    private readonly firebaseService: FirebaseService,
+    private readonly nodemailerService: NodemailerService,
+  ) {}
 
   public async saveOtp(email: string) {
     const otp = generateNumberCodeUtil(6);
@@ -19,7 +24,13 @@ export default class OtpService {
       expiresAt: Date.now() + 600 * 1000,
     };
     const docRef = doc(this.firebaseService.firestore, 'otps', email);
-    await setDoc(docRef, data);
+    await setDoc(docRef as any, data);
+    await this.nodemailerService.main({
+      from: 'Registro exitoso <noreply_inventa@gmail.com>',
+      to: email,
+      subject: 'Código de verificación Inventas-App',
+      html: notificationOtpUserMail(otp),
+    });
     return { message: OTP.SUCCESS };
   }
 

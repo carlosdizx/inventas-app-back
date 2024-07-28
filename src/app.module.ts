@@ -36,6 +36,9 @@ export default class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(OtpVerifyMiddleware)
-      .forRoutes({ path: 'users', method: RequestMethod.POST });
+      .forRoutes(
+        { path: 'users', method: RequestMethod.POST },
+        { path: 'users/:id', method: RequestMethod.PATCH },
+      );
   }
 }
