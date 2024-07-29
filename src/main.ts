@@ -33,7 +33,7 @@ const bootstrap = async () => {
     .addTag('Inventas App')
     .setContact(
       'Technology Box',
-      'https://xvideos.com/',
+      'https://github.com/carlosdizx',
       'inventasapp@gmail.com',
     )
     .setLicense('MIT', 'https://opensource.org/licenses/MIT')
