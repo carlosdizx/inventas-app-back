@@ -2,6 +2,7 @@ import { configure as serverlessExpress } from '@vendia/serverless-express';
 import { NestFactory } from '@nestjs/core';
 import AppModule from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 let cachedServer: (arg0: any, arg1: any) => any;
 
@@ -22,7 +23,25 @@ const handler = async (event: any, context: any) => {
       allowedHeaders: '*',
     });
 
+    const config = new DocumentBuilder()
+      .setTitle('Documentación Inventas App')
+      .setDescription('Gestiona usuarios, productos, ventas y más.')
+      .setVersion('1.0')
+      .addTag('Inventas App')
+      .setContact(
+        'Ernesto Díaz Basante',
+        'https://github.com/carlosdizx',
+        'inventasapp@gmail.com',
+      )
+      .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(nestApp, config);
+    SwaggerModule.setup('api', nestApp, document);
+
     await nestApp.init();
+
     cachedServer = serverlessExpress({
       app: nestApp.getHttpAdapter().getInstance(),
     });
