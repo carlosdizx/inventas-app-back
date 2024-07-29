@@ -54,3 +54,4 @@ env.**.yml
 
 # Swagger
 swagger-spec.json
+swagger/
