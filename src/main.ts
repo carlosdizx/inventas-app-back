@@ -4,7 +4,6 @@ import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LogLevel } from '@nestjs/common/services/logger.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as fs from 'fs';
 
 const bootstrap = async () => {
   const configService = new ConfigService();
@@ -42,8 +41,6 @@ const bootstrap = async () => {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-
-  fs.writeFileSync('./swagger-spec.json', JSON.stringify(document));
 
   SwaggerModule.setup('documentation', app, document);
 
