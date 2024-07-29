@@ -3,6 +3,7 @@ import AppModule from './app.module';
 import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LogLevel } from '@nestjs/common/services/logger.service';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const bootstrap = async () => {
   const configService = new ConfigService();
@@ -22,6 +23,24 @@ const bootstrap = async () => {
       forbidNonWhitelisted: true,
     }),
   );
+
+  const config = new DocumentBuilder()
+    .setTitle('Documentación Inventas App')
+    .setDescription(
+      'La API de Inventas App proporciona servicios para gestionar usuarios, productos, y más.',
+    )
+    .setVersion('1.0')
+    .addTag('Inventas App')
+    .setContact(
+      'Ernesto Díaz Basante',
+      'https://github.com/carlosdizx',
+      'inventasapp@gmail.com',
+    )
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   const port = configService.getOrThrow<string>('APP_PORT');
   await app.listen(port);
