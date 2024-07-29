@@ -27,27 +27,25 @@ const bootstrap = async () => {
     }),
   );
 
-  if (!env) {
-    const config = new DocumentBuilder()
-      .setTitle('Documentación Inventas App')
-      .setDescription('Gestiona usuarios, productos, ventas y más.')
-      .setVersion('1.0')
-      .addTag('Inventas App')
-      .setContact(
-        'Ernesto Díaz Basante',
-        'https://github.com/carlosdizx',
-        'inventasapp@gmail.com',
-      )
-      .setLicense('MIT', 'https://opensource.org/licenses/MIT')
-      .addBearerAuth()
-      .build();
+  const config = new DocumentBuilder()
+    .setTitle('Documentación Inventas App')
+    .setDescription('Gestiona usuarios, productos, ventas y más.')
+    .setVersion('1.0')
+    .addTag('Inventas App')
+    .setContact(
+      'Technology Box',
+      'https://xvideos.com/',
+      'inventasapp@gmail.com',
+    )
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+    .addBearerAuth()
+    .build();
 
-    const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config);
 
-    fs.writeFileSync('./swagger-spec.json', JSON.stringify(document));
+  fs.writeFileSync('./swagger-spec.json', JSON.stringify(document));
 
-    SwaggerModule.setup('documentation', app, document);
-  }
+  SwaggerModule.setup('documentation', app, document);
 
   const port = configService.getOrThrow<string>('APP_PORT');
   await app.listen(port);
