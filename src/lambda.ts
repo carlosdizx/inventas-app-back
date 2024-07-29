@@ -1,13 +1,22 @@
-import { configure as serverlessExpress } from '@vendia/serverless-express';
 import { NestFactory } from '@nestjs/core';
-import AppModule from './app.module';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import serverlessExpress from '@codegenie/serverless-express';
+import { Context, Handler } from 'aws-lambda';
+import express from 'express';
 import { ValidationPipe } from '@nestjs/common';
+import AppModule from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-let cachedServer: (arg0: any, arg1: any) => any;
+let cachedServer: Handler;
 
-const handler = async (event: any, context: any) => {
+const bootstrap = async () => {
   if (!cachedServer) {
-    const nestApp = await NestFactory.create(AppModule);
+    const expressApp = express();
+    const nestApp = await NestFactory.create(
+      AppModule,
+      new ExpressAdapter(expressApp),
+    );
+
     nestApp.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -22,13 +31,32 @@ const handler = async (event: any, context: any) => {
       allowedHeaders: '*',
     });
 
+    const config = new DocumentBuilder()
+      .setTitle('Documentación Inventas App')
+      .setDescription('Gestiona usuarios, productos, ventas y más.')
+      .setVersion('1.0')
+      .addTag('Inventas App')
+      .setContact(
+        'Technology Box',
+        'https://github.com/carlosdizx',
+        'inventasapp@gmail.com',
+      )
+      .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(nestApp, config);
+    SwaggerModule.setup('api', nestApp, document);
+
     await nestApp.init();
-    cachedServer = serverlessExpress({
-      app: nestApp.getHttpAdapter().getInstance(),
-    });
+
+    cachedServer = serverlessExpress({ app: expressApp });
   }
 
-  return cachedServer(event, context);
+  return cachedServer;
 };
 
-export { handler };
+export const handler = async (event: any, context: Context, callback: any) => {
+  const server = await bootstrap();
+  return server(event, context, callback);
+};

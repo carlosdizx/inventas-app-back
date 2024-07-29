@@ -51,3 +51,7 @@ private.key
 env.**.yml
 .build
 .serverless
+
+# Swagger
+swagger-spec.json
+swagger/

@@ -22,7 +22,9 @@ import PaginationDto from '../common/dto/pagination.dto';
 import UpdateSaleDto from './dto/update-sale.dto';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import ChangeStatusForSaleDto from './dto/change-status-for-sale.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('sales')
 @Controller('sales')
 @UseFilters(TypeormExceptionFilter)
 export default class SalesController {

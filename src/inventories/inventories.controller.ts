@@ -19,7 +19,9 @@ import { UserRoles } from '../users/enums/user.roles.enum';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import ProductQuantityDto from '../sales/dto/product-quantity.dto';
 import PaginationDto from '../common/dto/pagination.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('inventories')
 @Controller('inventories')
 @UseFilters(TypeormExceptionFilter)
 export default class InventoriesController {

@@ -4,7 +4,9 @@ import PaginationDto from '../common/dto/pagination.dto';
 import Auth from '../users/decorators/auth.decorator';
 import { UserRoles } from '../users/enums/user.roles.enum';
 import CreatePlanEnterpriseDto from './dto/create-plan.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('plans')
 @Controller('plans')
 export default class PlanController {
   constructor(private readonly planService: PlanService) {}
