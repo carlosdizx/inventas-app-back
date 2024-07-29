@@ -18,7 +18,9 @@ import { UserRoles } from '../users/enums/user.roles.enum';
 import CreateCategoryDto from './dto/create-category.dto';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import UpdateCategoryDto from './dto/update-category.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('categories')
 @Controller('categories')
 @UseFilters(TypeormExceptionFilter)
 export default class CategoriesController {

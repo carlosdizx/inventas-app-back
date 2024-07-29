@@ -15,7 +15,9 @@ import getDataReq from './decorators/get-data-req.decorator';
 import User from './entities/user.entity';
 import AuthService from './auth.service';
 import OtpService from '../common/service/otp.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('authentication')
 @Controller('auth')
 @UseFilters(TypeormExceptionFilter)
 export default class AuthController {
