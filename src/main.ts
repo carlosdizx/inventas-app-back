@@ -15,9 +15,10 @@ const bootstrap = async () => {
     ? ['error', 'warn', 'fatal']
     : ['error', 'warn', 'log', 'debug', 'fatal', 'verbose'];
 
-  const app: INestApplication = await NestFactory.create(AppModule);
+  const app: INestApplication = await NestFactory.create(AppModule, {
+    logger: logLevel,
+  });
 
-  app.useLogger(logLevel);
   app.enableCors({});
   app.useGlobalPipes(
     new ValidationPipe({
@@ -55,5 +56,7 @@ const bootstrap = async () => {
 };
 
 (async () => {
+  console.log('Starting App 🟡');
   await bootstrap();
+  console.log('Started App 🟢');
 })();

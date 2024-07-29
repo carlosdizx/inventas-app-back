@@ -2,6 +2,7 @@ import * as Joi from 'joi';
 
 const JoiValidation = Joi.object({
   //Application
+  NODE_ENV: Joi.string().required(),
   APP_PORT: Joi.number().required(),
   APP_PREFIX: Joi.string().default('api'),
 
