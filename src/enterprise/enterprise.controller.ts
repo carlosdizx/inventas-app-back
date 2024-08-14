@@ -28,7 +28,7 @@ export default class EnterpriseController {
   @Post()
   @Auth(UserRoles.SUPER_ADMIN)
   public createEnterpriseAndUser(@Body() dto: CreateEnterpriseDTO) {
-    return this.enterpriseService.createEnterpriseAndUser(dto);
+    return this.enterpriseService.createEnterpriseAndUser(dto, false);
   }
 
   @Get()
@@ -59,5 +59,10 @@ export default class EnterpriseController {
     @Body() { id: planId }: ChangePlanDto,
   ) {
     return await this.enterpriseService.changePlanEnterprise(id, planId);
+  }
+
+  @Post('public')
+  public async createPublicEnterprise(@Body() dto: CreateEnterpriseDTO) {
+    return this.enterpriseService.createEnterpriseAndUser(dto, true);
   }
 }

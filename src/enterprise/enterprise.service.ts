@@ -46,20 +46,23 @@ export default class EnterpriseService {
     this.urlApp = this.configService.get('APP_CLIENT_URL');
   }
 
-  public createEnterpriseAndUser = async ({
-    user: {
-      email,
-      firstName,
-      lastName,
-      documentType,
-      documentNumber,
-      gender,
-      birthdate,
-      phone,
-    },
-    planId,
-    ...resDataEnterprise
-  }: CreateEnterpriseDTO) => {
+  public createEnterpriseAndUser = async (
+    {
+      user: {
+        email,
+        firstName,
+        lastName,
+        documentType,
+        documentNumber,
+        gender,
+        birthdate,
+        phone,
+      },
+      planId,
+      ...resDataEnterprise
+    }: CreateEnterpriseDTO,
+    isPublic: boolean,
+  ) => {
     if (planId) {
       const plan = await this.planService.findOneBy({ id: planId });
       if (!plan) throw new NotFoundException(ENTERPRISE.PLAN_NOT_FOUND);
@@ -74,7 +77,7 @@ export default class EnterpriseService {
     try {
       const enterprise = this.enterpriseRepository.create({
         ...resDataEnterprise,
-        status: StatusEntity.ACTIVE,
+        status: isPublic ? StatusEntity.PENDING_APPROVAL : StatusEntity.ACTIVE,
       });
 
       const password = generatePasswordUtil(20);
