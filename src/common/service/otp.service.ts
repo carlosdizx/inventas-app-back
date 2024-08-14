@@ -8,7 +8,7 @@ import FirebaseService from './firebase.service';
 import generateNumberCodeUtil from '../util/generate-number-code.util';
 import { OTP } from '../constants/messages.constant';
 import NodemailerService from './nodemailer.service';
-import notificationOtpUserMail from '../templates/mails/notification-otp-user.mail';
+import notificationOtpUserEmail from '../templates/mails/notification-otp-user.email';
 
 @Injectable()
 export default class OtpService {
@@ -29,7 +29,7 @@ export default class OtpService {
       from: 'Registro exitoso <noreply_inventa@gmail.com>',
       to: email,
       subject: 'Código de verificación Inventas-App',
-      html: notificationOtpUserMail(otp),
+      html: notificationOtpUserEmail(otp),
     });
     return { message: OTP.SUCCESS };
   }

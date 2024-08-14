@@ -16,7 +16,7 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import UpdateUserDto from './dto/update-user.dto';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import generatePasswordUtil from '../common/util/generate.password.util';
-import registerEnterpriseMail from '../common/templates/mails/register.enterprise.mail';
+import registerActiveEnterpriseEmail from '../common/templates/mails/register-active-enterprise.email';
 import NodemailerService from '../common/service/nodemailer.service';
 import { UserRoles } from './enums/user.roles.enum';
 import { ConfigService } from '@nestjs/config';
@@ -102,7 +102,7 @@ export default class UserCrudService {
         from: 'Registro exitoso <noreply_inventa@gmail.com>',
         to: email,
         subject: 'Registro en Inventas-App',
-        html: registerEnterpriseMail(password, this.urlApp),
+        html: registerActiveEnterpriseEmail(password, this.urlApp),
       });
       return details;
     } catch (error) {

@@ -19,7 +19,7 @@ import { UserRoles } from '../users/enums/user.roles.enum';
 import generatePasswordUtil from '../common/util/generate.password.util';
 import EncryptService from '../common/service/encrypt.service';
 import { hashPassword } from '../common/util/encrypt.util';
-import registerEnterpriseMail from '../common/templates/mails/register.enterprise.mail';
+import registerActiveEnterpriseEmail from '../common/templates/mails/register-active-enterprise.email';
 import NodemailerService from '../common/service/nodemailer.service';
 import { ConfigService } from '@nestjs/config';
 import { CRUD, ENTERPRISE } from '../common/constants/messages.constant';
@@ -117,7 +117,7 @@ export default class EnterpriseService {
         from: 'Registro exitoso <noreply_inventa@gmail.com>',
         to: email,
         subject: 'Registro en Inventas-App',
-        html: registerEnterpriseMail(password, this.urlApp),
+        html: registerActiveEnterpriseEmail(password, this.urlApp),
       });
 
       await queryRunner.commitTransaction();

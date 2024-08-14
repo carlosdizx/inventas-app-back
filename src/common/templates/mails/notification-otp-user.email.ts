@@ -1,4 +1,4 @@
-const registerEnterpriseMail = (password: string, url: string) => `
+const notificationOtpUserEmail = (code: string) => `
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -38,17 +38,15 @@ const registerEnterpriseMail = (password: string, url: string) => `
 </head>
 <body>
     <div class="container">
-        <h1>Bienvenido a Inventas-App</h1>
-        <p>¡Tu registro se ha completado con éxito!</p>
-        <p>Como parte de tu registro, te hemos asignado una contraseña temporal:</p>
-        <p><strong>Password Temporal: ${password}</strong></p>
-        <p>Por favor, cambia tu contraseña una vez que inicies sesión por primera vez.</p>
-        <p>Alguien te ha registrado en <a href="${url}">Login</a>.</p>
-        <a href="${url}" class="button">Iniciar Sesión</a>
+        <h1>Confirma tu solicitud</h1>
+        <p>¡Tu acción debe ser confirmada!</p>
+        <p>Como parte de tu confirmación debes ingresar el siguiente código OTP:</p>
+        <p><strong>Código: ${code}</strong></p>
+        <p>Si crees que esto es un error comunicate con soporte.</p>
+        <p>Correo de soporte: inventasapp@gmail.com</p>
     </div>
 </body>
 </html>
-
 `;
 
-export default registerEnterpriseMail;
+export default notificationOtpUserEmail;
