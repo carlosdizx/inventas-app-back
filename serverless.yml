@@ -13,7 +13,6 @@ provider:
   region: us-east-1
   logRetentionInDays: 1
   timeout: 30
-  stage: api
   environment: ${file(./env.${opt:stage, 'develop'}.yml)}
 
 package:

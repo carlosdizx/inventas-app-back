@@ -25,7 +25,7 @@ const bootstrap = async () => {
     );
 
     nestApp.enableCors({
-      origin: '*',
+      origin: ['https://example.com', 'https://another-example.com'],
       credentials: true,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       allowedHeaders: '*',
@@ -35,7 +35,6 @@ const bootstrap = async () => {
       .setTitle('Documentación Inventas App')
       .setDescription('Gestiona usuarios, productos, ventas y más.')
       .setVersion('1.0')
-      .addTag('Inventas App')
       .setContact(
         'Technology Box',
         'https://github.com/carlosdizx',
@@ -46,7 +45,7 @@ const bootstrap = async () => {
       .build();
 
     const document = SwaggerModule.createDocument(nestApp, config);
-    SwaggerModule.setup('api', nestApp, document);
+    SwaggerModule.setup('documentation', nestApp, document);
 
     await nestApp.init();
 

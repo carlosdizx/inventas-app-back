@@ -30,7 +30,6 @@ const bootstrap = async () => {
     .setTitle('Documentación Inventas App')
     .setDescription('Gestiona usuarios, productos, ventas y más.')
     .setVersion('1.0')
-    .addTag('Inventas App')
     .setContact(
       'Technology Box',
       'https://github.com/carlosdizx',
