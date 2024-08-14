@@ -116,7 +116,7 @@ export default class EnterpriseService {
       await this.nodemailerService.main({
         from: 'Registro exitoso <noreply_inventa@gmail.com>',
         to: email,
-        subject: 'Registro en Inventas-App',
+        subject: `Registro en Inventas-App ${email}`,
         html: registerActiveEnterpriseEmail(password, this.urlApp),
       });
 
