@@ -23,6 +23,8 @@ import registerActiveEnterpriseEmail from '../common/templates/mails/register-ac
 import NodemailerService from '../common/service/nodemailer.service';
 import { ConfigService } from '@nestjs/config';
 import { CRUD, ENTERPRISE } from '../common/constants/messages.constant';
+import SendEmailDto from '../common/dto/send.email.dto';
+import registerPendingEnterpriseEmail from '../common/templates/mails/register-pending-enterprise.email';
 
 @Injectable()
 export default class EnterpriseService {
@@ -112,13 +114,19 @@ export default class EnterpriseService {
       this.logger.debug('Enterprise Saved');
 
       await queryRunner.manager.save<User>(userSaved);
-
-      await this.nodemailerService.main({
+      const dtoEmail: SendEmailDto = {
         from: 'Registro exitoso <noreply_inventa@gmail.com>',
         to: email,
         subject: `Registro en Inventas-App ${email}`,
-        html: registerActiveEnterpriseEmail(password, this.urlApp),
-      });
+        html: '',
+      };
+      if (isPublic) {
+        dtoEmail.html = registerPendingEnterpriseEmail(password, this.urlApp);
+        await this.nodemailerService.main(dtoEmail);
+      } else {
+        dtoEmail.html = registerActiveEnterpriseEmail(password, this.urlApp);
+        await this.nodemailerService.main(dtoEmail);
+      }
 
       await queryRunner.commitTransaction();
       await queryRunner.release();
@@ -127,7 +135,13 @@ export default class EnterpriseService {
         title: `Empresa registrada con éxito`,
         message:
           'La empresa ha sido registrada exitosamente.<br/>' +
-          ' Se ha enviado un correo electrónico con la contraseña de acceso a la plataforma.',
+          ' Se ha enviado un correo electrónico con la contraseña de acceso a la plataforma. <br>' +
+          `${
+            isPublic
+              ? 'Tu cuenta esta temporalmente esta en revisión, no podrás usarla hasta que alguien' +
+                'de nuestro equipo valide tu información.'
+              : ''
+          }`,
       };
     } catch (error) {
       this.logger.error(error);
