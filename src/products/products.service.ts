@@ -24,7 +24,7 @@ export default class ProductsService {
   ) {}
 
   public createProduct = async (
-    { category, subcategory, ...resData }: CreateProductDto,
+    { category, ...resData }: CreateProductDto,
     enterprise: Enterprise,
   ) => {
     const product = this.productRepository.create({
@@ -40,12 +40,6 @@ export default class ProductsService {
         product.category.status === StatusEntity.INACTIVE
       )
         throw new NotFoundException(CRUD.NOT_FOUND);
-      if (subcategory) {
-        product.subcategory = product.category.subcategories.find(
-          (sb) => sb.id === subcategory,
-        );
-        if (!product.subcategory) throw new NotFoundException(CRUD.NOT_FOUND);
-      }
     }
 
     return await this.productRepository.save(product);
@@ -67,7 +61,7 @@ export default class ProductsService {
 
   public updateProductById = async (
     id: string,
-    { category, subcategory, ...resData }: UpdateProductDto,
+    { category, ...resData }: UpdateProductDto,
   ) => {
     const productFound = await this.productRepository.preload({
       id,
@@ -75,6 +69,7 @@ export default class ProductsService {
     });
     if (!productFound) throw new NotFoundException(CRUD.NOT_FOUND);
 
+    productFound.category = null;
     if (category) {
       productFound.category =
         await this.categoriesService.findCategoryById(category);
@@ -83,13 +78,6 @@ export default class ProductsService {
         productFound.category.status === StatusEntity.INACTIVE
       )
         throw new NotFoundException(CRUD.NOT_FOUND);
-      if (subcategory) {
-        productFound.subcategory = productFound.category.subcategories.find(
-          (sb) => sb.id === subcategory,
-        );
-        if (!productFound.subcategory)
-          throw new NotFoundException(CRUD.NOT_FOUND);
-      }
     }
 
     return this.productRepository.save(productFound);
@@ -98,7 +86,7 @@ export default class ProductsService {
   public findProductById = async (id: string, enterprise: Enterprise) => {
     const product = await this.productRepository.findOne({
       where: { enterprise: { id: enterprise.id }, id },
-      relations: ['category', 'subcategory'],
+      relations: ['category'],
     });
 
     if (product)

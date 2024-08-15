@@ -1,10 +1,4 @@
-import {
-  ArrayUnique,
-  IsArray,
-  IsNotEmpty,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export default class CreateCategoryDto {
@@ -16,10 +10,4 @@ export default class CreateCategoryDto {
   @IsString()
   @ApiProperty({ description: 'Descripción' })
   description: string;
-
-  @IsArray()
-  @ArrayUnique()
-  @IsString({ each: true })
-  @ApiProperty({ description: 'Sub-categoría de la categoría' })
-  subcategories: string[];
 }

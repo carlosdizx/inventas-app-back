@@ -37,9 +37,4 @@ export default class CreateProductDto {
   @IsUUID()
   @ApiProperty()
   category?: string;
-
-  @IsOptional()
-  @IsUUID()
-  @ApiProperty()
-  subcategory?: string;
 }

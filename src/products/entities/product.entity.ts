@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import Category from '../../categories/entities/category.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
-import Subcategory from '../../categories/entities/subcategory.entity';
 import ProductInventory from '../../inventories/entities/product.inventory.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
 
@@ -46,10 +45,6 @@ export default class Product {
   @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn({ name: 'category_id' })
   category: Category;
-
-  @ManyToOne(() => Subcategory, (subcategory) => subcategory.products)
-  @JoinColumn({ name: 'subcategory_id' })
-  subcategory: Subcategory;
 
   @OneToMany(
     () => ProductInventory,

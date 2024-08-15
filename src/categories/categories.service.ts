@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Category from './entities/category.entity';
 import { DataSource, Repository } from 'typeorm';
 import Enterprise from '../enterprise/entities/enterprise.entity';
-import Subcategory from './entities/subcategory.entity';
 import ErrorDatabaseService from '../common/service/error.database.service';
 import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { CRUD } from '../common/constants/messages.constant';
@@ -16,8 +15,6 @@ export default class CategoriesService {
     private dataSource: DataSource,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-    @InjectRepository(Subcategory)
-    private readonly subcategoryRepository: Repository<Subcategory>,
     private readonly errorDatabaseService: ErrorDatabaseService,
   ) {}
 
@@ -36,33 +33,20 @@ export default class CategoriesService {
   };
 
   public createCategory = async (
-    { subcategories, ...resData }: CreateCategoryDto,
+    { ...resData }: CreateCategoryDto,
     enterprise: Enterprise,
   ) => {
     const category = this.categoryRepository.create({ ...resData, enterprise });
-    const subs: Subcategory[] = [];
-    for (const subcategory of subcategories) {
-      subs.push(await this.subcategoryRepository.create({ name: subcategory }));
-    }
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
     try {
       const catSaved = await queryRunner.manager.save<Category>(category);
-      const subCatsForSave = subs.map((sub) => ({
-        ...sub,
-        category: catSaved,
-      }));
-
-      const subSaved = await queryRunner.manager.save(
-        Subcategory,
-        subCatsForSave,
-      );
 
       await queryRunner.commitTransaction();
       await queryRunner.release();
       delete catSaved.enterprise;
-      return { ...catSaved, subcategories: subSaved.map((cat) => cat.name) };
+      return { ...catSaved };
     } catch (error) {
       await queryRunner.rollbackTransaction();
       this.errorDatabaseService.handleException(error);
@@ -71,7 +55,7 @@ export default class CategoriesService {
 
   public updateCategory = async (
     id: string,
-    { subcategories, ...resData }: UpdateCategoryDto,
+    { ...resData }: UpdateCategoryDto,
   ) => {
     const category = await this.categoryRepository.preload({ id, ...resData });
     if (!category) throw new NotFoundException(CRUD.NOT_FOUND);
@@ -79,33 +63,18 @@ export default class CategoriesService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
     try {
-      const catSaved = await queryRunner.manager.save<Category>(category);
-      if (subcategories) {
-        await queryRunner.manager.delete(Subcategory, {
-          category: { id },
-        });
-
-        const subs = subcategories.map((subcategory) =>
-          this.subcategoryRepository.create({
-            name: subcategory,
-            category: catSaved,
-          }),
-        );
-
-        await queryRunner.manager.save(Subcategory, subs);
-
-        await queryRunner.commitTransaction();
-        await queryRunner.release();
-      }
+      await queryRunner.manager.save<Category>(category);
+      await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
       this.errorDatabaseService.handleException(error);
+    } finally {
+      await queryRunner.release();
     }
   };
 
   public findCategoryById = (id: string) =>
     this.categoryRepository.findOne({
       where: { id },
-      relations: ['subcategories'],
     });
 }

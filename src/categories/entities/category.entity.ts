@@ -7,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import Subcategory from './subcategory.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
 import Product from '../../products/entities/product.entity';
@@ -26,11 +25,6 @@ export default class Category {
 
   @Column({ type: 'enum', enum: StatusEntity, default: StatusEntity.ACTIVE })
   status: StatusEntity;
-
-  @OneToMany(() => Subcategory, (subcategory) => subcategory.category, {
-    cascade: true,
-  })
-  subcategories: Subcategory[];
 
   @ManyToOne(() => Enterprise, (enterprise) => enterprise.categories)
   @JoinColumn({ name: 'enterprise_id' })
