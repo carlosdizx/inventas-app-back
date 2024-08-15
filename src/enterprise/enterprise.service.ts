@@ -25,6 +25,8 @@ import { ConfigService } from '@nestjs/config';
 import { CRUD, ENTERPRISE } from '../common/constants/messages.constant';
 import SendEmailDto from '../common/dto/send.email.dto';
 import registerPendingEnterpriseEmail from '../common/templates/mails/register-pending-enterprise.email';
+import enterpriseReactivatedEmail from '../common/templates/mails/enterprise-reactived.email';
+import enterpriseInactiveEmail from '../common/templates/mails/enterprise-inactive.email';
 
 @Injectable()
 export default class EnterpriseService {
@@ -202,7 +204,29 @@ export default class EnterpriseService {
 
     enterprise.status = status;
 
-    return await this.enterpriseRepository.save(enterprise);
+    const result = await this.enterpriseRepository.save(enterprise);
+
+    const isActiveCase = enterprise.status === StatusEntity.ACTIVE;
+    const subject = isActiveCase
+      ? `Tu empresa ya está nuevamente activa ${enterprise.email}`
+      : `Tu empresa ha sido temporalmente suspendida ${enterprise.email}`;
+
+    const dtoEmail: SendEmailDto = {
+      from: 'Notificaciones <noreply_inventa@gmail.com>',
+      to: enterprise.email,
+      subject,
+      html: '',
+    };
+
+    if (isActiveCase) {
+      dtoEmail.html = enterpriseReactivatedEmail(this.urlApp);
+      await this.nodemailerService.main(dtoEmail);
+    } else {
+      dtoEmail.html = enterpriseInactiveEmail();
+      await this.nodemailerService.main(dtoEmail);
+    }
+
+    return result;
   };
 
   public changePlanEnterprise = async (id: string, planId: string) => {
