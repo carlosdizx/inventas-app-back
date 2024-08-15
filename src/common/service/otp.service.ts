@@ -26,7 +26,7 @@ export default class OtpService {
     const docRef = doc(this.firebaseService.firestore, 'otps', email);
     await setDoc(docRef as any, data);
     await this.nodemailerService.main({
-      from: 'Registro exitoso <noreply_inventa@gmail.com>',
+      from: `Confirmación de acción ${otp} <noreply_inventa@gmail.com>`,
       to: email,
       subject: 'Código de verificación Inventas-App',
       html: notificationOtpUserEmail(otp),

@@ -36,7 +36,7 @@ export default class ClientsController {
   }
 
   @Post()
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER, UserRoles.ADMIN)
   public async createClient(
     @Body() dto: CreateClientDto,
     @getDataReq() enterprise: Enterprise,
@@ -45,7 +45,7 @@ export default class ClientsController {
   }
 
   @Get(':id')
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER, UserRoles.ADMIN)
   public async findClientById(
     @Param('id', ParseUUIDPipe) id: string,
     @getDataReq() enterprise: Enterprise,
@@ -63,7 +63,7 @@ export default class ClientsController {
   }
 
   @Get('find/all')
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER, UserRoles.ADMIN)
   public async findAllClients(@getDataReq() enterprise: Enterprise) {
     return this.clientsService.findAllClients(enterprise);
   }

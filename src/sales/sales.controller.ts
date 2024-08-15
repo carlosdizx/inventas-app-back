@@ -30,7 +30,7 @@ import { ApiTags } from '@nestjs/swagger';
 export default class SalesController {
   constructor(private readonly salesService: SalesService) {}
   @Post()
-  @Auth(UserRoles.CASHIER, UserRoles.OWNER)
+  @Auth(UserRoles.CASHIER, UserRoles.OWNER, UserRoles.ADMIN)
   async registerSale(
     @Body() dto: CreateSaleDto,
     @getDataReq() enterprise: Enterprise,
@@ -39,7 +39,12 @@ export default class SalesController {
   }
 
   @Get()
-  @Auth(UserRoles.OWNER, UserRoles.ACCOUNTANT, UserRoles.CASHIER)
+  @Auth(
+    UserRoles.OWNER,
+    UserRoles.ACCOUNTANT,
+    UserRoles.CASHIER,
+    UserRoles.ADMIN,
+  )
   public async listCategories(
     @Query(ValidationPipe) { page, limit }: PaginationDto,
     @getDataReq() enterprise: Enterprise,
@@ -48,7 +53,7 @@ export default class SalesController {
   }
 
   @Patch(':id')
-  @Auth(UserRoles.OWNER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN)
   public async updateSale(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateSaleDto,
@@ -58,7 +63,7 @@ export default class SalesController {
   }
 
   @Get(':id')
-  @Auth(UserRoles.OWNER)
+  @Auth(UserRoles.OWNER, UserRoles.ADMIN)
   public async findSaleById(
     @Param('id', ParseUUIDPipe) id: string,
     @GetDataReqDecorator() enterprise: Enterprise,
@@ -67,7 +72,7 @@ export default class SalesController {
   }
 
   @Put('status/:id')
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER, UserRoles.ADMIN)
   public async changeStatusEnterprise(
     @Param('id', ParseUUIDPipe) id: string,
     @getDataReq() enterprise: Enterprise,

@@ -40,7 +40,7 @@ export default class PaymentsController {
   }
 
   @Post()
-  @Auth()
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER, UserRoles.ADMIN)
   public async registerPayment(
     @Body() dto: CreatePaymentDto,
     @GetDataReqDecorator() enterprise: Enterprise,
@@ -58,7 +58,7 @@ export default class PaymentsController {
   }
 
   @Put('status/:id')
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.ADMIN, UserRoles.OWNER)
   public async changeStatusEnterprise(
     @Param('id', ParseUUIDPipe) id: string,
     @getDataReq() enterprise: Enterprise,

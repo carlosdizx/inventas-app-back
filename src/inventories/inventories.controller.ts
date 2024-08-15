@@ -74,7 +74,7 @@ export default class InventoriesController {
   }
 
   @Get('find/all')
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER, UserRoles.ADMIN)
   public async findAllInventories(@getDataReq() enterprise: Enterprise) {
     return this.inventoriesService.findAllInventories(enterprise);
   }

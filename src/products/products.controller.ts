@@ -27,7 +27,7 @@ export default class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  @Auth(UserRoles.OWNER, UserRoles.CASHIER)
+  @Auth(UserRoles.OWNER, UserRoles.CASHIER, UserRoles.ADMIN)
   public createProduct(
     @Body() dto: CreateProductDto,
     @getDataReq() enterprise: Enterprise,
