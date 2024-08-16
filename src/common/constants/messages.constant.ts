@@ -36,4 +36,9 @@ const INVENTORY = {
   INACTIVE_PRODUCT: 'Se encontró un producto inactivo o no existe',
 };
 
-export { SERVER, CRUD, AUTH, OTP, ENTERPRISE, INVENTORY };
+const PAYMENTS = {
+  NO_CREDITS: 'El cliente no tiene deuda pendientes por pagar',
+  NOTIFICATE: 'El cliente fue notificado via correo',
+};
+
+export { SERVER, CRUD, AUTH, OTP, ENTERPRISE, INVENTORY, PAYMENTS };
