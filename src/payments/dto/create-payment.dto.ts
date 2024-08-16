@@ -11,4 +11,8 @@ export default class CreatePaymentDto {
   @IsUUID()
   @ApiProperty()
   clientId: string;
+
+  @IsUUID()
+  @ApiProperty()
+  inventoryId: string;
 }

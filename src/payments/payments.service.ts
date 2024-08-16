@@ -97,7 +97,7 @@ export default class PaymentService {
   };
 
   public registerPayment = async (
-    { clientId, totalAmount }: CreatePaymentDto,
+    { clientId, totalAmount, inventoryId }: CreatePaymentDto,
     { id: enterpriseId }: Enterprise,
   ) => {
     const [dataResult] = await this.paymentRepository.query(
@@ -107,9 +107,10 @@ export default class PaymentService {
           FROM sales s
                    LEFT JOIN clients c ON c.id = s.client_id
           WHERE s.type = '${TypeSaleEnum.CREDIT}' AND s.enterprise_id = $1 AND c.id = $2 AND s.status = '${StatusEntity.ACTIVE}'
+               AND s.inventory_id = $3
           GROUP BY c.id;
     `,
-      [enterpriseId, clientId],
+      [enterpriseId, clientId, inventoryId],
     );
 
     if (!dataResult) throw new ConflictException(CRUD.NOT_FOUND);
@@ -130,8 +131,17 @@ export default class PaymentService {
 
   public findAllPaymentsByClient = async (
     clientId: string,
+    inventoryId: string,
     { id: enterpriseId }: Enterprise,
   ) => {
+    /*
+    const queryBuilder = this.saleRepository
+      .createQueryBuilder('sale')
+      .where('sale.enterprise.id = :id', { id })
+      .andWhere('sale.inventory.id = :inventoryId', { inventoryId })
+      .orderBy('sale.createdAt', 'DESC');
+     */
+    const queryBuilder = this.paymentRepository.createQueryBuilder('payment');
     return await this.paymentRepository.find({
       where: { client: { id: clientId }, enterprise: { id: enterpriseId } },
       order: {

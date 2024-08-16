@@ -49,13 +49,18 @@ export default class PaymentsController {
     return await this.paymentsService.registerPayment(dto, enterprise);
   }
 
-  @Get('client/:id')
+  @Get('client/:id/:inventoryId')
   @Auth()
   public async getPaymentsByClientId(
-    @Param('id') clientId: string,
+    @Param('id', ParseUUIDPipe) clientId: string,
+    @Param('inventoryId', ParseUUIDPipe) inventoryId: string,
     @GetDataReqDecorator() enterprise: Enterprise,
   ) {
-    return this.paymentsService.findAllPaymentsByClient(clientId, enterprise);
+    return this.paymentsService.findAllPaymentsByClient(
+      clientId,
+      inventoryId,
+      enterprise,
+    );
   }
 
   @Put('status/:id')
