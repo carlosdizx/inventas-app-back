@@ -31,7 +31,7 @@ export default class InventoriesService {
   ) {}
 
   public createInventory = async (
-    { location }: CreateInventoryDto,
+    { name }: CreateInventoryDto,
     enterprise: Enterprise,
   ) => {
     const inventory = await this.inventoryRepository.save({
@@ -180,12 +180,12 @@ export default class InventoriesService {
       .leftJoin('inventory.productInventories', 'productInventory')
       .leftJoin('productInventory.product', 'product')
       .select('inventory.id', 'id')
-      .addSelect('inventory.location', 'location')
+      .addSelect('inventory.name', 'name')
       .addSelect('SUM(productInventory.quantity)', 'total')
       .where('inventory.enterprise.id = :id', { id })
       .groupBy('inventory.id')
-      .addGroupBy('inventory.location')
-      .orderBy('inventory.location');
+      .addGroupBy('inventory.name')
+      .orderBy('inventory.name');
 
     const total = await queryBuilder.getCount();
 

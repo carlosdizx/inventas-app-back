@@ -26,7 +26,7 @@ export default class Inventory {
   @Column({ nullable: true })
   state?: string;
 
-  @Column({ name: 'zipCode', nullable: true })
+  @Column({ name: 'zipcode', nullable: true })
   zipCode?: string;
 
   @Column({ nullable: true })
