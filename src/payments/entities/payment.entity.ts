@@ -10,6 +10,7 @@ import {
 import Client from '../../clients/entities/client.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
+import Inventory from '../../inventories/entities/inventory.entity';
 
 @Entity('payments')
 export default class Payment {
@@ -26,6 +27,10 @@ export default class Payment {
   @ManyToOne(() => Enterprise, (enterprise) => enterprise.payments)
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
+
+  @ManyToOne(() => Inventory)
+  @JoinColumn({ name: 'inventory_id' })
+  inventory: Inventory;
 
   @Column({ type: 'enum', enum: StatusEntity, default: StatusEntity.ACTIVE })
   status: StatusEntity;

@@ -17,6 +17,7 @@ import { CRUD } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class PaymentService {
+  private readonly logger = new Logger(PaymentService.name);
   constructor(
     @InjectRepository(Payment)
     private readonly paymentRepository: Repository<Payment>,
@@ -37,7 +38,7 @@ export default class PaymentService {
             c.names,
             c.surnames,
             COALESCE(SUM(s.total_amount), 0) AS total_credits,
-            COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id AND p.status = '${StatusEntity.ACTIVE}'), 0) AS total_payments
+            COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id AND p.status = '${StatusEntity.ACTIVE}' AND p.inventory_id= $4), 0) AS total_payments
         FROM sales s
                  LEFT JOIN clients c ON c.id = s.client_id
         WHERE s.enterprise_id = $1 AND s.type = '${TypeSaleEnum.CREDIT}' AND s.status = '${StatusEntity.ACTIVE}'
@@ -47,7 +48,7 @@ export default class PaymentService {
     `,
       [enterprise_id, limit, offset, inventoryId],
     );
-    Logger.log('pass');
+    this.logger.debug([enterprise_id, limit, offset, inventoryId]);
 
     const total = await result.length;
 
@@ -103,7 +104,7 @@ export default class PaymentService {
     const [dataResult] = await this.paymentRepository.query(
       `
           SELECT COALESCE(SUM(s.total_amount), 0) AS total_credits,
-                 COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id AND p.status = '${StatusEntity.ACTIVE}' AND p.status = '${StatusEntity.ACTIVE}'), 0) AS total_payments
+                 COALESCE((SELECT SUM(p.total_amount) FROM payments p WHERE p.client_id = c.id AND p.status = '${StatusEntity.ACTIVE}' AND p.status = '${StatusEntity.ACTIVE}' AND p.inventory_id= $3), 0) AS total_payments
           FROM sales s
                    LEFT JOIN clients c ON c.id = s.client_id
           WHERE s.type = '${TypeSaleEnum.CREDIT}' AND s.enterprise_id = $1 AND c.id = $2 AND s.status = '${StatusEntity.ACTIVE}'
@@ -124,6 +125,7 @@ export default class PaymentService {
       totalAmount,
       client: { id: clientId },
       enterprise: { id: enterpriseId },
+      inventory: { id: inventoryId },
     });
 
     await this.paymentRepository.save(payment);
@@ -134,16 +136,12 @@ export default class PaymentService {
     inventoryId: string,
     { id: enterpriseId }: Enterprise,
   ) => {
-    /*
-    const queryBuilder = this.saleRepository
-      .createQueryBuilder('sale')
-      .where('sale.enterprise.id = :id', { id })
-      .andWhere('sale.inventory.id = :inventoryId', { inventoryId })
-      .orderBy('sale.createdAt', 'DESC');
-     */
-    const queryBuilder = this.paymentRepository.createQueryBuilder('payment');
     return await this.paymentRepository.find({
-      where: { client: { id: clientId }, enterprise: { id: enterpriseId } },
+      where: {
+        client: { id: clientId },
+        enterprise: { id: enterpriseId },
+        inventory: { id: inventoryId },
+      },
       order: {
         createdAt: 'DESC',
         updatedAt: 'DESC',
