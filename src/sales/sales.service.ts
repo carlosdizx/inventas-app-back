@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
@@ -22,6 +23,7 @@ import { CRUD } from '../common/constants/messages.constant';
 
 @Injectable()
 export default class SalesService {
+  private readonly logger = new Logger(SalesService.name);
   constructor(
     private readonly datasource: DataSource,
     @InjectRepository(Sale) private readonly saleRepository: Repository<Sale>,
@@ -114,10 +116,13 @@ export default class SalesService {
   public listSales = async (
     { page, limit }: IPaginationOptions,
     { id }: Enterprise,
+    inventoryId: string,
   ) => {
+    this.logger.debug(inventoryId);
     const queryBuilder = this.saleRepository
       .createQueryBuilder('sale')
       .where('sale.enterprise.id = :id', { id })
+      .andWhere('sale.inventory.id = :inventoryId', { inventoryId })
       .orderBy('sale.createdAt', 'DESC');
     return await paginate<Sale>(queryBuilder, {
       page,

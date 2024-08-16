@@ -46,10 +46,14 @@ export default class SalesController {
     UserRoles.ADMIN,
   )
   public async listCategories(
-    @Query(ValidationPipe) { page, limit }: PaginationDto,
+    @Query(ValidationPipe) { page, limit, inventoryId }: PaginationDto,
     @getDataReq() enterprise: Enterprise,
   ) {
-    return await this.salesService.listSales({ page, limit }, enterprise);
+    return await this.salesService.listSales(
+      { page, limit },
+      enterprise,
+      inventoryId,
+    );
   }
 
   @Patch(':id')
