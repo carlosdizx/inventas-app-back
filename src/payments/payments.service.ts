@@ -25,6 +25,7 @@ export default class PaymentService {
   public findAllSalesWithCredit = async (
     { page, limit }: IPaginationOptions,
     { id: enterprise_id }: Enterprise,
+    inventoryId: string,
   ) => {
     const offset = (+page - 1) * +limit;
 
@@ -40,10 +41,11 @@ export default class PaymentService {
         FROM sales s
                  LEFT JOIN clients c ON c.id = s.client_id
         WHERE s.enterprise_id = $1 AND s.type = '${TypeSaleEnum.CREDIT}' AND s.status = '${StatusEntity.ACTIVE}'
+        AND s.inventory_id = $4
         GROUP BY c.id
         LIMIT $2 OFFSET $3;
     `,
-      [enterprise_id, limit, offset],
+      [enterprise_id, limit, offset, inventoryId],
     );
     Logger.log('pass');
 

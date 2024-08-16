@@ -30,12 +30,13 @@ export default class PaymentsController {
   @Get('find/all/credits')
   @Auth()
   public async findAllCredits(
-    @Query() { page, limit }: PaginationDto,
+    @Query() { page, limit, inventoryId }: PaginationDto,
     @GetDataReqDecorator() enterprise: Enterprise,
   ) {
     return this.paymentsService.findAllSalesWithCredit(
       { page, limit },
       enterprise,
+      inventoryId,
     );
   }
 
