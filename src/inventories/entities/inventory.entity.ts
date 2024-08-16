@@ -17,8 +17,23 @@ export default class Inventory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
-  location: string;
+  @Column({ unique: true, name: 'name' })
+  name: string;
+
+  @Column({ nullable: true })
+  city?: string;
+
+  @Column({ nullable: true })
+  state?: string;
+
+  @Column({ name: 'zipCode', nullable: true })
+  zipCode?: string;
+
+  @Column({ nullable: true })
+  country?: string;
+
+  @Column({ nullable: true })
+  address?: string;
 
   @OneToMany(
     () => ProductInventory,
