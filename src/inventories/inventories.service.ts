@@ -31,12 +31,17 @@ export default class InventoriesService {
   ) {}
 
   public createInventory = async (
-    { name }: CreateInventoryDto,
+    { name, country, state, city, address, zipCode }: CreateInventoryDto,
     enterprise: Enterprise,
   ) => {
     const inventory = await this.inventoryRepository.save({
-      location,
       enterprise,
+      name,
+      country,
+      state,
+      city,
+      address,
+      zipCode,
     });
     return await this.inventoryRepository.save(inventory);
   };
