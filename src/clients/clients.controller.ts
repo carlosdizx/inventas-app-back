@@ -68,7 +68,7 @@ export default class ClientsController {
     return this.clientsService.findAllClients(enterprise);
   }
 
-  @Get('send-mail/:clientId/:inventoryId')
+  @Post('send-mail/:clientId/:inventoryId')
   @Auth(UserRoles.OWNER, UserRoles.CASHIER, UserRoles.ADMIN)
   public async sendEmailForPayment(
     @Param('clientId', ParseUUIDPipe) clientId: string,
