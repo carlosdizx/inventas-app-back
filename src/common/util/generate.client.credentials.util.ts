@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { randomUUID as uuid } from 'node:crypto';
 const generateClientCredentialsUtil = () => ({
   clientId: uuid().split('-').join(''),
   clientSecret: uuid().split('-').join(''),

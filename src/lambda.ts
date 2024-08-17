@@ -6,6 +6,8 @@ import express from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import AppModule from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
+import { LogLevel } from '@nestjs/common/services/logger.service';
 
 let cachedServer: Handler;
 
@@ -16,6 +18,13 @@ const bootstrap = async () => {
       AppModule,
       new ExpressAdapter(expressApp),
     );
+    const configService = new ConfigService(nestApp);
+    const env = configService.get('NODE_ENV', 'development') === 'production';
+    const logLevel: LogLevel[] = env
+      ? ['error', 'warn', 'fatal']
+      : ['error', 'warn', 'log', 'debug', 'fatal', 'verbose'];
+
+    nestApp.useLogger(logLevel);
 
     nestApp.useGlobalPipes(
       new ValidationPipe({
