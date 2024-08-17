@@ -20,10 +20,8 @@ import { UserRoles } from './enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import User from './entities/user.entity';
 import EnterpriseService from '../enterprise/enterprise.service';
-import { ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
-@ApiTags('users')
 @UseFilters(TypeormExceptionFilter)
 export default class UserCrudController {
   constructor(

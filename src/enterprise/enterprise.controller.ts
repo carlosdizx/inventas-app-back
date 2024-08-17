@@ -17,9 +17,7 @@ import { UserRoles } from '../users/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import ChangeStatusDto from '../common/dto/change-status.dto';
 import ChangePlanDto from './dto/change-plan.dto';
-import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('enterprises')
 @Controller('enterprises')
 @UseFilters(TypeormExceptionFilter)
 export default class EnterpriseController {

@@ -14,17 +14,11 @@ import Auth from './decorators/auth.decorator';
 import getDataReq from './decorators/get-data-req.decorator';
 import User from './entities/user.entity';
 import AuthService from './auth.service';
-import OtpService from '../common/service/otp.service';
-import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('authentication')
 @Controller('auth')
 @UseFilters(TypeormExceptionFilter)
 export default class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly otpService: OtpService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
   @Post('login')
   public login(@Body() dto: LoginUserDto) {
     return this.authService.login(dto);
@@ -50,11 +44,5 @@ export default class AuthController {
       throw new BadRequestException('Las contraseñas no coinciden');
 
     await this.authService.changePassword(user.id, password);
-  }
-
-  @Post('generate-otp')
-  @Auth()
-  public async generateOtp(@getDataReq(true) user: User) {
-    return this.otpService.saveOtp(user.email);
   }
 }

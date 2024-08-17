@@ -19,9 +19,7 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import { UserRoles } from '../users/enums/user.roles.enum';
 import ChangeStatusDto from '../common/dto/change-status.dto';
-import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('payments')
 @Controller('payments')
 @UseFilters(TypeormExceptionFilter)
 export default class PaymentsController {

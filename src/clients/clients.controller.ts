@@ -18,9 +18,7 @@ import { UserRoles } from '../users/enums/user.roles.enum';
 import CreateClientDto from './dto/create-client.dto';
 import UpdateClientDto from './dto/update-client.dto';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
-import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('clients')
 @Controller('clients')
 @UseFilters(TypeormExceptionFilter)
 export default class ClientsController {
