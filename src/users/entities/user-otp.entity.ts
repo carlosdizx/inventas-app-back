@@ -19,6 +19,6 @@ export default class UserOtp {
   @Column({ type: 'varchar', length: 6 })
   otp: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', name: 'expires_at' })
   expiresAt: Date;
 }

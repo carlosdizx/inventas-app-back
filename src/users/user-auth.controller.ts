@@ -14,11 +14,15 @@ import Auth from './decorators/auth.decorator';
 import getDataReq from './decorators/get-data-req.decorator';
 import User from './entities/user.entity';
 import UserAuthService from './user-auth.service';
+import OtpService from '../common/service/otp.service';
 
 @Controller('auth')
 @UseFilters(TypeormExceptionFilter)
 export default class UserAuthController {
-  constructor(private readonly authService: UserAuthService) {}
+  constructor(
+    private readonly authService: UserAuthService,
+    private readonly otpService: OtpService,
+  ) {}
   @Post('login')
   public login(@Body() dto: LoginUserDto) {
     return this.authService.login(dto);
@@ -44,5 +48,11 @@ export default class UserAuthController {
       throw new BadRequestException('Las contraseñas no coinciden');
 
     await this.authService.changePassword(user.id, password);
+  }
+
+  @Post('generate-otp')
+  @Auth()
+  public async generateOtp(@getDataReq(true) user: User) {
+    return this.otpService.generateOtp(user);
   }
 }
