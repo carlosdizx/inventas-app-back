@@ -25,8 +25,8 @@ import {
 } from '../common/constants/messages.constant';
 
 @Injectable()
-export default class AuthService {
-  private readonly logger = new Logger(AuthService.name);
+export default class UserAuthService {
+  private readonly logger = new Logger(UserAuthService.name);
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly encryptService: EncryptService,

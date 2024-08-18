@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import AuthService from './auth.service';
-import AuthController from './auth.controller';
+import UserAuthService from './user-auth.service';
+import UserAuthController from './user-auth.controller';
 import JwtStrategy from './strategies/jwt.strategy';
 import getJwtConfig from '../common/config/jwt.config';
 import User from './entities/user.entity';
@@ -29,15 +29,15 @@ import UserOtp from './entities/user-otp.entity';
     }),
     EnterpriseModule,
   ],
-  controllers: [AuthController, UserCrudController],
-  providers: [JwtStrategy, AuthService, UserCrudService],
+  controllers: [UserAuthController, UserCrudController],
+  providers: [JwtStrategy, UserAuthService, UserCrudService],
   exports: [
     TypeOrmModule,
     JwtStrategy,
     PassportModule,
     JwtModule,
-    AuthService,
+    UserAuthService,
     UserCrudService,
   ],
 })
-export default class AuthModule {}
+export default class UserModule {}

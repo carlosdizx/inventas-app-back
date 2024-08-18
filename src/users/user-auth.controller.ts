@@ -13,12 +13,12 @@ import ChangePasswordDto from './dto/change-password.dto';
 import Auth from './decorators/auth.decorator';
 import getDataReq from './decorators/get-data-req.decorator';
 import User from './entities/user.entity';
-import AuthService from './auth.service';
+import UserAuthService from './user-auth.service';
 
 @Controller('auth')
 @UseFilters(TypeormExceptionFilter)
-export default class AuthController {
-  constructor(private readonly authService: AuthService) {}
+export default class UserAuthController {
+  constructor(private readonly authService: UserAuthService) {}
   @Post('login')
   public login(@Body() dto: LoginUserDto) {
     return this.authService.login(dto);

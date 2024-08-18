@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import JoiValidation from './common/config/env.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import AuthModule from './users/auth.module';
+import UserModule from './users/user.module';
 import CommonModule from './common/common.module';
 import ClientsModule from './clients/clients.module';
 import InventoriesModule from './inventories/inventories.module';
@@ -21,7 +21,7 @@ import { dataSourceOptions } from '../database/database.config';
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
     CommonModule,
-    AuthModule,
+    UserModule,
     EnterpriseModule,
     CategoriesModule,
     ProductsModule,
