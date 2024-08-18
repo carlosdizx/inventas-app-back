@@ -5,11 +5,13 @@ import {
   JoinColumn,
   Entity,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { UserRoles } from '../enums/user.roles.enum';
 import UserDetails from './user.details.entity';
 import Enterprise from '../../enterprise/entities/enterprise.entity';
 import { StatusEntity } from '../../common/enums/status.entity.enum}';
+import UserOtp from './user-otp.entity';
 
 @Entity('users')
 export default class User {
@@ -44,4 +46,7 @@ export default class User {
   })
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
+
+  @OneToMany(() => UserOtp, (userOtp) => userOtp.user)
+  otps: UserOtp[];
 }

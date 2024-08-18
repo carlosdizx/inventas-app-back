@@ -12,12 +12,13 @@ import UserDetails from './entities/user.details.entity';
 import UserCrudService from './user.crud.service';
 import UserCrudController from './user.crud.controller';
 import EnterpriseModule from '../enterprise/enterprise.module';
+import UserOtp from './entities/user-otp.entity';
 
 @Global()
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([User, UserDetails]),
+    TypeOrmModule.forFeature([User, UserDetails, UserOtp]),
     PassportModule.register({
       defaultStrategy: 'jwt',
     }),
