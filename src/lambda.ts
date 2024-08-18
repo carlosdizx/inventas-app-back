@@ -33,7 +33,7 @@ const bootstrap = async () => {
     );
 
     nestApp.enableCors({
-      origin: ['https://example.com', 'https://another-example.com'],
+      origin: [configService.getOrThrow('APP_CORS')],
       credentials: true,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       allowedHeaders: '*',
