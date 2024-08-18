@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import TypeormExceptionFilter from '../common/exceptions/typeorm.exception';
 import CreateUserDto from './dto/create-user.dto';
@@ -20,6 +21,7 @@ import { UserRoles } from './enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import User from './entities/user.entity';
 import EnterpriseService from '../enterprise/enterprise.service';
+import OtpGuardGuard from '../common/guards/otp.guard.guard';
 
 @Controller('users')
 @UseFilters(TypeormExceptionFilter)
@@ -30,6 +32,7 @@ export default class UserCrudController {
   ) {}
   @Post()
   @Auth(UserRoles.OWNER, UserRoles.ADMIN)
+  @UseGuards(OtpGuardGuard)
   public async create(
     @Body() dto: CreateUserDto,
     @getDataReq() enterprise: Enterprise,
@@ -54,6 +57,7 @@ export default class UserCrudController {
 
   @Patch(':id')
   @Auth(UserRoles.OWNER, UserRoles.ADMIN)
+  @UseGuards(OtpGuardGuard)
   public async changeStatusAndRoles(
     @Body() dto: UpdateUserDto,
     @Param('id', ParseUUIDPipe) id: string,
