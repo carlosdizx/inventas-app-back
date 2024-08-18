@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import UserOtp from './entities/user-otp.entity';
+import UserOtp from '../../users/entities/user-otp.entity';
 import { Repository } from 'typeorm';
-import { OTP } from '../common/constants/messages.constant';
-import generateNumberCodeUtil from '../common/util/generate-number-code.util';
+import { OTP } from '../constants/messages.constant';
+import generateNumberCodeUtil from '../util/generate-number-code.util';
 
 @Injectable()
-export default class UserOtpService {
+export default class OtpService {
   constructor(
     @InjectRepository(UserOtp)
     private readonly otpRepository: Repository<UserOtp>,
