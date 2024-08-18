@@ -5,7 +5,6 @@ import { Context, Handler } from 'aws-lambda';
 import express from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import AppModule from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { LogLevel } from '@nestjs/common/services/logger.service';
 
@@ -39,22 +38,6 @@ const bootstrap = async () => {
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       allowedHeaders: '*',
     });
-
-    const config = new DocumentBuilder()
-      .setTitle('Documentación Inventas App')
-      .setDescription('Gestiona usuarios, productos, ventas y más.')
-      .setVersion('1.0')
-      .setContact(
-        'Technology Box',
-        'https://github.com/carlosdizx',
-        'inventasapp@gmail.com',
-      )
-      .setLicense('MIT', 'https://opensource.org/licenses/MIT')
-      .addBearerAuth()
-      .build();
-
-    const document = SwaggerModule.createDocument(nestApp, config);
-    SwaggerModule.setup('documentation', nestApp, document);
 
     await nestApp.init();
 

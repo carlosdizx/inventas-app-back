@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import JoiValidation from './common/config/env.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,8 +12,7 @@ import CategoriesModule from './categories/categories.module';
 import EnterpriseModule from './enterprise/enterprise.module';
 import PaymentsModule from './payments/payments.module';
 import { dataSourceOptions } from '../database/database.config';
-import { OtpVerifyMiddleware } from './common/middlewares/otp-verify.middleware';
-import { LoggingMiddleware } from './common/middlewares/logging.middleware';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,15 +32,4 @@ import { LoggingMiddleware } from './common/middlewares/logging.middleware';
   ],
   controllers: [],
 })
-export default class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggingMiddleware).forRoutes('*');
-
-    consumer
-      .apply(OtpVerifyMiddleware)
-      .forRoutes(
-        { path: 'users', method: RequestMethod.POST },
-        { path: 'users/:id', method: RequestMethod.PATCH },
-      );
-  }
-}
+export default class AppModule {}

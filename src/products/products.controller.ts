@@ -18,9 +18,7 @@ import Enterprise from '../enterprise/entities/enterprise.entity';
 import { UserRoles } from '../users/enums/user.roles.enum';
 import PaginationDto from '../common/dto/pagination.dto';
 import UpdateProductDto from './dto/update-product.dto';
-import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('products')
 @Controller('products')
 @UseFilters(TypeormExceptionFilter)
 export default class ProductsController {
